@@ -1,13 +1,12 @@
-import './App.css'
+import React from 'react';
+import HomePage from './pages/home_page';
 
 function App() {
-  
-
   return (
-    <>
-      <h1>Hello dead stock mates</h1>
-    </>
-  )
+    <div className="min-h-screen bg-slate-50">
+      <HomePage />
+    </div>
+  );
 }
 
-export default App
+export default App;
