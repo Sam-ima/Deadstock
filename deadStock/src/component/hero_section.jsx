@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import logo from '../assets/deadstock_logo.png';
 import { Search, ShoppingCart, User, ChevronDown, ArrowRight, Gavel, Package } from "lucide-react";
 
 const DeadstockMarketplace = () => {
   const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
   const categories = [
     "Electronics",
@@ -15,12 +17,12 @@ const DeadstockMarketplace = () => {
     "Automotive",
   ];
 
-  const products = [
-    { price: "$2,450", time: "2h 15m", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=400" },
-    { price: "$1,200", time: "Ends Soon", img: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?q=80&w=400" },
-    { price: "$890", time: "5h 42m", img: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=400" },
-    { price: "$5,600", time: "1h 05m", img: "https://images.unsplash.com/photo-1530124560676-586cad3ad784?q=80&w=400" },
-  ];
+ const products = [
+  { name: "Smart Watch", price: "$2,450", time: "2h 15m", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=400" },
+  { name: "Flower Pot", price: "$1,200", time: "Ends Soon", img: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?q=80&w=400" },
+  { name: "Ti-shirts", price: "$890", time: "5h 42m", img: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=400" },
+  { name: "Appliances Set", price: "$5,600", time: "1h 05m", img: "https://images.unsplash.com/photo-1580910051074-7c7a1a1a36c6?auto=format&q=80&w=400" },
+];
 
   return (
     <div style={styles.container}>
@@ -39,8 +41,9 @@ const DeadstockMarketplace = () => {
           {/* Logo and Menu */}
           <div style={styles.leftSection}>
             <div style={styles.logo}>
-              <div style={styles.logoIcon}>D</div>
-              <span style={styles.logoText}>DEADSTOCK</span>
+              <img src={logo} alt="Deadstock Logo" style={styles.logoImage} />
+
+              {/* <span style={styles.logoText}>DEADSTOCK</span> */}
             </div>
 
             <div style={styles.menu}>
@@ -158,22 +161,36 @@ const DeadstockMarketplace = () => {
           <div style={styles.rightCards}>
             <h3 style={styles.cardsSectionTitle}>Ending Soon</h3>
             <div style={styles.cardsGrid}>
-              {products.map((item, i) => (
-                <div key={i} style={styles.productCard}>
-                  <img
-                    src={item.img}
-                    style={styles.productImage}
-                    alt="product"
-                  />
+{products.slice(0, 4).map((item, i) => (
+  <div
+    key={i}
+    style={{
+      ...styles.productCard,
+      ...(hoveredCard === i ? styles.cardHover : {}),
+    }}
+    onMouseEnter={() => setHoveredCard(i)}
+    onMouseLeave={() => setHoveredCard(null)}
+  >
+    <img src={item.img} alt={item.name} style={styles.productImage} />
 
-                  <div style={styles.priceTag}>{item.price}</div>
+    {/* Overlay */}
+    <div style={styles.cardOverlay}></div>
 
-                  <div style={styles.timeTag}>
-                    <span>Time Left</span>
-                    <span style={styles.timeValue}>{item.time}</span>
-                  </div>
-                </div>
-              ))}
+    {/* Product Name */}
+    <div style={styles.productName}>{item.name}</div>
+
+    {/* Price */}
+    <div style={styles.priceTag}>{item.price}</div>
+
+    {/* Time */}
+    <div style={styles.timeTag}>
+      <span>Time Left</span>
+      <span style={styles.timeValue}>{item.time}</span>
+    </div>
+  </div>
+))}
+
+
             </div>
           </div>
         </div>
@@ -211,12 +228,12 @@ const styles = {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
-    opacity: 0.3,
+    opacity: 0.5,
   },
   navbarOverlay: {
     position: 'absolute',
     inset: 0,
-    background: 'linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.7))',
+    background: 'linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3))',
   },
   navContent: {
     position: 'relative',
@@ -256,6 +273,12 @@ const styles = {
     color: '#fff',
     letterSpacing: '-0.5px',
   },
+  logoImage: {
+  width: '40px', // adjust width as needed
+  height: '40px', // adjust height as needed
+  objectFit: 'contain',
+  borderRadius: '4px', // optional: round corners if needed
+},
   menu: {
     display: 'flex',
     alignItems: 'center',
@@ -374,16 +397,16 @@ const styles = {
     justifyContent: 'center',
   },
   heroImage: {
-    width: '92%',
-    height: '92%',
+    width: '100%',
+    height: '100%',
     objectFit: 'cover',
-    opacity: 0.2,
+    opacity: 0.5,
     borderRadius: '24px',
   },
   heroOverlay: {
     position: 'absolute',
     inset: 0,
-    background: 'linear-gradient(to right, rgba(0,0,0,1), rgba(0,0,0,0.5), transparent)',
+    // background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.35), transparent)',
     borderRadius: '24px',
   },
   heroContent: {
@@ -477,59 +500,92 @@ const styles = {
     letterSpacing: '0.1em',
     margin: 0,
   },
-  rightCards: {
-    paddingTop: '2rem',
-  },
+ rightCards: {
+  paddingTop: '2rem',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center', 
+},
   cardsSectionTitle: {
     color: '#fff',
     fontSize: '1.5rem',
     fontWeight: 700,
     marginBottom: '1.5rem',
     textAlign: 'center',
+    width: '50%',
   },
-  cardsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '1rem',
-  },
-  productCard: {
-    backgroundColor: '#fff',
-    borderRadius: '32px',
-    padding: '1rem',
-    position: 'relative',
-    overflow: 'hidden',
-    aspectRatio: '4/5',
-  },
+cardsGrid: {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, 1fr)',
+  gap: '1.5rem',
+},
+productCard: {
+  position: 'relative',
+  width: '230px',
+  height: '280px',
+  borderRadius: '18px',
+  overflow: 'hidden',
+  cursor: 'pointer',
+  transition: 'transform 0.3s ease',
+},
+cardHover: {
+  transform: 'translateY(-6px)',
+},
+
   productImage: {
     width: '100%',
     height: '100%',
-    objectFit: 'contain',
-    transition: 'transform 0.5s',
+    objectFit: 'cover',
+    // transition: 'transform 0.5s',
   },
+  cardOverlay: {
+  position: 'absolute',
+  inset: 0,
+  background: 'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2))',
+},
+productName: {
+  position: 'absolute',
+  bottom: '2.5rem', // above time
+  left: '0.75rem',
+  right: '0.75rem',
+  color: '#fff',
+  fontWeight: 700,
+  fontSize: '0.875rem',
+  textAlign: 'center',
+  zIndex: 2,
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+},
+
   priceTag: {
-    position: 'absolute',
-    top: '1rem',
-    right: '1rem',
-    backgroundColor: '#10b981',
-    color: '#fff',
-    fontWeight: 700,
-    padding: '0.25rem 0.75rem',
-    borderRadius: '8px',
-    fontSize: '0.875rem',
-  },
+  position: 'absolute',
+  top: '0.75rem',
+  right: '0.75rem',
+  backgroundColor: '#10b981',
+  color: '#fff',
+  fontWeight: 700,
+  padding: '0.25rem 0.6rem',
+  borderRadius: '6px',
+  fontSize: '0.75rem',
+  zIndex: 2,
+},
+
   timeTag: {
-    position: 'absolute',
-    bottom: '1rem',
-    left: '1rem',
-    right: '1rem',
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    color: '#fff',
-    padding: '0.5rem 0.75rem',
-    borderRadius: '12px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    fontSize: '10px',
-  },
+  position: 'absolute',
+  bottom: '0.75rem',
+  left: '0.75rem',
+  right: '0.75rem',
+  backgroundColor: 'rgba(0,0,0,0.75)',
+  color: '#fff',
+  padding: '0.4rem 0.6rem',
+  borderRadius: '8px',
+  display: 'flex',
+  justifyContent: 'space-between',
+  fontSize: '10px',
+  zIndex: 2,
+},
+
   timeValue: {
     fontWeight: 700,
     color: '#f97316',
