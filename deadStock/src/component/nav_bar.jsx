@@ -1,49 +1,71 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import logo from "../assets/deadstock_logo.png";
 import { Search, ShoppingCart, User, ChevronDown } from "lucide-react";
-import { categories } from "../component/data/categories_data";
+import categories from "../component/data/categories_data";
+import styles from "../component/style";
 
-
-const Navbar = ({ theme }) => {
-  const [open, setOpen] = useState(false);
+const Navbar = () => {
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   return (
-    <nav style={theme.navbar}>
-      <div style={theme.navContent}>
-        <div style={theme.leftSection}>
-          <div style={theme.logo}>
-            <div style={theme.logoIcon}>D</div>
-            <span style={theme.logoText}>DEADSTOCK</span>
+    <nav style={styles.navbar}>
+      <div style={styles.navbarBg}>
+        <img
+          src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1200"
+          alt="Navbar background"
+          style={styles.navbarImage}
+        />
+        <div style={styles.navbarOverlay}></div>
+      </div>
+
+      <div style={styles.navContent}>
+        <div style={styles.leftSection}>
+          <div style={styles.logo}>
+            <img src={logo} alt="Deadstock Logo" style={styles.logoImage} />
           </div>
 
-          <div style={theme.menu}>
+          <div style={styles.menu}>
             <div
-              style={theme.menuItem}
-              onMouseEnter={() => setOpen(true)}
-              onMouseLeave={() => setOpen(false)}
+              style={styles.menuItem}
+              onMouseEnter={() => setIsCategoryOpen(true)}
+              onMouseLeave={() => setIsCategoryOpen(false)}
             >
-              <button style={theme.menuButton}>
+              <button style={styles.menuButton}>
                 Categories <ChevronDown size={16} />
               </button>
 
-              {open && (
-                <ul style={theme.dropdown}>
-                  {categories.map((c) => (
-                    <li key={c} style={theme.dropdownItem}>{c}</li>
+              {isCategoryOpen && (
+                <ul style={styles.dropdown}>
+                  {categories.map((cat) => (
+                    <li key={cat} style={styles.dropdownItem}>
+                      {cat}
+                    </li>
                   ))}
                 </ul>
               )}
             </div>
 
-            <button style={theme.menuButton}>Auctions</button>
-            <button style={theme.menuButton}>Featured Deals</button>
+            <button style={styles.menuButton}>Auctions</button>
+            <button style={styles.menuButton}>Featured Deals</button>
+            <button style={styles.menuButton}>
+              For Business <span style={styles.badge}>B2B & B2C</span>
+            </button>
           </div>
         </div>
 
-        <div style={theme.rightSection}>
-          <Search size={20} />
-          <ShoppingCart size={20} />
-          <button style={theme.loginButton}>
-            <User size={18} /> Login
+        <div style={styles.rightSection}>
+          <button style={styles.iconButton}>
+            <Search size={20} />
+          </button>
+
+          <div style={styles.cartContainer}>
+            <ShoppingCart size={20} />
+            <span style={styles.cartBadge}>3</span>
+          </div>
+
+          <button style={styles.loginButton}>
+            <User size={18} />
+            Login / Register
           </button>
         </div>
       </div>

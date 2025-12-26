@@ -1,616 +1,67 @@
-import React, { useState } from "react";
-import logo from '../assets/deadstock_logo.png';
-import { Search, ShoppingCart, User, ChevronDown, ArrowRight, Gavel, Package } from "lucide-react";
+import React from "react";
+import { ArrowRight, Gavel, Package } from "lucide-react";
+import EndingSoonCards from "./card/endingsoon_card";
+import styles from "../component/style";
 
-const DeadstockMarketplace = () => {
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [hoveredCard, setHoveredCard] = useState(null);
-
-  const categories = [
-    "Electronics",
-    "Fashion & Apparel",
-    "Home & Garden",
-    "Industrial Equipment",
-    "Food & Beverage",
-    "Health & Beauty",
-    "Sports & Outdoors",
-    "Automotive",
-  ];
-
- const products = [
-  { name: "Smart Watch", price: "$2,450", time: "2h 15m", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=400" },
-  { name: "Flower Pot", price: "$1,200", time: "Ends Soon", img: "https://images.unsplash.com/photo-1485955900006-10f4d324d411?q=80&w=400" },
-  { name: "Ti-shirts", price: "$890", time: "5h 42m", img: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=400" },
-  { name: "Appliances Set", price: "$5,600", time: "1h 05m", img: "https://images.unsplash.com/photo-1580910051074-7c7a1a1a36c6?auto=format&q=80&w=400" },
-];
-
+const Hero = () => {
   return (
-    <div style={styles.container}>
-      {/* Navbar */}
-      <nav style={styles.navbar}>
-        <div style={styles.navbarBg}>
-          <img
-            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=1200"
-            alt="Navbar background"
-            style={styles.navbarImage}
-          />
-          <div style={styles.navbarOverlay}></div>
-        </div>
+    <section style={styles.hero}>
+      <div style={styles.heroBg}>
+        <img
+          src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2000"
+          alt="Warehouse"
+          style={styles.heroImage}
+        />
+        <div style={styles.heroOverlay}></div>
+      </div>
 
-        <div style={styles.navContent}>
-          {/* Logo and Menu */}
-          <div style={styles.leftSection}>
-            <div style={styles.logo}>
-              <img src={logo} alt="Deadstock Logo" style={styles.logoImage} />
+      <div style={styles.heroContent}>
+        <div style={styles.leftContent}>
+          <h1 style={styles.heading}>
+            Turn Excess Inventory <br />
+            <span style={styles.headingAccent}>Into Opportunity</span>
+          </h1>
 
-              {/* <span style={styles.logoText}>DEADSTOCK</span> */}
-            </div>
+          <p style={styles.description}>
+            B2B & B2C marketplace for deadstock, overstock, and liquidation goods.
+            Connect with thousands of buyers and sellers in real-time auctions.
+          </p>
 
-            <div style={styles.menu}>
-              <div
-                style={styles.menuItem}
-                onMouseEnter={() => setIsCategoryOpen(true)}
-                onMouseLeave={() => setIsCategoryOpen(false)}
-              >
-                <button style={styles.menuButton}>
-                  Categories <ChevronDown size={16} style={styles.chevron} />
-                </button>
-
-                {isCategoryOpen && (
-                  <ul style={styles.dropdown}>
-                    {categories.map((cat) => (
-                      <li key={cat} style={styles.dropdownItem}>
-                        {cat}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              <button style={styles.menuButton}>
-                <span style={styles.liveIndicator}></span>
-                Auctions
-              </button>
-
-              <button style={styles.menuButton}>Featured Deals</button>
-
-              <button style={styles.menuButton}>
-                For Business
-                <span style={styles.badge}>B2B & B2C</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Right Icons */}
-          <div style={styles.rightSection}>
-            <button style={styles.iconButton}>
-              <Search size={20} />
+          <div style={styles.buttonGroup}>
+            <button style={styles.primaryButton}>
+              Start Bidding <ArrowRight size={20} />
             </button>
-
-            <div style={styles.cartContainer}>
-              <ShoppingCart size={20} />
-              <span style={styles.cartBadge}>3</span>
-            </div>
-
-            <button style={styles.loginButton}>
-              <User size={18} />
-              Login / Register
-            </button>
+            <button style={styles.secondaryButton}>Browse Categories</button>
           </div>
-        </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section style={styles.hero}>
-        <div style={styles.heroBg}>
-          <img
-            src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2000"
-            alt="Warehouse"
-            style={styles.heroImage}
-          />
-          <div style={styles.heroOverlay}></div>
-        </div>
-
-        <div style={styles.heroContent}>
-          {/* Left Content */}
-          <div style={styles.leftContent}>
-            <h1 style={styles.heading}>
-              Turn Excess Inventory <br />
-              <span style={styles.headingAccent}>Into Opportunity</span>
-            </h1>
-
-            <p style={styles.description}>
-              B2B & B2C marketplace for deadstock, overstock, and liquidation goods.
-              Connect with thousands of buyers and sellers in real-time auctions.
-            </p>
-
-            <div style={styles.buttonGroup}>
-              <button style={styles.primaryButton}>
-                Start Bidding <ArrowRight size={20} style={styles.arrowIcon} />
-              </button>
-
-              <button style={styles.secondaryButton}>
-                Browse Categories
-              </button>
+          <div style={styles.stats}>
+            <div style={styles.statItem}>
+              <div style={styles.statIcon}><Gavel /></div>
+              <div>
+                <p style={styles.statNumber}>500+</p>
+                <p style={styles.statLabel}>Active Auctions</p>
+              </div>
             </div>
 
-            <div style={styles.stats}>
-              <div style={styles.statItem}>
-                <div style={styles.statIcon}>
-                  <Gavel />
-                </div>
-                <div>
-                  <p style={styles.statNumber}>500+</p>
-                  <p style={styles.statLabel}>Active Auctions</p>
-                </div>
-              </div>
-
-              <div style={styles.statItem}>
-                <div style={styles.statIcon}>
-                  <Package />
-                </div>
-                <div>
-                  <p style={styles.statNumber}>10K+</p>
-                  <p style={styles.statLabel}>Products</p>
-                </div>
+            <div style={styles.statItem}>
+              <div style={styles.statIcon}><Package /></div>
+              <div>
+                <p style={styles.statNumber}>10K+</p>
+                <p style={styles.statLabel}>Products</p>
               </div>
             </div>
           </div>
-
-          {/* Right Cards - Ending Soon */}
-          <div style={styles.rightCards}>
-            <h3 style={styles.cardsSectionTitle}>Ending Soon</h3>
-            <div style={styles.cardsGrid}>
-{products.slice(0, 4).map((item, i) => (
-  <div
-    key={i}
-    style={{
-      ...styles.productCard,
-      ...(hoveredCard === i ? styles.cardHover : {}),
-    }}
-    onMouseEnter={() => setHoveredCard(i)}
-    onMouseLeave={() => setHoveredCard(null)}
-  >
-    <img src={item.img} alt={item.name} style={styles.productImage} />
-
-    {/* Overlay */}
-    <div style={styles.cardOverlay}></div>
-
-    {/* Product Name */}
-    <div style={styles.productName}>{item.name}</div>
-
-    {/* Price */}
-    <div style={styles.priceTag}>{item.price}</div>
-
-    {/* Time */}
-    <div style={styles.timeTag}>
-      <span>Time Left</span>
-      <span style={styles.timeValue}>{item.time}</span>
-    </div>
-  </div>
-))}
-
-
-            </div>
-          </div>
         </div>
 
-        {/* Big Typography */}
-        <div style={styles.bigTypography}>
-          <p style={styles.bigNumber}>100K+</p>
-          <p style={styles.bigLabel}>Products</p>
-        </div>
-      </section>
-    </div>
+        <EndingSoonCards />
+      </div>
+
+      <div style={styles.bigTypography}>
+        <p style={styles.bigNumber}>100K+</p>
+        <p style={styles.bigLabel}>Products</p>
+      </div>
+    </section>
   );
 };
 
-const styles = {
-  container: {
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    minHeight: '100vh',
-    backgroundColor: '#000',
-  },
-  navbar: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '100%',
-    zIndex: 100,
-    height: '80px',
-  },
-  navbarBg: {
-    position: 'absolute',
-    inset: 0,
-    overflow: 'hidden',
-  },
-  navbarImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    opacity: 0.5,
-  },
-  navbarOverlay: {
-    position: 'absolute',
-    inset: 0,
-    background: 'linear-gradient(to right, rgba(0,0,0,0.6), rgba(0,0,0,0.3))',
-  },
-  navContent: {
-    position: 'relative',
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: '0 2rem',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  leftSection: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '3rem',
-  },
-  logo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    cursor: 'pointer',
-  },
-  logoIcon: {
-    width: '32px',
-    height: '32px',
-    backgroundColor: '#fff',
-    color: '#000',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontWeight: 900,
-    borderRadius: '4px',
-  },
-  logoText: {
-    fontSize: '1.5rem',
-    fontWeight: 900,
-    color: '#fff',
-    letterSpacing: '-0.5px',
-  },
-  logoImage: {
-  width: '40px', // adjust width as needed
-  height: '40px', // adjust height as needed
-  objectFit: 'contain',
-  borderRadius: '4px', // optional: round corners if needed
-},
-  menu: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1.5rem',
-  },
-  menuItem: {
-    position: 'relative',
-  },
-  menuButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    background: 'none',
-    border: 'none',
-    color: 'rgba(255,255,255,0.9)',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    cursor: 'pointer',
-    padding: '0.5rem 0',
-  },
-  chevron: {
-    marginLeft: '0.25rem',
-  },
-  liveIndicator: {
-    width: '8px',
-    height: '8px',
-    backgroundColor: '#dc2626',
-    borderRadius: '50%',
-    animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-  },
-  badge: {
-    backgroundColor: '#ea580c',
-    fontSize: '10px',
-    padding: '2px 8px',
-    borderRadius: '12px',
-    fontWeight: 700,
-    marginLeft: '0.5rem',
-  },
-  dropdown: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    width: '256px',
-    backgroundColor: '#fff',
-    color: '#000',
-    boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)',
-    borderRadius: '12px',
-    padding: '1rem 0',
-    marginTop: '0.5rem',
-    listStyle: 'none',
-  },
-  dropdownItem: {
-    padding: '0.5rem 1.5rem',
-    fontSize: '0.875rem',
-    cursor: 'pointer',
-  },
-  rightSection: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1.25rem',
-    color: '#fff',
-  },
-  iconButton: {
-    padding: '0.5rem',
-    background: 'none',
-    border: 'none',
-    color: '#fff',
-    cursor: 'pointer',
-    borderRadius: '50%',
-  },
-  cartContainer: {
-    position: 'relative',
-    padding: '0.5rem',
-    cursor: 'pointer',
-  },
-  cartBadge: {
-    position: 'absolute',
-    top: '-4px',
-    right: '-4px',
-    backgroundColor: '#ea580c',
-    fontSize: '10px',
-    width: '16px',
-    height: '16px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '50%',
-    fontWeight: 700,
-  },
-  loginButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    backdropFilter: 'blur(12px)',
-    border: '1px solid rgba(255,255,255,0.2)',
-    padding: '0.5rem 1.25rem',
-    borderRadius: '24px',
-    color: '#fff',
-    fontWeight: 700,
-    fontSize: '0.875rem',
-    cursor: 'pointer',
-  },
-  hero: {
-    position: 'relative',
-    minHeight: '100vh',
-    paddingTop: '120px',
-    paddingBottom: '80px',
-    overflow: 'hidden',
-  },
-  heroBg: {
-    position: 'absolute',
-    inset: 0,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  heroImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    opacity: 0.5,
-    borderRadius: '24px',
-  },
-  heroOverlay: {
-    position: 'absolute',
-    inset: 0,
-    // background: 'linear-gradient(to right, rgba(0,0,0,0.7), rgba(0,0,0,0.35), transparent)',
-    borderRadius: '24px',
-  },
-  heroContent: {
-    position: 'relative',
-    zIndex: 20,
-    maxWidth: '1400px',
-    margin: '0 auto',
-    padding: '0 2rem',
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '4rem',
-    alignItems: 'start',
-  },
-  leftContent: {
-    paddingTop: '2rem',
-  },
-  heading: {
-    fontSize: '5rem',
-    fontWeight: 900,
-    color: '#fff',
-    lineHeight: 1.05,
-    marginBottom: '2rem',
-  },
-  headingAccent: {
-    color: '#f97316',
-  },
-  description: {
-    color: '#d1d5db',
-    fontSize: '1.125rem',
-    marginBottom: '2.5rem',
-    maxWidth: '32rem',
-    lineHeight: 1.75,
-  },
-  buttonGroup: {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '4rem',
-    flexWrap: 'wrap',
-  },
-  primaryButton: {
-    backgroundColor: '#000',
-    border: '1px solid rgba(255,255,255,0.2)',
-    color: '#fff',
-    padding: '1rem 2.5rem',
-    borderRadius: '12px',
-    fontWeight: 700,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.75rem',
-    cursor: 'pointer',
-    fontSize: '1rem',
-  },
-  arrowIcon: {
-    marginLeft: '0.5rem',
-  },
-  secondaryButton: {
-    backgroundColor: '#fff',
-    color: '#000',
-    padding: '1rem 2.5rem',
-    borderRadius: '12px',
-    fontWeight: 700,
-    border: 'none',
-    cursor: 'pointer',
-    fontSize: '1rem',
-  },
-  stats: {
-    display: 'flex',
-    gap: '3rem',
-  },
-  statItem: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '1rem',
-  },
-  statIcon: {
-    padding: '0.75rem',
-    backgroundColor: 'rgba(234, 88, 12, 0.2)',
-    borderRadius: '8px',
-    color: '#f97316',
-  },
-  statNumber: {
-    fontSize: '1.5rem',
-    fontWeight: 900,
-    color: '#fff',
-    margin: 0,
-  },
-  statLabel: {
-    color: '#6b7280',
-    fontSize: '0.75rem',
-    textTransform: 'uppercase',
-    letterSpacing: '0.1em',
-    margin: 0,
-  },
- rightCards: {
-  paddingTop: '2rem',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center', 
-},
-  cardsSectionTitle: {
-    color: '#fff',
-    fontSize: '1.5rem',
-    fontWeight: 700,
-    marginBottom: '1.5rem',
-    textAlign: 'center',
-    width: '50%',
-  },
-cardsGrid: {
-  display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
-  gap: '1.5rem',
-},
-productCard: {
-  position: 'relative',
-  width: '230px',
-  height: '280px',
-  borderRadius: '18px',
-  overflow: 'hidden',
-  cursor: 'pointer',
-  transition: 'transform 0.3s ease',
-},
-cardHover: {
-  transform: 'translateY(-6px)',
-},
-
-  productImage: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    // transition: 'transform 0.5s',
-  },
-  cardOverlay: {
-  position: 'absolute',
-  inset: 0,
-  background: 'linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0.2))',
-},
-productName: {
-  position: 'absolute',
-  bottom: '2.5rem', // above time
-  left: '0.75rem',
-  right: '0.75rem',
-  color: '#fff',
-  fontWeight: 700,
-  fontSize: '0.875rem',
-  textAlign: 'center',
-  zIndex: 2,
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
-  textOverflow: 'ellipsis',
-},
-
-  priceTag: {
-  position: 'absolute',
-  top: '0.75rem',
-  right: '0.75rem',
-  backgroundColor: '#10b981',
-  color: '#fff',
-  fontWeight: 700,
-  padding: '0.25rem 0.6rem',
-  borderRadius: '6px',
-  fontSize: '0.75rem',
-  zIndex: 2,
-},
-
-  timeTag: {
-  position: 'absolute',
-  bottom: '0.75rem',
-  left: '0.75rem',
-  right: '0.75rem',
-  backgroundColor: 'rgba(0,0,0,0.75)',
-  color: '#fff',
-  padding: '0.4rem 0.6rem',
-  borderRadius: '8px',
-  display: 'flex',
-  justifyContent: 'space-between',
-  fontSize: '10px',
-  zIndex: 2,
-},
-
-  timeValue: {
-    fontWeight: 700,
-    color: '#f97316',
-  },
-  bigTypography: {
-    position: 'absolute',
-    bottom: '2.5rem',
-    right: '3rem',
-    zIndex: 10,
-    textAlign: 'right',
-  },
-  bigNumber: {
-    fontSize: '4.5rem',
-    fontWeight: 900,
-    color: 'rgba(255,255,255,0.2)',
-    lineHeight: 1,
-    margin: 0,
-  },
-  bigLabel: {
-    fontSize: '1.25rem',
-    letterSpacing: '0.2em',
-    color: 'rgba(255,255,255,0.4)',
-    textTransform: 'uppercase',
-    margin: 0,
-  },
-};
-
-export default DeadstockMarketplace;
+export default Hero;
