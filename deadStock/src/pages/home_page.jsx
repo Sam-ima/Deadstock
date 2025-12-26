@@ -29,6 +29,11 @@
 import React from "react";
 import Navbar from "../component/nav_bar";
 import Hero from "../component/hero_section";
+// import DealsSection from "../component/section/DealsSection";
+// import CategoryBidding from "../component/CategoryBidding";
+import BiddingSection from "../component/section/bidding_section";
+// import FeaturedItems from "../component/featured_items";
+
 import styles from "../component/style";
 
 const DeadstockMarketplace = () => {
@@ -36,6 +41,11 @@ const DeadstockMarketplace = () => {
     <div style={styles.container}>
       <Navbar />
       <Hero />
+      {/* <DealsSection /> */}
+       {/* <CategoryBidding /> */}
+      <BiddingSection />
+      {/* <FeaturedItems /> */}
+
     </div>
   );
 };

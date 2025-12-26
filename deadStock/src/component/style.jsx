@@ -11,7 +11,20 @@ const styles = {
     width: '100%',
     zIndex: 100,
     height: '80px',
+  transition: "all 0.3s ease",
   },
+  navbarTransparent: {
+  backgroundColor: "transparent",
+  boxShadow: "none",
+},
+
+navbarScrolled: {
+  backgroundColor: "#ffffff",
+  boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+},
+navbarScrolledText: {
+  color: "#000",
+},
   navbarBg: {
     position: 'absolute',
     inset: 0,
@@ -92,6 +105,39 @@ const styles = {
     cursor: 'pointer',
     padding: '0.5rem 0',
   },
+
+menuButtonScrolled: {
+  color: "#000", // 👈 when navbar is scrolled
+},
+
+iconButton: {
+  background: "none",
+  border: "none",
+  cursor: "pointer",
+  color: "#fff",
+},
+
+iconButtonScrolled: {
+  color: "#000",
+},
+
+loginButton: {
+  background: "transparent",
+  border: "1px solid #fff",
+  color: "#fff",
+  padding: "6px 12px",
+  borderRadius: "6px",
+  cursor: "pointer",
+  display: "flex",
+  alignItems: "center",
+  gap: "6px",
+},
+
+loginButtonScrolled: {
+  border: "1px solid #000",
+  color: "#000",
+},
+
   chevron: {
     marginLeft: '0.25rem',
   },
@@ -134,14 +180,14 @@ const styles = {
     gap: '1.25rem',
     color: '#fff',
   },
-  iconButton: {
-    padding: '0.5rem',
-    background: 'none',
-    border: 'none',
-    color: '#fff',
-    cursor: 'pointer',
-    borderRadius: '50%',
-  },
+  // iconButton: {
+  //   padding: '0.5rem',
+  //   background: 'none',
+  //   border: 'none',
+  //   color: '#fff',
+  //   cursor: 'pointer',
+  //   borderRadius: '50%',
+  // },
   cartContainer: {
     position: 'relative',
     padding: '0.5rem',
@@ -161,20 +207,20 @@ const styles = {
     borderRadius: '50%',
     fontWeight: 700,
   },
-  loginButton: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '0.5rem',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    backdropFilter: 'blur(12px)',
-    border: '1px solid rgba(255,255,255,0.2)',
-    padding: '0.5rem 1.25rem',
-    borderRadius: '24px',
-    color: '#fff',
-    fontWeight: 700,
-    fontSize: '0.875rem',
-    cursor: 'pointer',
-  },
+  // loginButton: {
+  //   display: 'flex',
+  //   alignItems: 'center',
+  //   gap: '0.5rem',
+  //   backgroundColor: 'rgba(255,255,255,0.1)',
+  //   backdropFilter: 'blur(12px)',
+  //   border: '1px solid rgba(255,255,255,0.2)',
+  //   padding: '0.5rem 1.25rem',
+  //   borderRadius: '24px',
+  //   color: '#fff',
+  //   fontWeight: 700,
+  //   fontSize: '0.875rem',
+  //   cursor: 'pointer',
+  // },
   hero: {
     position: 'relative',
     minHeight: '100vh',
