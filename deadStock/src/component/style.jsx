@@ -227,6 +227,7 @@ loginButtonScrolled: {
     paddingTop: '120px',
     paddingBottom: '80px',
     overflow: 'hidden',
+     backgroundColor: "#333",
   },
   heroBg: {
     position: 'absolute',
@@ -240,7 +241,7 @@ loginButtonScrolled: {
     height: '100%',
     objectFit: 'cover',
     opacity: 0.5,
-    borderRadius: '24px',
+    // borderRadius: '24px',
   },
   heroOverlay: {
     position: 'absolute',

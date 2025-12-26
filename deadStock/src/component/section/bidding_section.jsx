@@ -1,16 +1,16 @@
-import { Grid, Typography, Container } from "@mui/material";
+import { Grid, Typography, Box } from "@mui/material";
 import AuctionProductCard from "../card/auction_product_card";
 import { biddingItems } from "../data/bidding_data";
 
 const BiddingSection = () => {
   return (
-    <Container
+    <Box
       sx={{
         py: 6,
-        backgroundColor: "transparent", // ✅ remove black background
+        backgroundColor: "#333", // dark gray background
         display: "flex",
         flexDirection: "column",
-        alignItems: "center", // ✅ center the content
+        alignItems: "center",
       }}
     >
       <Typography
@@ -18,8 +18,9 @@ const BiddingSection = () => {
         fontWeight={700}
         textAlign="center"
         mb={4}
+        sx={{ color: "#fff" }}
       >
-        Featured Auction Products
+        Bidding Products
       </Typography>
 
       <Grid container spacing={4} justifyContent="center">
@@ -29,7 +30,7 @@ const BiddingSection = () => {
           </Grid>
         ))}
       </Grid>
-    </Container>
+    </Box>
   );
 };
 
