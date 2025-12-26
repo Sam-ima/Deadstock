@@ -21,7 +21,7 @@ const products = [
     name: "Appliances Set",
     price: "$5,600",
     time: "1h 05m",
-    img: "https://images.unsplash.com/photo-1580910051074-7c7a1a1a36c6?auto=format&q=80&w=400",
+    img: "https://plus.unsplash.com/premium_photo-1764260242837-8d96d2e8ba75?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDR8fHxlbnwwfHx8fHw%3D",
   },
 ];
 
