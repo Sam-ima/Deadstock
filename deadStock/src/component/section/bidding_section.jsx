@@ -1,5 +1,5 @@
 import { Grid, Typography, Box } from "@mui/material";
-import AuctionProductCard from "../card/auction_product_card";
+import AuctionProductCard from "../card/auction card/auction_product_card";
 import { biddingItems } from "../data/bidding_data";
 
 const BiddingSection = () => {
@@ -7,7 +7,7 @@ const BiddingSection = () => {
     <Box
       sx={{
         py: 6,
-        backgroundColor: "#333", // dark gray background
+        backgroundColor: "#c3cacaff", 
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
