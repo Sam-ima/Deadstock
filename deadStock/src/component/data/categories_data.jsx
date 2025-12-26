@@ -1,4 +1,4 @@
-export const categories = [
+const categories = [
   "Electronics",
   "Fashion & Apparel",
   "Home & Garden",
@@ -8,3 +8,5 @@ export const categories = [
   "Sports & Outdoors",
   "Automotive",
 ];
+
+export default categories;
