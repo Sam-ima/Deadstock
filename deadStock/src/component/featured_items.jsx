@@ -1,5 +1,5 @@
 import React from 'react';
-import { featuredItems } from '../data';
+// import featuredItems  from '../component/data/categories_data';
 import { FaTag, FaClock, FaGem } from 'react-icons/fa';
 
 const FeaturedItems = () => {
