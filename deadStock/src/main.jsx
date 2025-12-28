@@ -1,8 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { BrowserRouter } from "react-router-dom"; // Import this
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import App from "./App";
 import "./index.css";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 const theme = createTheme({
   palette: {
@@ -14,8 +15,10 @@ const theme = createTheme({
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <BrowserRouter> {/* Wrapper 1: Routing */}
+      <ThemeProvider theme={theme}> {/* Wrapper 2: MUI Styling */}
+        <App />
+      </ThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
