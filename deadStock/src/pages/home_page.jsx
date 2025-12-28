@@ -32,7 +32,8 @@ import Hero from "../component/hero_section";
 // import DealsSection from "../component/section/DealsSection";
 // import CategoryBidding from "../component/CategoryBidding";
 import BiddingSection from "../component/section/bidding_section";
-// import FeaturedItems from "../component/featured_items";
+import BrowseByCategory from "../component/browse_category";
+
 
 import styles from "../component/style";
 
@@ -41,6 +42,7 @@ const DeadstockMarketplace = () => {
     <div style={styles.container}>
       <Navbar />
       <Hero />
+      <BrowseByCategory />
       {/* <DealsSection /> */}
        {/* <CategoryBidding /> */}
       <BiddingSection />
