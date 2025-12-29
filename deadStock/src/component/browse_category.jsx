@@ -7,6 +7,7 @@ import {
   CardContent,
   Avatar,
   IconButton,
+  Button,
   useTheme,
   useMediaQuery,
 } from "@mui/material";
@@ -48,20 +49,11 @@ const BrowseByCategory = () => {
       }}
     >
       {/* Header */}
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-        <Typography
-          variant={isMobile ? "h6" : "h4"}
-          fontWeight="bold"
-        >
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+        <Typography variant={isMobile ? "h6" : "h4"} fontWeight="bold">
           Browse by Category
         </Typography>
 
-        {/* Hide arrows on mobile */}
         {!isMobile && (
           <Box>
             <IconButton onClick={() => scroll("left")}>
@@ -91,14 +83,13 @@ const BrowseByCategory = () => {
             key={index}
             onClick={() => navigate(`/category/${cat.slug}`)}
             sx={{
+              position: "relative",
               minWidth: isMobile ? 150 : isTablet ? 190 : 220,
-              height: isMobile ? 170 : isTablet ? 200 : 220,
+              height: isMobile ? 190 : isTablet ? 220 : 250,
               flexShrink: 0,
               cursor: "pointer",
               borderRadius: 4,
-              backdropFilter: "blur(10px)",
-              background:
-                "linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.1))",
+              overflow: "hidden",
               boxShadow: "0 8px 32px rgba(0,0,0,0.15)",
               transition: "0.3s",
               "&:hover": {
@@ -107,8 +98,20 @@ const BrowseByCategory = () => {
               },
             }}
           >
+            {/* Overlay */}
+            <Box
+              sx={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(to bottom, rgba(0,0,0,0.15), rgba(0,0,0,0.6))",
+                zIndex: 1,
+              }}
+            />
+
             <CardContent
               sx={{
+                position: "relative",
+                zIndex: 2,
                 height: "100%",
                 display: "flex",
                 flexDirection: "column",
@@ -125,14 +128,37 @@ const BrowseByCategory = () => {
                   width: isMobile ? 60 : isTablet ? 75 : 90,
                   height: isMobile ? 60 : isTablet ? 75 : 90,
                   mb: 1.5,
+                  border: "3px solid #fff",
                 }}
               />
+
               <Typography
                 fontWeight={600}
                 fontSize={isMobile ? 13 : 14}
+                color="#fff"
+                mb={1}
               >
                 {cat.title}
               </Typography>
+
+              {/* Shop Now Button */}
+              <Button
+                size="small"
+                sx={{
+                  mt: 0.5,
+                  backgroundColor: "#10b981",
+                  color: "#fff",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  borderRadius: 20,
+                  px: 2,
+                  "&:hover": {
+                    backgroundColor: "#059669",
+                  },
+                }}
+              >
+                Shop Now
+              </Button>
             </CardContent>
           </Card>
         ))}
