@@ -48,11 +48,15 @@ const BrowseByCategory = () => {
       }}
     >
       {/* Header */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant={isMobile ? "h6" : "h4"} fontWeight="bold">
-          Browse by Category
-        </Typography>
-
+    <Box position="relative" mb={3}>
+  {/* Center Title */}
+  <Typography
+    variant={isMobile ? "h6" : "h4"}
+    fontWeight="bold"
+    align="center"
+  >
+    Browse by Category
+  </Typography>
         {!isMobile && (
           <Box>
             <IconButton onClick={() => scroll("left")}>
