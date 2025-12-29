@@ -14,14 +14,15 @@ const BiddingSection = () => {
       }}
     >
       <Typography
-        variant="h4"
-        fontWeight={700}
-        textAlign="center"
-        mb={4}
-        sx={{ color: "#fff" }}
-      >
-        Bidding Products
-      </Typography>
+  variant="h4"
+  fontWeight={700}       
+  textAlign="center"    
+  mb={4}                
+  // sx={{ color: "#fff" }}
+>
+ Bidding Products
+</Typography>
+
 
       <Grid container spacing={4} justifyContent="center">
         {biddingItems.map((product) => (
