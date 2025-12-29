@@ -1,4 +1,6 @@
-const browsedata = [
+// src/components/BrowseByCategory/browseData.js
+
+const browseData = [
   {
     title: "Electronics",
     slug: "electronics",
@@ -41,4 +43,4 @@ const browsedata = [
   },
 ];
 
-export default browsedata;
+export default browseData;
