@@ -42,7 +42,7 @@ const BrowseByCategory = () => {
   return (
     <Box
       sx={{
-        px: { xs: 2, sm: 3, md: 6 },
+        px: { xs: 0, sm: 3, md: 0 },
         py: { xs: 4, md: 6 },
         backgroundColor: "#fff",
       }}

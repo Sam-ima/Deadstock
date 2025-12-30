@@ -1,152 +1,241 @@
 import React, { useState, useEffect } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Box,
+  Button,
+  IconButton,
+  Badge,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemText,
+  Collapse,
+  useMediaQuery,
+} from "@mui/material";
+import {
+  Menu as MenuIcon,
+  Search,
+  ShoppingCart,
+  User,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { useTheme } from "@mui/material/styles";
+
 import logo from "../assets/deadstock_logo.png";
-import { Search, ShoppingCart, User, ChevronDown } from "lucide-react";
 import categories from "../component/data/categories_data";
-import businessOptions from "../component/data/business_data"; // new file for B2B & B2C options
-import styles from "../component/style";
+import businessOptions from "../component/data/business_data";
 
 const Navbar = () => {
-  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
-  const [isBusinessOpen, setIsBusinessOpen] = useState(false); // new
   const [scrolled, setScrolled] = useState(false);
+  const [anchorCat, setAnchorCat] = useState(null);
+  const [anchorBiz, setAnchorBiz] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerSubmenuOpen, setDrawerSubmenuOpen] = useState({});
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 80);
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 80);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const navItems = [
+    { label: "Categories", submenu: categories },
+    { label: "Auctions" },
+    { label: "Featured Deals" },
+    { label: "For Business", submenu: businessOptions.map((opt) => opt.label) },
+  ];
+
+  const toggleDrawerSubmenu = (label) => {
+    setDrawerSubmenuOpen((prev) => ({
+      ...prev,
+      [label]: !prev[label],
+    }));
+  };
+
   return (
-    <nav
-      style={{
-        ...styles.navbar,
-        ...(scrolled ? styles.navbarScrolled : styles.navbarTransparent),
-      }}
-    >
-      <div style={styles.navContent}>
-        {/* LEFT SECTION */}
-        <div style={styles.leftSection}>
-          <div style={styles.logo}>
-            <img src={logo} alt="Deadstock Logo" style={styles.logoImage} />
-          </div>
+    <>
+      <AppBar
+        elevation={scrolled ? 3 : 0}
+        sx={{
+          background: scrolled ? "#ffffff" : "transparent",
+          color: scrolled ? "#1a1a1a" : "#fff",
+          transition: "all 0.3s ease",
+          px: 2,
+        }}
+      >
+        <Toolbar sx={{ maxWidth: "lg", mx: "auto", width: "100%" }}>
+          {/* LEFT */}
+          <Box display="flex" alignItems="center" flexGrow={1} gap={3}>
+            <img src={logo} alt="Deadstock" height={36} />
 
-          <div style={styles.menu}>
-            {/* Categories Dropdown */}
-            <div
-              style={styles.menuItem}
-              onMouseEnter={() => setIsCategoryOpen(true)}
-              onMouseLeave={() => setIsCategoryOpen(false)}
-            >
-              <button
-                style={{
-                  ...styles.menuButton,
-                  ...(scrolled ? styles.menuButtonScrolled : {}),
+            {!isMobile &&
+              navItems.map((item) => (
+                <Box
+                  key={item.label}
+                  sx={{ position: "relative" }}
+                  onMouseEnter={() => item.submenu && setAnchorCat(item.label)}
+                  onMouseLeave={() => setAnchorCat(null)}
+                >
+                  <Button
+                    endIcon={item.submenu ? <ChevronDown size={16} /> : null}
+                    sx={{ color: "inherit", textTransform: "none" }}
+                  >
+                    {item.label}
+                  </Button>
+
+                  {/* Desktop Submenu */}
+                  {item.submenu && anchorCat === item.label && (
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        background: "#fff",
+                        color: "#000",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                        borderRadius: 1,
+                        minWidth: 180,
+                        zIndex: 99,
+                        py: 1,
+                      }}
+                    >
+                      {item.submenu.map((sub) => (
+                        <Button
+                          key={sub}
+                          fullWidth
+                          sx={{
+                            justifyContent: "flex-start",
+                            px: 2,
+                            py: 1,
+                            color: "#000",
+                            textTransform: "none",
+                            "&:hover": { background: "#f0f0f0" },
+                          }}
+                        >
+                          {sub}
+                        </Button>
+                      ))}
+                    </Box>
+                  )}
+                </Box>
+              ))}
+          </Box>
+
+          {/* RIGHT */}
+          <Box display="flex" alignItems="center" gap={1}>
+            <IconButton color="inherit">
+              <Search size={20} />
+            </IconButton>
+            <IconButton color="inherit">
+              <Badge badgeContent={3} color="warning">
+                <ShoppingCart size={20} />
+              </Badge>
+            </IconButton>
+
+            {!isMobile && (
+              <Button
+                startIcon={<User size={18} />}
+                sx={{
+                  ml: 1,
+                  px: 3,
+                  py: 1,
+                  borderRadius: "24px",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  background: "linear-gradient(135deg, #0b3d2e 0%, #145a43 100%)",
+                  color: "#fff",
+                  "&:hover": {
+                    background: "linear-gradient(135deg, #145a43 0%, #0b3d2e 100%)",
+                  },
                 }}
               >
-                Categories <ChevronDown size={16} />
-              </button>
-              {isCategoryOpen && (
-                <ul style={styles.dropdown}>
-                  {categories.map((cat) => (
-                    <li key={cat} style={styles.dropdownItem}>
-                      {cat}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
+                Login / Register
+              </Button>
+            )}
 
-            {/* Auctions & Featured Deals */}
-            <button
-              style={{
-                ...styles.menuButton,
-                ...(scrolled ? styles.menuButtonScrolled : {}),
-              }}
-            >
-              Auctions
-            </button>
-            <button
-              style={{
-                ...styles.menuButton,
-                ...(scrolled ? styles.menuButtonScrolled : {}),
-              }}
-            >
-              Featured Deals
-            </button>
+            {isMobile && (
+              <IconButton color="inherit" onClick={() => setDrawerOpen(true)}>
+                <MenuIcon />
+              </IconButton>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
 
-            {/* Business Dropdown */}
-            <div
-              style={styles.menuItem}
-              onMouseEnter={() => setIsBusinessOpen(true)}
-              onMouseLeave={() => setIsBusinessOpen(false)}
-            >
-              <button
-                style={{
-                  ...styles.menuButton,
-                  ...(scrolled ? styles.menuButtonScrolled : {}),
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "4px",
+      {/* MOBILE DRAWER */}
+      <Drawer anchor="left" open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <Box
+          width={280}
+          role="presentation"
+          sx={{
+            p: 2,
+            background: "#f9f9f9",
+            height: "100%",
+          }}
+        >
+          <List>
+            {navItems.map((item) => (
+              <Box key={item.label}>
+                <ListItemButton
+                  onClick={() => item.submenu && toggleDrawerSubmenu(item.label)}
+                  sx={{ borderRadius: 1 }}
+                >
+                  <ListItemText primary={item.label} />
+                  {item.submenu &&
+                    (drawerSubmenuOpen[item.label] ? <ChevronUp /> : <ChevronDown />)}
+                </ListItemButton>
+
+                {item.submenu && (
+                  <Collapse in={drawerSubmenuOpen[item.label]} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {item.submenu.map((sub) => (
+                        <ListItemButton
+                          key={sub}
+                          sx={{
+                            pl: 4,
+                            borderRadius: 1,
+                            my: 0.5,
+                            "&:hover": { background: "#e0f7f1" },
+                          }}
+                        >
+                          <ListItemText primary={sub} />
+                        </ListItemButton>
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </Box>
+            ))}
+
+            <Box mt={3}>
+              <Button
+                startIcon={<User size={18} />}
+                fullWidth
+                sx={{
+                  px: 3,
+                  py: 1,
+                  borderRadius: "24px",
+                  textTransform: "none",
+                  fontWeight: 600,
+                  background: "linear-gradient(135deg, #0b3d2e 0%, #145a43 100%)",
+                  color: "#fff",
+                  "&:hover": {
+                    background: "linear-gradient(135deg, #145a43 0%, #0b3d2e 100%)",
+                  },
                 }}
               >
-                For Business 
-                {/* <span style={styles.badge}>B2B & B2C</span>{" "} */}
-                <ChevronDown size={16} />
-              </button>
-              {isBusinessOpen && (
-                <ul style={styles.dropdown}>
-            {businessOptions.map((option) => (
-  <li
-    key={option.label}
-    style={{
-      ...styles.dropdownItem,
-      color: styles.badge.color, 
-    }}
-  >
-    {option.label}
-  </li>
-))}
-                </ul>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* RIGHT SECTION */}
-        <div style={styles.rightSection}>
-          <button
-            style={{
-              ...styles.iconButton,
-              ...(scrolled ? styles.iconButtonScrolled : {}),
-            }}
-          >
-            <Search size={20} />
-          </button>
-
-          <div
-            style={{
-              ...styles.cartContainer,
-              color: scrolled ? "#000" : "#fff",
-            }}
-          >
-            <ShoppingCart size={20} />
-            <span style={styles.cartBadge}>3</span>
-          </div>
-
-          <button
-            style={{
-              ...styles.loginButton,
-              ...(scrolled ? styles.loginButtonScrolled : {}),
-            }}
-          >
-            <User size={18} />
-            Login / Register
-          </button>
-        </div>
-      </div>
-    </nav>
+                Login / Register
+              </Button>
+            </Box>
+          </List>
+        </Box>
+      </Drawer>
+    </>
   );
 };
 
