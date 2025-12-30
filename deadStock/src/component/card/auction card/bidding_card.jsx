@@ -1,6 +1,6 @@
 import { Card, Typography, Box } from "@mui/material";
 import { useState } from "react";
-import CardHoverOverlay from "./auction_card_overlay";
+import CardHoverOverlay from "./bidding_card_overlay";
 import TimeBadge from "./time_badge";
 
 const AuctionProductCard = ({ product }) => {
@@ -26,7 +26,7 @@ const AuctionProductCard = ({ product }) => {
       sx={{
         position: "relative",
         width: "230px",
-        height: "320px",
+        height: "250px",
         borderRadius: "16px",
         overflow: "hidden",
         cursor: "pointer",
