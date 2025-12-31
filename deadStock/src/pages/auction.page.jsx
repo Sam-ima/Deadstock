@@ -1,21 +1,20 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
-import { EndingSoon, UpcomingAuctions, LiveActivity, SellerSpotlight, TrustSecurity, StatsBar } from "../component/auction";
+import { Box } from "@mui/material";
+import EndingSoon from "../component/ Auction/ending_soon_section";
+import LiveAuctions from "../component/ Auction/live_auction_section";
+import UpcomingAuctions from "../component/ Auction/upcoming_section";
+// import { LiveActivity, SellerSpotlight, TrustSecurity, StatsBar } from "../component/auction";
 
 const AuctionsPage = () => {
   return (
-    <Box sx={{ mt: 15, mb: 10 }}>
-      <Typography variant="h4" fontWeight={700} sx={{ mb: 3, px: 3 }}>
-        Live Auctions
-      </Typography>
-
-      {/* Auction-specific sections */}
+    <Box sx={{ mt: 15 }}>
+      <LiveAuctions />
       <EndingSoon />
       <UpcomingAuctions />
-      <LiveActivity />
-      <SellerSpotlight />
-      <TrustSecurity />
-      <StatsBar />
+      {/* <LiveActivity /> */}
+      {/* <SellerSpotlight /> */}
+      {/* <TrustSecurity /> */}
+      {/* <StatsBar /> */}
     </Box>
   );
 };
