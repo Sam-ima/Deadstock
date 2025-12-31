@@ -1,82 +1,115 @@
-import React from 'react';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaShieldAlt, FaLock, FaShippingFast } from 'react-icons/fa';
+import React from "react";
+import { Box, Typography, Grid, Link, IconButton, Stack } from "@mui/material";
+import FacebookIcon from "@mui/icons-material/Facebook";
+import InstagramIcon from "@mui/icons-material/Instagram";
+import TwitterIcon from "@mui/icons-material/Twitter";
+import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import DeadstockLogo from "../assets/deadstock_logo.png";
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="container">
-        <div className="footer-content">
-          <div className="footer-section">
-            <h4>DEADSTOCK</h4>
-            <p>
-              The premier marketplace for authentic deadstock items. 
-              Connecting collectors, resellers, and enthusiasts worldwide.
-            </p>
-            <div className="social-links">
-              <a href="#facebook"><FaFacebook /></a>
-              <a href="#twitter"><FaTwitter /></a>
-              <a href="#instagram"><FaInstagram /></a>
-              <a href="#linkedin"><FaLinkedin /></a>
-            </div>
-          </div>
+    <Box
+      component="footer"
+      sx={{
+        backgroundColor: "#194638ff", // dark green
+        color: "#fff",
+        mt: 8,
+        py: 6,
+        px: { xs: 3, md: 8 },
+      }}
+    >
+      <Grid container spacing={4}>
+        {/* Company Info */}
+              <Grid item xs={12} md={4}>
+          <Box display="flex" alignItems="center" mb={2}>
+            <Box
+              component="img"
+              src={DeadstockLogo}
+              alt="Deadstock Logo"
+              sx={{ height: 40, mr: 2 }}
+            />
+            <Typography variant="h6" fontWeight={700}>
+              Deadstock
+            </Typography>
+          </Box>
+          <Typography sx={{ fontSize: "0.9rem" }}>
+            Bringing you rare collectibles and exclusive auctions from around the world.
+          </Typography>
+        </Grid>
 
-          <div className="footer-section">
-            <h4>Quick Links</h4>
-            <ul>
-              <li><a href="#home">Home</a></li>
-              <li><a href="#categories">Categories</a></li>
-              <li><a href="#featured">Featured Items</a></li>
-              <li><a href="#bidding">Bidding</a></li>
-              <li><a href="#sell">Sell on Deadstock</a></li>
-              <li><a href="#authenticity">Authenticity Guarantee</a></li>
-            </ul>
-          </div>
+        {/* Quick Links */}
+        <Grid item xs={12} md={4}>
+          <Typography variant="h6" fontWeight={700} mb={2}>
+            Quick Links
+          </Typography>
+          <Stack spacing={1}>
+            <Link href="/" underline="hover" color="inherit">
+              Home
+            </Link>
+            <Link href="/auctions" underline="hover" color="inherit">
+              Live Auctions
+            </Link>
+            <Link href="/upcoming" underline="hover" color="inherit">
+              Upcoming Auctions
+            </Link>
+            <Link href="/contact" underline="hover" color="inherit">
+              Contact Us
+            </Link>
+          </Stack>
+        </Grid>
 
-          <div className="footer-section">
-            <h4>Account Types</h4>
-            <ul>
-              <li><a href="#b2c">B2C Individual Account</a></li>
-              <li><a href="#b2b">B2B Business Account</a></li>
-              <li><a href="#reseller">Reseller Program</a></li>
-              <li><a href="#wholesale">Wholesale Portal</a></li>
-              <li><a href="#api">API Access</a></li>
-            </ul>
-          </div>
+        {/* Contact & Social */}
+        <Grid item xs={12} md={4}>
+          <Typography variant="h6" fontWeight={700} mb={2}>
+            Contact Us
+          </Typography>
+          <Typography sx={{ fontSize: "0.9rem", mb: 1 }}>
+            Email: support@auctionhouse.com
+          </Typography>
+          <Typography sx={{ fontSize: "0.9rem", mb: 2 }}>
+            Phone: +1 234 567 890
+          </Typography>
 
-          <div className="footer-section">
-            <h4>Trust & Safety</h4>
-            <div className="trust-features">
-              <div className="trust-item">
-                <FaShieldAlt />
-                <span>100% Authenticated</span>
-              </div>
-              <div className="trust-item">
-                <FaLock />
-                <span>Secure Payments</span>
-              </div>
-              <div className="trust-item">
-                <FaShippingFast />
-                <span>Insured Shipping</span>
-              </div>
-            </div>
-            <p className="contact-info">
-              Email: support@deadstock.com<br />
-              Phone: +1 (555) 123-4567<br />
-              Business Hours: 24/7 Support
-            </p>
-          </div>
-        </div>
+          <Stack direction="row" spacing={1}>
+            <IconButton
+              sx={{ color: "#d8a855ff" }}
+              href="https://facebook.com"
+              target="_blank"
+            >
+              <FacebookIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: "#d8a855ff" }}
+              href="https://instagram.com"
+              target="_blank"
+            >
+              <InstagramIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: "#d8a855ff" }}
+              href="https://twitter.com"
+              target="_blank"
+            >
+              <TwitterIcon />
+            </IconButton>
+            <IconButton
+              sx={{ color: "#d8a855ff" }}
+              href="https://linkedin.com"
+              target="_blank"
+            >
+              <LinkedInIcon />
+            </IconButton>
+          </Stack>
+        </Grid>
+      </Grid>
 
-        <div className="footer-bottom">
-          <p>&copy; {new Date().getFullYear()} Deadstock Marketplace. All rights reserved.</p>
-          <div className="legal-links">
-            <a href="#privacy">Privacy Policy</a> | 
-            <a href="#terms"> Terms of Service</a> | 
-            <a href="#cookies"> Cookie Policy</a>
-          </div>
-        </div>
-      </div>
-    </footer>
+      {/* Divider */}
+      <Box sx={{ borderTop: "1px solid #d8a85533", mt: 4, pt: 3, textAlign: "center" }}>
+        <Typography sx={{ fontSize: "0.85rem", color: "#d8a855ff" }}>
+          © {new Date().getFullYear()} AuctionHouse. All Rights Reserved.
+        </Typography>
+      </Box>
+    </Box>
   );
 };
 
