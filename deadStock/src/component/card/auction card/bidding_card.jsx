@@ -75,7 +75,7 @@ const AuctionProductCard = ({ product }) => {
           <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>
             {product.name}
           </Typography>
-          <Typography sx={{ color: "#4caf50", fontWeight: "bold", fontSize: "0.85rem", mt: 0.5 }}>
+          <Typography sx={{ color: "#194638ff", fontWeight: "bold", fontSize: "0.85rem", mt: 0.5 }}>
             ${product.currentBid}
           </Typography>
         </Box>

@@ -1,15 +1,16 @@
 import { Routes, Route } from "react-router-dom";
-import HomePage from "./pages/home_page";
-import CategoryPage from "./pages/category.page";
+import MainLayout from "./component/main_layout";
+import DeadstockMarketplace from "./pages/home_page";
+import AuctionsPage from "./pages/auction.page";
 
 function App() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/category/:slug" element={<CategoryPage />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<DeadstockMarketplace />} />
+        <Route path="/auctions" element={<AuctionsPage />} />
+      </Route>
+    </Routes>
   );
 }
 
