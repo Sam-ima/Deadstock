@@ -22,7 +22,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { useTheme } from "@mui/material/styles";
-
+import { useNavigate } from "react-router-dom";
 import logo from "../assets/deadstock_logo.png";
 import categories from "../component/data/categories_data";
 import businessOptions from "../component/data/business_data";
@@ -36,6 +36,7 @@ const Navbar = () => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 80);
@@ -84,6 +85,11 @@ const Navbar = () => {
                   <Button
                     endIcon={item.submenu ? <ChevronDown size={16} /> : null}
                     sx={{ color: "inherit", textTransform: "none" }}
+                    onClick={() => {
+                      if (item.label === "Auctions") {
+                        navigate("/auctions");
+                      }
+                    }}
                   >
                     {item.label}
                   </Button>
@@ -182,8 +188,14 @@ const Navbar = () => {
             {navItems.map((item) => (
               <Box key={item.label}>
                 <ListItemButton
-                  onClick={() => item.submenu && toggleDrawerSubmenu(item.label)}
-                  sx={{ borderRadius: 1 }}
+                   onClick={() => {
+                    if (item.label === "Auctions") {
+                      navigate("/auctions");
+                      setDrawerOpen(false);
+                    } else if (item.submenu) {
+                      toggleDrawerSubmenu(item.label);
+                    }
+                  }}
                 >
                   <ListItemText primary={item.label} />
                   {item.submenu &&

@@ -65,7 +65,7 @@ const CategoryCard = ({ category, isMobile, onAddToCart }) => {
             size="small"
             onClick={(e) => e.stopPropagation()}
             sx={{
-              backgroundColor: "#10b981",
+              backgroundColor: "#194638ff",
               color: "#fff",
               textTransform: "none",
               fontWeight: 600,
