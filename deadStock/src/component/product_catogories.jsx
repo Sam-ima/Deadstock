@@ -3,18 +3,18 @@ import { useParams } from 'react-router-dom';
 import { Grid, Card, CardContent, CardMedia, Typography, Button, TextField, Box } from '@mui/material';
 
 // Mock bidding data per category
-const mockItems = {
-  sneakers: [
-    { id: 1, name: 'Air Jordan 1', currentBid: 200, image: 'https://via.placeholder.com/300?text=Air+Jordan+1' },
-    { id: 2, name: 'Nike Dunk', currentBid: 120, image: 'https://via.placeholder.com/300?text=Nike+Dunk' },
-  ],
-  clothing: [
-    { id: 3, name: 'Supreme Hoodie', currentBid: 150, image: 'https://via.placeholder.com/300?text=Supreme+Hoodie' },
-  ],
-  accessories: [
-    { id: 4, name: 'Rolex Watch', currentBid: 5000, image: 'https://via.placeholder.com/300?text=Rolex+Watch' },
-  ],
-};
+// const mockItems = {
+//   sneakers: [
+//     { id: 1, name: 'Air Jordan 1', currentBid: 200, image: 'https://via.placeholder.com/300?text=Air+Jordan+1' },
+//     { id: 2, name: 'Nike Dunk', currentBid: 120, image: 'https://via.placeholder.com/300?text=Nike+Dunk' },
+//   ],
+//   clothing: [
+//     { id: 3, name: 'Supreme Hoodie', currentBid: 150, image: 'https://via.placeholder.com/300?text=Supreme+Hoodie' },
+//   ],
+//   accessories: [
+//     { id: 4, name: 'Rolex Watch', currentBid: 5000, image: 'https://via.placeholder.com/300?text=Rolex+Watch' },
+//   ],
+// };
 
 function CategoryBidding() {
   const { category } = useParams();
