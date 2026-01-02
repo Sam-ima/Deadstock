@@ -14,9 +14,10 @@ const DeadstockMarketplace = () => {
     <Box sx={styles.container}>
       {/* <Navbar /> */}
       <Hero />
-      <BrowseByCategory />
+      <BrowseByCategory />  
       <BiddingSection />
        <HowItWorks />
+       
     </Box>
   );
 };
