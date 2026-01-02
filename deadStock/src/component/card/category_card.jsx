@@ -15,7 +15,8 @@ const CategoryCard = ({ category, isMobile, onAddToCart }) => {
   const navigate = useNavigate();
 
   const handleNavigate = () => {
-    navigate(`/category/${category.slug}`);
+    // navigate(`/category/${category.slug}`);
+     navigate(`/product/${category.slug}/${encodeURIComponent(category.title)}`);
   };
 
   const handleAddToCart = (e) => {
