@@ -2,7 +2,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import products from "../component/data/products_data";
 import { Box, Container, Typography, Card, CardMedia, Stack, Button, Grid } from "@mui/material";
-import CategoryCard from "../component/card/category_card";
+import CategoryCard from "../component/category/categoryCard";
 
 const deriveCategory = (name) => {
   const n = name.toLowerCase();

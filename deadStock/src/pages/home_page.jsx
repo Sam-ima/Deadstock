@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 // import Navbar from "../component/nav_bar";
 import Hero from "../component/hero";
 import BiddingSection from "../component/section/bidding_section";
-import BrowseByCategory from "../component/browse_category";
+import BrowseByCategory from "../component/category/browseByCategory/browseByCategory";
 import HowItWorks from "../component/howitworks";
 import styles from "../component/style";
 

@@ -4,6 +4,7 @@ import DeadstockMarketplace from "./pages/home_page";
 import AuctionsPage from "./pages/auction.page";
 import Profile from "./pages/profilePage";
 import CategoryPage from "./pages/category.page";
+import CategoryPage from "./pages/categoryPage/categoriesPage";
 import ProductDetailPage from "./pages/productdetail.page";
 
 
