@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import MainLayout from "./layout/main_layout";
 import DeadstockMarketplace from "./pages/home_page";
 import AuctionsPage from "./pages/auction.page";
-import CategoryPage from "./pages/category.page";
+import CategoryPage from "./pages/categoryPage/categoriesPage";
 import ProductDetailPage from "./pages/productdetail.page";
 
 
