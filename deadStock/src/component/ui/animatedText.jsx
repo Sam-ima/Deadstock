@@ -15,9 +15,9 @@ const AnimatedLetters = ({ text, delay = 0, duration = 0.6 }) => {
             animation: `${letterReveal} ${duration}s ease-out forwards`,
             animationDelay: `${delay + index * 0.04}s`,
             fontSize: {
-              xs: "2rem",
-              sm: "2.4rem",
-              md: "3rem",
+              xs: "1.5rem",
+              sm: "2rem",
+              md: "2.5rem",
               lg: "3.5rem",
             },
           }}
