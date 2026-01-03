@@ -6,13 +6,27 @@ const Hero = () => {
   return (
     <Box
       sx={{
-        minHeight: { xs: "70vh", md: "100vh" },
+        position: "relative",
+        minHeight: { xs: "70vh", md: "80vh" },
         display: "flex",
         alignItems: "center",
-        background: "linear-gradient(135deg, #194638ff 0%, #d8a855ff 100%)",
-        color: "#fff",
+        bgcolor: "rgba(255, 61, 0, 0.15)",
+        color: "#FFD2C2",
         overflow: "hidden",
         py: { xs: 6, sm: 8, md: 0 },
+
+        /* 🌊 Curved Bottom */
+        "&::after": {
+          content: '""',
+          position: "absolute",
+          bottom: -1,
+          left: 0,
+          width: "100%",
+          height: { xs: "80px", md: "120px" },
+          bgcolor: "#fff", // next section background
+          borderTopLeftRadius: "50% 100%",
+          borderTopRightRadius: "50% 100%",
+        },
       }}
     >
       <Container maxWidth="lg">
