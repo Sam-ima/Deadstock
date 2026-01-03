@@ -6,13 +6,28 @@ import HeroActions from "./heroActions";
 const HeroContent = () => {
   return (
     <Box textAlign={{ xs: "center", md: "left" }}>
+      {/* 🔔 Announcement */}
+      <Typography
+        sx={{
+          mb: 1.5,
+          fontWeight: 600,
+          fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.95rem" },
+          letterSpacing: "0.08em",
+          color: "#FFD27D",
+          textTransform: "uppercase",
+          animation: `${textFade} 0.8s ease-out both`,
+        }}
+      >
+        🔴 Live Now — Bidding Has Started
+      </Typography>
+
       <Typography
         variant="h2"
         sx={{
           fontWeight: 700,
           fontSize: {
-            xs: "0.8rem",
-            sm: "1rem",
+            xs: "1.4rem",
+            sm: "2rem",
             md: "3.2rem",
             lg: "3.6rem",
           },
@@ -20,9 +35,9 @@ const HeroContent = () => {
           mb: 2,
         }}
       >
-        <AnimatedLetters text="Turn Inventory" />
+        <AnimatedLetters text="Bid Live on" />
         <br />
-        <AnimatedLetters text="Into Opportunity" delay={0.6} />
+        <AnimatedLetters text="Excess Inventory" delay={0.6} />
       </Typography>
 
       <Typography
@@ -35,8 +50,9 @@ const HeroContent = () => {
           animation: `${textFade} 1s ease-out both`,
         }}
       >
-        Buy and sell excess stock through real-time auctions. Simple, fast, and
-        built for modern businesses.
+        Bidding is live! Explore active auction listings and start bidding on
+        high-value products in real time. Buy and sell excess stock faster with
+        competitive offers.
       </Typography>
 
       <HeroActions />

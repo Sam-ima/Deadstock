@@ -13,7 +13,7 @@ const navItems = [
   { label: "For Business", submenu: businessOptions.map((b) => b.label) },
 ];
 
-const NavItems = () => {
+const NavItems = ({ scrolled }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
 
@@ -34,15 +34,17 @@ const NavItems = () => {
             sx={{
               textTransform: "none",
               fontSize: "0.95rem",
-              fontWeight: 500,
-              color: "orange",
+              fontWeight: 600,
+              color: scrolled ? "#000" : "#fff",
               px: 1,
               py: 1.5,
               minHeight: 48,
               borderRadius: 0,
               whiteSpace: "nowrap",
+              transition: "color 0.3s ease",
               "&:hover": {
                 backgroundColor: "transparent",
+                color: scrolled ? "#000" : "#FFD27D",
               },
             }}
           >
@@ -50,7 +52,7 @@ const NavItems = () => {
           </Button>
 
           {item.submenu && activeMenu === item.label && (
-            <DesktopMenu items={item.submenu} />
+            <DesktopMenu items={item.submenu} scrolled={scrolled} />
           )}
         </Box>
       ))}
