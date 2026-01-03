@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import MainLayout from "./component/main_layout";
+import MainLayout from "./layout/main_layout";
 import DeadstockMarketplace from "./pages/home_page";
 import AuctionsPage from "./pages/auction.page";
 import CategoryPage from "./pages/category.page";
