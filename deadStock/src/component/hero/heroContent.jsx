@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import { textFade } from "../ui/animations";
 import AnimatedLetters from "../ui/animatedText";
-import HeroActions from "./HeroActions";
+import HeroActions from "./heroActions";
 
 const HeroContent = () => {
   return (
