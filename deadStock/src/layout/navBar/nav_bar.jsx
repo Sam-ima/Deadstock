@@ -59,7 +59,7 @@ const Navbar = () => {
                 component="img"
                 src={logo}
                 alt="Deadstock"
-                sx={{ height: 36 }}
+                sx={{ height: 50,width:50,borderRadius:"50%" }}
               />
             </Box>
 
@@ -72,7 +72,7 @@ const Navbar = () => {
                   gap: 1,
                 }}
               >
-                <NavItems />
+                <NavItems scrolled={scrolled} />
               </Box>
             )}
 
