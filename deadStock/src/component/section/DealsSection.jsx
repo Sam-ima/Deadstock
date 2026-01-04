@@ -47,6 +47,7 @@ const DealsSection = () => {
                   component="img"
                   image={category.img}
                   alt={category.name}
+                  loading="lazy"
                   sx={{ width: "100%", height: "100%", objectFit: "cover" }}
                 />
               </Box>
