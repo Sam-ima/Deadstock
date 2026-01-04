@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
 
-import browseData from '../../component/data/browse_data';
+import browseData from '../data/browse_data';
 import products from './product';
 import CategoriesSidebar from './categoriesSidebar';
 import CategoryContent from './categoryContent';
@@ -14,7 +14,7 @@ const CategoriesPage = () => {
   );
 
   return (
-    <Box display="flex" minHeight="100vh">
+    <Box display="flex" minHeight="100vh" sx={{backgroundColor: 'red'}}>
       <CategoriesSidebar
         categories={browseData}
         active={activeCategory.slug}
