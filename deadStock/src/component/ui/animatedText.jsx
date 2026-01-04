@@ -9,6 +9,7 @@ const AnimatedLetters = ({ text, delay = 0, duration = 0.6 }) => {
           key={index}
           component="span"
           sx={{
+             color:"#180606ff",
             display: "inline-block",
             whiteSpace: "pre",
             opacity: 0,

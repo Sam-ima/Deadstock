@@ -10,7 +10,7 @@ const HeroImage = () => {
         justifyContent: "center",
         alignItems: "center",
         animation: `${floatAnimation} 5s ease-in-out infinite`,
-        mt: { xs: 4, md: 0 },
+        mt: { xs: 1, md: 0 },
       }}
     >
       <Box
@@ -20,7 +20,7 @@ const HeroImage = () => {
         sx={{
           width: "100%",
           maxWidth: {
-            xs: "320px",
+            xs: "300px",
             sm: "350px",
             md: "350px",
             lg: "600px",

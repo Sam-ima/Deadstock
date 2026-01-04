@@ -9,7 +9,7 @@ const LiveAuctionSection = () => {
       
         py: 6,
         px: { xs: 2, md: 6 },
-        background: "linear-gradient(135deg, #194638ff 0%, #d8a855ff 100%)",
+        background: "#fff",
       }}
     >
       {/* Section Heading */}
