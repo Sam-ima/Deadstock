@@ -1,36 +1,31 @@
-// src/pages/CategoriesPage.jsx
-import { Container } from '@mui/material';
+import { Box } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import browseData from '../../component/data/browse_data';
-import CategoriesHeader from './categoriesHeader';
-import CategoriesSearchBar from './categoriesSearchBar';
-import CategoriesGrid from './categoriesGrid';
+import products from './product';
+import CategoriesSidebar from './categoriesSidebar';
+import CategoryContent from './categoryContent';
 
 const CategoriesPage = () => {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState(browseData[0]);
 
-  const filteredCategories = browseData.filter(category =>
-    category.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredProducts = products.filter(
+    p => p.category === activeCategory.slug
   );
 
   return (
-    <Container maxWidth="lg" sx={{ py: 6 }}>
-      <CategoriesHeader />
-
-      <CategoriesSearchBar
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        clearFilters={() => setSearchQuery('')}
+    <Box display="flex" minHeight="100vh">
+      <CategoriesSidebar
+        categories={browseData}
+        active={activeCategory.slug}
+        onSelect={setActiveCategory}
       />
 
-      <CategoriesGrid
-        categories={filteredCategories}
-        onCategoryClick={(slug) => navigate(`/category/${slug}`)}
+      <CategoryContent
+        category={activeCategory}
+        products={filteredProducts}
       />
-    </Container>
+    </Box>
   );
 };
 

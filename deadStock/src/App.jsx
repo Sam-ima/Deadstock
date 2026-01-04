@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import MainLayout from "./layout/main_layout";
-import DeadstockMarketplace from "./pages/home_page";
+import RootLayout from "./root_layout";
+import LandingPage from "./pages/landingPage";
 import AuctionsPage from "./pages/auction.page";
 import Profile from "./pages/profilePage";
 // import CategoryPage from "./pages/category.page";
@@ -11,8 +11,8 @@ import ProductDetailPage from "./pages/productdetail.page";
 function App() {
   return (
     <Routes>
-      <Route element={<MainLayout />}>
-        <Route path="/" element={<DeadstockMarketplace />} />
+      <Route path="/" element={<RootLayout />}>
+        <Route index element={<LandingPage />} />
         <Route path="/auctions" element={<AuctionsPage />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/category" element={<CategoryPage />} />

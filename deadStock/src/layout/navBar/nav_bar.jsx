@@ -27,7 +27,7 @@ const Navbar = () => {
       <AppBar
         elevation={scrolled ? 2 : 0}
         sx={{
-          backgroundColor: scrolled ? "#ffffff" : "transparent",
+          backgroundColor:"#ffffff",
           color: scrolled ? "#1a1a1a" : "#ffffff",
           transition: "all 0.3s ease",
         }}

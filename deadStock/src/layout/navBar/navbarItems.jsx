@@ -35,7 +35,7 @@ const NavItems = ({ scrolled }) => {
               textTransform: "none",
               fontSize: "0.95rem",
               fontWeight: 600,
-              color: scrolled ? "#000" : "#fff",
+              color: "#000",
               px: 1,
               py: 1.5,
               minHeight: 48,
