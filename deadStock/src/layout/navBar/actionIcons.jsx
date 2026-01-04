@@ -14,7 +14,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
         </Badge>
       </IconButton>
 
-      {!isMobile && (
+      {!isMobile && ( 
         <Button
           startIcon={<User size={18} />}
           sx={{
@@ -24,11 +24,11 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
             borderRadius: "24px",
             textTransform: "none",
             fontWeight: 600,
-            background: "linear-gradient(135deg, #0b3d2e, #145a43)",
+            backgroundColor: "#F57C00",
             color: "#fff",
           }}
         >
-          Login / Register
+          Login / Register  
         </Button>
       )}
 
