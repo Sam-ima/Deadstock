@@ -7,7 +7,7 @@ const BiddingSection = () => {
     <Box
       sx={{
         py: 6,
-        backgroundColor: "#c3cacaff",
+        backgroundColor: "#fafafa",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

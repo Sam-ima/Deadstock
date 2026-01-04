@@ -5,7 +5,7 @@ import { endingSoonData } from "../data/auction_data";
 
 const EndingSoon = () => {
   return (
-    <Box sx={{ py: 10, backgroundColor: "#aac5c1ff" }}>
+    <Box sx={{ py: 10, backgroundColor: "#fafafa" }}>
       <Typography variant="h4" fontWeight={800} mb={5} textAlign="center">
          Ending Soon
       </Typography>

@@ -1,4 +1,3 @@
-import React from "react";
 import { Box } from "@mui/material";
 import EndingSoon from "../component/ Auction/ending_soon_section";
 import LiveAuctions from "../component/ Auction/live_auction_section";
