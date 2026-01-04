@@ -10,23 +10,13 @@ const Hero = () => {
         minHeight: { xs: "70vh", md: "80vh" },
         display: "flex",
         alignItems: "center",
-        bgcolor: "rgba(255, 61, 0, 0.15)",
+        bgcolor: "#fff",
         color: "#FFD2C2",
+       
         overflow: "hidden",
-        py: { xs: 6, sm: 8, md: 0 },
+        py: { xs: 10, sm: 8, md: 5 },
 
-        /* 🌊 Curved Bottom */
-        "&::after": {
-          content: '""',
-          position: "absolute",
-          bottom: -1,
-          left: 0,
-          width: "100%",
-          height: { xs: "80px", md: "120px" },
-          bgcolor: "#fff", // next section background
-          borderTopLeftRadius: "50% 100%",
-          borderTopRightRadius: "50% 100%",
-        },
+      
       }}
     >
       <Container maxWidth="lg">
@@ -35,6 +25,7 @@ const Hero = () => {
           alignItems="center"
           justifyContent="center"
           spacing={{ xs: 4, md: 0 }}
+          sx={{ border:"3px solid red",}}
         >
           <Grid item xs={12} md={6}>
             <HeroContent />
