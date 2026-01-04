@@ -22,6 +22,7 @@ const UpcomingAuctionCard = ({ product }) => {
         component="img"
         src={product.img}
         alt={product.name}
+        loading="lazy"
         sx={{
           width: "100%",
           height: "100%",

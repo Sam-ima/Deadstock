@@ -1,96 +1,92 @@
-import { Card, Typography, Box } from "@mui/material";
-import { useState } from "react";
-import CardHoverOverlay from "./bidding_card_overlay";
-import TimeBadge from "./time_badge";
+import { Card, Typography, Box, Button, Stack } from "@mui/material";
 
 const AuctionProductCard = ({ product }) => {
-  const [hovered, setHovered] = useState(false);
-  const [bidAmount, setBidAmount] = useState("");
-  const [showBidForm, setShowBidForm] = useState(false);
-
-  const handleSubmitBid = () => {
-    if (bidAmount) {
-      alert(`Bid of $${bidAmount} placed on ${product.name}`);
-      setBidAmount("");
-      setShowBidForm(false);
-    }
-  };
-
   return (
     <Card
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => {
-        setHovered(false);
-        setShowBidForm(false);
-      }}
       sx={{
-        position: "relative",
-        width: "230px",
-        height: "250px",
-        borderRadius: "16px",
+        width: 280,
+        borderRadius: 3,
         overflow: "hidden",
-        cursor: "pointer",
-        transition: "all 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
-        transform: hovered ? "translateY(-10px)" : "translateY(0)",
-        boxShadow: hovered
-          ? "0 15px 30px rgba(0,0,0,0.3)"
-          : "0 4px 10px rgba(0,0,0,0.1)",
-        margin: "0 auto",
+        transition: "0.3s ease",
+        "&:hover": {
+          transform: "translateY(-6px)",
+          boxShadow: "0 16px 40px rgba(0,0,0,0.15)",
+        },
       }}
     >
-      {/* Product Image */}
-      <Box
-        component="img"
-        src={product.img}
-        alt={product.name}
-        sx={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          position: "absolute",
-          top: 0,
-          left: 0,
-          transition: "transform 1.2s ease",
-          transform: hovered ? "scale(1.1)" : "scale(1)",
-        }}
-      />
+      {/* Image */}
+      <Box sx={{ position: "relative" }}>
+        <Box
+          component="img"
+          src={product.img}
+          alt={product.name}
+          loading="lazy"
+          sx={{
+            width: "100%",
+            height: 180,
+            objectFit: "cover",
+          }}
+        />
 
-      {/* Gradient Overlay */}
-      <Box
-        sx={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.8) 100%)",
-          zIndex: 1,
-        }}
-      />
-
-      {/* Time Badge */}
-      <TimeBadge timeLeft={product.timeLeft} />
-
-      {/* Static Product Info */}
-      {!hovered && (
-        <Box sx={{ position: "absolute", bottom: 12, left: 12, right: 12, zIndex: 2 }}>
-          <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "0.9rem" }}>
-            {product.name}
-          </Typography>
-          <Typography sx={{ color: "#194638ff", fontWeight: "bold", fontSize: "0.85rem", mt: 0.5 }}>
-            ${product.currentBid}
-          </Typography>
+        {/* Timer */}
+        <Box
+          sx={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            px: 1.5,
+            py: 0.5,
+            borderRadius: 20,
+            background: "rgba(0,0,0,0.7)",
+            color: "#fff",
+            fontSize: "0.75rem",
+            fontWeight: 600,
+          }}
+        >
+          ⏳ {product.timeLeft}
         </Box>
-      )}
+      </Box>
 
-      {/* Hover Overlay */}
-      <CardHoverOverlay
-        hovered={hovered}
-        showBidForm={showBidForm}
-        setShowBidForm={setShowBidForm}
-        bidAmount={bidAmount}
-        setBidAmount={setBidAmount}
-        product={product}
-        handleSubmitBid={handleSubmitBid}
-      />
+      {/* Content */}
+      <Box sx={{ p: 2 }}>
+        <Typography fontWeight={700} fontSize="1rem">
+          {product.name}
+        </Typography>
+
+        <Stack spacing={0.8} mt={1}>
+          <Typography fontSize="0.85rem" color="text.secondary">
+            Current Bid: <b>${product.currentBid}</b>
+          </Typography>
+
+          <Typography fontSize="0.85rem" color="text.secondary">
+            Highest Bid: <b>${product.highestBid}</b>
+          </Typography>
+
+          <Typography fontSize="0.8rem" color="text.secondary">
+            Highest Bidder:{" "}
+            <span style={{ fontWeight: 600 }}>
+              {product.highestBidder}
+            </span>
+          </Typography>
+        </Stack>
+
+        <Button
+          fullWidth
+          sx={{
+            mt: 2,
+            borderRadius: 2,
+            textTransform: "none",
+            fontWeight: 600,
+            background: "#194638",
+            "&:hover": {
+              background: "#163b30",
+            },
+          }}
+          variant="contained"
+        >
+          Place Bid
+        </Button>
+      </Box>
     </Card>
   );
 };

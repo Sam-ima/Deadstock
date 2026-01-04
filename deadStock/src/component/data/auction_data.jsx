@@ -9,7 +9,7 @@ export const endingSoonData = [
   {
     id: 2,
     name: "Antique Camera",
-    img: "https://images.unsplash.com/photo-1519183071298-a2962be96c38",
+    img: "https://images.unsplash.com/photo-1516724562728-afc824a36e84",
     currentBid: 320,
     timeLeft: "01:10:12",
   },
