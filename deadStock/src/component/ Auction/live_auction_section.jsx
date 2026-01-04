@@ -4,33 +4,19 @@ import liveAuctionData from "../data/live_auction_data";
 
 const LiveAuctionSection = () => {
   return (
-    <Box
-      sx={{
-      
-        py: 6,
-        px: { xs: 2, md: 6 },
-        background: "linear-gradient(135deg, #194638ff 0%, #d8a855ff 100%)",
-      }}
-    >
-      {/* Section Heading */}
-      <Box sx={{ textAlign: "center", mt: 10, mb: 4 }}>
-        <Typography
-          sx={{
-            fontSize: { xs: "1.8rem", md: "2.4rem" },
-            fontWeight: 800,
-            // color: "#fff",
-            letterSpacing: "1px",
-          }}
-        >
-           Live Auctions
+    <Box sx={{ py: 8, px: { xs: 2, md: 6 }, background: "#fafafa" }}>
+      {/* Heading */}
+      <Box sx={{ textAlign: "center", mb: 6 }}>
+        <Typography fontSize={{ xs: "1.8rem", md: "2.4rem" }} fontWeight={800}>
+          🔥 Live Auctions
         </Typography>
-        <Typography sx={{ color: "rgba(255,255,255,0.85)", mt: 1 }}>
-          Bid now before the timer runs out
+        <Typography color="text.secondary" mt={1}>
+          Compete with others and place your highest bid
         </Typography>
       </Box>
 
-      {/* Auction Cards */}
-      <Grid container spacing={3} justifyContent="center">
+      {/* Cards */}
+      <Grid container spacing={4} justifyContent="center">
         {liveAuctionData.map((product) => (
           <Grid item key={product.id}>
             <AuctionProductCard product={product} />

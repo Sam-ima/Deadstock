@@ -13,7 +13,7 @@ const HeroContent = () => {
           fontWeight: 600,
           fontSize: { xs: "0.75rem", sm: "0.85rem", md: "0.95rem" },
           letterSpacing: "0.08em",
-          color: "#FFD27D",
+          color: "#9c2d2dff",
           textTransform: "uppercase",
           animation: `${textFade} 0.8s ease-out both`,
         }}
@@ -33,6 +33,7 @@ const HeroContent = () => {
           },
           lineHeight: { xs: 1.2, md: 1.3 },
           mb: 2,
+         
         }}
       >
         <AnimatedLetters text="Bid Live on" />
@@ -42,7 +43,7 @@ const HeroContent = () => {
 
       <Typography
         sx={{
-          color: "rgba(255,255,255,0.85)",
+          color: "#000",
           fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem" },
           maxWidth: "520px",
           mx: { xs: "auto", md: 0 },

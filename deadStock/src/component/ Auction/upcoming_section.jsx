@@ -5,7 +5,7 @@ import { upcomingAuctionData } from "../data/auction_data";
 
 const UpcomingAuctions = () => {
   return (
-    <Box sx={{ py: 10 , backgroundColor: "#e6fff7ff" }}>
+    <Box sx={{ py: 10 , backgroundColor: "#fff" }}>
       <Typography variant="h4" fontWeight={800} mb={5} textAlign="center">
          Upcoming Auctions
       </Typography>

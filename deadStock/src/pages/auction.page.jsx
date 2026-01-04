@@ -7,7 +7,7 @@ import UpcomingAuctions from "../component/ Auction/upcoming_section";
 
 const AuctionsPage = () => {
   return (
-    <Box sx={{ mb: 10 }}>
+    <Box sx={{ mb: 0 }}>
       <LiveAuctions />
       <EndingSoon />
       <UpcomingAuctions />
