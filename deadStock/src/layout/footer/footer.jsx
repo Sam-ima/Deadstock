@@ -11,8 +11,8 @@ const Footer = () => {
       sx={{
         backgroundColor: "#194638ff",
         color: "#fff",
-        mt: 8,
-        pt: 6,
+        // mt: 8,
+        pt: { xs: 4, md: 6 },
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -36,7 +36,7 @@ const Footer = () => {
       </Container>
 
       <FooterBottom />
-    </Box>
+    </Box>  
   );
 };
 

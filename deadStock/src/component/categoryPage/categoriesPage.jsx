@@ -14,7 +14,9 @@ const CategoriesPage = () => {
   );
 
   return (
-    <Box display="flex" minHeight="100vh" sx={{backgroundColor: 'red'}}>
+    <Box display="flex" minHeight="100vh" 
+    // sx={{ backgroundColor: 'red' }}
+    >
       <CategoriesSidebar
         categories={browseData}
         active={activeCategory.slug}

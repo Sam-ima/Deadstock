@@ -7,9 +7,9 @@ import businessOptions from "../../component/data/business_data";
 import DesktopMenu from "./desktopMenu";
 
 const navItems = [
+  { label: "Home" },
   { label: "Categories", submenu: categories },
-  { label: "Auctions" },
-  { label: "Featured Deals" },
+  { label: "Auction" },
   { label: "For Business", submenu: businessOptions.map((b) => b.label) },
 ];
 

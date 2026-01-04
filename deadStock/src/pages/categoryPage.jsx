@@ -9,7 +9,8 @@ const CategoryPage = () => {
       sx={
         {
           // backgroundColor: "#000000",
-          padding: {xs:"30px 20px",sm:"40px 20px",md:"50px 40px",lg:"60px 0px"},
+          paddingTop: {xs:"50px",sm:"50px",md:"50px",lg:"60px"},
+          paddingBottom: "0px",
         }
       }
     >
