@@ -1,6 +1,6 @@
 import { Card } from "@mui/material";
 
-const sectionCard = ({ children }) => {
+const SectionCard = ({ children }) => {
   return (
     <Card
       sx={{
@@ -14,4 +14,4 @@ const sectionCard = ({ children }) => {
   );
 };
 
-export default sectionCard;
+export default SectionCard;
