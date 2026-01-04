@@ -8,6 +8,7 @@ const RecentOrders = () => {
       <Typography variant="h6" mb={1}>
         Recent Orders
       </Typography>
+
       <SectionCard>
         <OrderCard
           title='Nike Dunk Low "Panda"'
@@ -22,13 +23,6 @@ const RecentOrders = () => {
           date="Oct 20, 2023"
           price="120"
           status="Shipped"
-        />
-        <OrderCard
-          title='Yeezy Slide "Bone"'
-          size="11 US"
-          date="Oct 18, 2023"
-          price="90"
-          status="Processing"
         />
       </SectionCard>
     </>
