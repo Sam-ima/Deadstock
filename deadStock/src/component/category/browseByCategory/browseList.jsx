@@ -5,7 +5,6 @@ import CategoryCard from '../categoryCard';
 const BrowseList = ({
   browseData,
   scrollRef,
-  cardWidth,
   onCategoryClick,
   onPause,
   onResume,
@@ -18,19 +17,24 @@ const BrowseList = ({
       sx={{
         display: 'grid',
         gridAutoFlow: 'column',
-        gridAutoColumns: `${cardWidth}px`,
-        gap: 3,
+        gridAutoColumns: 'max-content',
+        gap: 1.5,
+
         overflowX: 'auto',
-        pb: 2,
+        scrollBehavior: 'smooth',
+
+        justifyContent: 'center',   // ⭐ THIS CENTERS WHEN FEW ITEMS
+        width: '100%',              // ⭐ TAKE FULL WIDTH
+
         scrollbarWidth: 'none',
         '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
+
       {browseData.map(cat => (
         <CategoryCard
           key={cat.slug}
           category={cat}
-          width={cardWidth}
           onClick={() => onCategoryClick(cat.slug)}
         />
       ))}

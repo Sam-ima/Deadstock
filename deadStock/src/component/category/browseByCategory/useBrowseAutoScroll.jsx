@@ -25,7 +25,7 @@ const useBrowseAutoScroll = ({
           container.scrollBy({ left: cardWidth, behavior: 'smooth' });
           setCurrentIndex(prev => (prev + 1) % dataLength);
         }
-      }, 3000);
+      }, 2000);
     }
 
     return () => interval && clearInterval(interval);

@@ -13,6 +13,7 @@ const browseData = [
   { name: 'Home & Garden', slug: 'home-garden', icon: <YardIcon /> },
   { name: 'Collectibles', slug: 'collectibles', icon: <StarIcon /> },
   { name: 'Books', slug: 'books', icon: <MenuBookIcon /> },
+  
 ];
 
 export default browseData;
