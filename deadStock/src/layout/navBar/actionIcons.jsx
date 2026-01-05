@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { Box, IconButton, Button, Badge } from "@mui/material";
 import { Search, ShoppingCart, User, Menu } from "lucide-react";
 
 const ActionIcons = ({ isMobile, onMenuClick }) => {
+  const navigate=useNavigate()
   return (
     <Box display="flex" alignItems="center" gap={1}>
       <IconButton color="inherit">
@@ -17,6 +19,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
       {!isMobile && ( 
         <Button
           startIcon={<User size={18} />}
+          onClick={()=>navigate("/auth")}
           sx={{
             ml: 1,
             px: 3,
