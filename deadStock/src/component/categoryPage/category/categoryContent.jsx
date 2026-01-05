@@ -1,7 +1,7 @@
 import { Box, Typography, Grid, Button, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
-import ProductCard from './productCard';
+import ProductCard from '../product/productCard';
 
 const CategoryContent = ({ category, products }) => {
   const theme = useTheme();

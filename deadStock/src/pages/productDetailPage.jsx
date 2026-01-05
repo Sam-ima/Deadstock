@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "@mui/material";
-import Category from "../component/categoryPage/category/categoriesPage";
-const CategoryPage = () => {
+import ProductDetail from "../component/categoryPage/product/productDetailPage";
+const ProductDetailPage = () => {
   return (
     <Container
       maxWidth
@@ -14,8 +14,8 @@ const CategoryPage = () => {
         }
       }
     >
-      <Category/>
+      <ProductDetail/>
     </Container>
   );
 };
-export default CategoryPage;
+export default ProductDetailPage;

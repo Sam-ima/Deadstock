@@ -20,7 +20,7 @@ const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
 const Profile = lazy(() => import("./pages/profilePage"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
-const ProductDetailPage = lazy(() => import("./pages/productdetail.page"));
+const ProductDetailPage = lazy(() => import("./pages/productDetailPage.jsx"));
 
 /* ---------- Router Configuration ---------- */
 const router = createBrowserRouter(

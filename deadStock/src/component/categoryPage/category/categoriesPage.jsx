@@ -1,8 +1,8 @@
 import { Box } from '@mui/material';
 import { useState } from 'react';
 
-import browseData from '../data/browse_data';
-import products from './product';
+import browseData from '../../data/browse_data';
+import products from '../product/product';
 import CategoriesSidebar from './categoriesSidebar';
 import CategoryContent from './categoryContent';
 
