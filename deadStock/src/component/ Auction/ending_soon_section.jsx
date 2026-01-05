@@ -1,7 +1,8 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import AuctionProductCard from "../card/auction card/bidding_card";
-import { endingSoonData } from "../data/auction_data";
+import { biddingItems } from "../data/bidding_data";
+// import { endingSoonData } from "../data/auction_data";
 
 const EndingSoon = () => {
   return (
@@ -11,7 +12,7 @@ const EndingSoon = () => {
       </Typography>
 
       <Grid container spacing={3} justifyContent="center">
-        {endingSoonData.map((product) => (
+        {biddingItems.map((product) => (
           <Grid item key={product.id}>
             <AuctionProductCard product={product} />
           </Grid>
