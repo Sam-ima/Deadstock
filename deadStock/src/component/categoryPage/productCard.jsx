@@ -1,109 +1,72 @@
 import { Box, Typography, Button, Chip } from '@mui/material';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, removeItem } from '../../store/slice/cartSlice';
+import QuantityControl from './quantityControl';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
-  const { name, image, basePrice, price } = product;
-
-  const discountPercent =
-    basePrice > price
-      ? Math.round(((basePrice - price) / basePrice) * 100)
-      : 0;
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const quantity = useSelector(state => state.cart[product.id] || 0);
 
   return (
     <Box
       sx={{
-        width: 220, // ⬅️ reduced size
+        width: 220,
         border: '1px solid',
         borderColor: 'grey.200',
         borderRadius: 2.5,
         overflow: 'hidden',
         backgroundColor: '#fff',
-        transition: 'all 0.25s ease',
-        '&:hover': {
-          transform: 'translateY(-4px)',
-          boxShadow: '0 10px 24px rgba(0,0,0,0.12)',
-        },
+        '&:hover': { boxShadow: 3 },
       }}
     >
       {/* Image */}
-      <Box sx={{ position: 'relative' }}>
-        <Box
-          component="img"
-          src={image}
-          alt={name}
-          sx={{
-            width: '100%',
-            height: 140,
-            objectFit: 'cover',
-          }}
-        />
+      <Box
+        component="img"
+        src={product.image}
+        alt={product.name}
+        onClick={() => navigate(`/product/${product.id}`)}
+        sx={{
+          width: '100%',
+          height: 140,
+          objectFit: 'cover',
+          cursor: 'pointer',
+        }}
+      />
 
-        {discountPercent > 0 && (
-          <Chip
-            label={`${discountPercent}% OFF`}
-            size="small"
-            sx={{
-              position: 'absolute',
-              top: 8,
-              left: 8,
-              backgroundColor: '#2E7D32',
-              color: '#fff',
-              fontWeight: 600,
-              fontSize: '0.7rem',
-            }}
-          />
-        )}
-      </Box>
-
-      {/* Content */}
       <Box p={1.5}>
-        <Typography
-          fontWeight={600}
-          fontSize="0.85rem"
-          noWrap
-          mb={0.5}
-        >
-          {name}
+        <Typography fontWeight={600} noWrap>
+          {product.name}
         </Typography>
 
-        {/* Price Section */}
-        <Box display="flex" alignItems="center" gap={1}>
-          <Typography
-            fontWeight={700}
-            color="#2E7D32"
-            fontSize="0.95rem"
+        <Typography fontWeight={700} color="#2E7D32">
+          ${product.price}
+        </Typography>
+
+        {/* Add / Quantity */}
+        {quantity === 0 ? (
+          <Button
+            fullWidth
+            size="small"
+            variant="contained"
+            onClick={() => dispatch(addItem(product))}
+            sx={{ mt: 1, backgroundColor: '#F57C00' }}
           >
-            ${price}
-          </Typography>
-
-          {basePrice > price && (
-            <Typography
-              fontSize="0.75rem"
-              color="text.secondary"
-              sx={{ textDecoration: 'line-through' }}
-            >
-              ${basePrice}
-            </Typography>
-          )}
-        </Box>
-
-        <Button
-          fullWidth
-          size="small"
-          variant="contained"
-          sx={{
-            mt: 1,
-            borderRadius: 1.8,
-            textTransform: 'none',
-            fontWeight: 600,
-            fontSize: '0.75rem',
-          }}
-        >
-          Add to Cart
-        </Button>
+            Add
+          </Button>
+        ) : (
+          <Box mt={1} display="flex" justifyContent="center">
+            <QuantityControl
+              quantity={quantity}
+              onAdd={() => dispatch(addItem(product))}
+              onRemove={() => dispatch(removeItem(product.id))}
+            />
+          </Box>
+        )}
       </Box>
     </Box>
   );
 };
 
 export default ProductCard;
-  

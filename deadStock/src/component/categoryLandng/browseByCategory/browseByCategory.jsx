@@ -41,9 +41,9 @@ const BrowseByCategory = () => {
   return (
     <Box
       sx={{
-        py: { xs: 6, md: 6 },
+        py: { xs: 3, sm: 4, md: 6 },
         backgroundColor: '#ffffff',
-      }}
+      }}  
     >
       <Container maxWidth="xl">
         <BrowseHeader />

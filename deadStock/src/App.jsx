@@ -1,37 +1,76 @@
-import { Routes, Route } from "react-router-dom";
-import RootLayout from "./root_layout";
-import LandingPage from "./pages/landingPage";
-import { ThemeProvider, CssBaseline } from "@mui/material";
-import AuctionsPage from "./pages/auction.page";
-import Profile from "./pages/profilePage";
-// import CategoryPage from "./pages/category.page";
-import CategoryPage from "./pages/categoryPage.jsx";
-import ProductDetailPage from "./pages/productdetail.page";
+import { lazy, Suspense } from "react";
+import "./global.css";
 
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  RouterProvider,
+  Route,
+} from "react-router-dom";
+
+import { ThemeProvider, CssBaseline } from "@mui/material";
+import { ToastContainer, Flip } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import RootLayout from "./root_layout";
 import darkTheme from "./theme/darkTheme";
+
+/* ---------- Lazy Loaded Pages ---------- */
+const LandingPage = lazy(() => import("./pages/landingPage"));
+const AuctionsPage = lazy(() => import("./pages/auction.page"));
+const Profile = lazy(() => import("./pages/profilePage"));
+const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
+const ProductDetailPage = lazy(() => import("./pages/productdetail.page"));
+
+/* ---------- Router Configuration ---------- */
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route element={<RootLayout />}>
+      {/* Public Routes */}
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/auctions" element={<AuctionsPage />} />
+
+      {/* Profile with Theme */}
+      <Route
+        path="/profile"
+        element={
+          <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <Profile />
+          </ThemeProvider>
+        }
+      />
+
+      {/* Category Routes */}
+      <Route path="/category" element={<CategoryPage />} />
+      <Route path="/category/:slug" element={<CategoryPage />} />
+
+      {/* Product Detail */}
+      <Route
+        path="/product/:slug/:title"
+        element={<ProductDetailPage />}
+      />
+    </Route>
+  )
+);
 
 function App() {
   return (
-    <Routes>
-      <Route element={<RootLayout />}>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/auctions" element={<AuctionsPage />} />
-        <Route
-          path="/profile"
-          element={
-            <ThemeProvider theme={darkTheme}>
-              <CssBaseline />
-              <Profile />
-            </ThemeProvider>
-          }
-        />
+    <Suspense fallback={<div className="loading">Loading...</div>}>
+      <RouterProvider router={router} />
 
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/category" element={<CategoryPage />} />
-        <Route path="/category/:slug" element={<CategoryPage />} />
-        <Route path="/product/:slug/:title" element={<ProductDetailPage />} />
-      </Route>
-    </Routes>   
+      {/* Toast Notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+        transition={Flip}
+      />
+    </Suspense>
   );
 }
 
