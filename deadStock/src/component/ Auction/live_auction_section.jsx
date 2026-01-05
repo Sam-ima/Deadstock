@@ -4,7 +4,7 @@ import liveAuctionData from "../data/live_auction_data";
 
 const LiveAuctionSection = () => {
   return (
-    <Box sx={{ py: 8, px: { xs: 2, md: 6 }, background: "#fafafa" }}>
+    <Box sx={{ py: 8, px: { xs: 2, md: 6 }, background: "#fff" }}>
       {/* Heading */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
         <Typography fontSize={{ xs: "1.8rem", md: "2.4rem" }} fontWeight={800}>

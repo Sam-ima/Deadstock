@@ -7,7 +7,7 @@ const BiddingSection = () => {
     <Box
       sx={{
         py: 6,
-        backgroundColor: "#c3cacaff",
+        backgroundColor: "#fafafa",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -21,7 +21,7 @@ const BiddingSection = () => {
           textAlign="center"
           mb={4}
         >
-          Bidding Products
+          Ending Soon Bids
         </Typography>
 
         {/* Grid of products */}
