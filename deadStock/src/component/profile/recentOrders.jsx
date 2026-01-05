@@ -24,6 +24,13 @@ const RecentOrders = () => {
           price="120"
           status="Shipped"
         />
+         <OrderCard
+        title="Nike Dunk Low Panda"
+        size="10 US"
+        date="Oct 24, 2023"
+        price="250"
+        status="Delivered"
+      />
       </SectionCard>
     </>
   );
