@@ -21,7 +21,7 @@ const BiddingSection = () => {
           textAlign="center"
           mb={4}
         >
-          Bidding Products
+          Ending Soon Bids
         </Typography>
 
         {/* Grid of products */}
