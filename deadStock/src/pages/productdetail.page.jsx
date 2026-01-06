@@ -1,99 +1,141 @@
-import React from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { Box, Container, Grid, Typography, Button, Breadcrumbs, Link } from "@mui/material";
-import products from "../component/data/products_data"; 
+// src/pages/auctionDetail.page.jsx
+import { useParams } from "react-router-dom";
+import {
+  Box,
+  Typography,
+  Container,
+  Card,
+  Button,
+  Stack,
+  Divider,
+  Chip,
+} from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import GavelIcon from "@mui/icons-material/Gavel";
+import PersonIcon from "@mui/icons-material/Person";
+import {products} from"../component/data/products_data";
+// import { biddingItems } from "../component/data/bidding_data";
 
 const ProductDetailPage = () => {
-  // 1. Grab params from URL
-  const { slug, title } = useParams();
-  const navigate = useNavigate();
+  const { id } = useParams();
 
-  // 2. Filter data: Replace hyphens in URL title back to spaces to match data
-  const formattedTitle = title.replace(/-/g, " ");
-  
   const product = products.find(
-    (p) => p.name.toLowerCase() === formattedTitle.toLowerCase()
+    (item) => item.id.toString() === id
   );
 
-  // 3. Handle product not found
   if (!product) {
-    return (
-      <Container sx={{ py: 10, textAlign: 'center' }}>
-        <Typography variant="h5">Product not found</Typography>
-        <Button onClick={() => navigate('/category')}>Back to Categories</Button>
-      </Container>
-    );
+    return <Typography>Product not found</Typography>;
   }
 
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
-      {/* Breadcrumbs for better UX */}
-      <Breadcrumbs sx={{ mb: 4 }}>
-        <Link underline="hover" color="inherit" onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
-          Home
-        </Link>
-        <Link underline="hover" color="inherit" onClick={() => navigate(`/category/${slug}`)} sx={{ cursor: 'pointer' }}>
-          {slug.toUpperCase()}
-        </Link>
-        <Typography color="text.primary">{product.name}</Typography>
-      </Breadcrumbs>
+    <Box sx={{ backgroundColor: "#f4f6f8", minHeight: "100vh", py: 6 }}>
+      <Container maxWidth="lg">
+        <Card
+          sx={{
+            borderRadius: 4,
+            p: { xs: 2, md: 4 },
+            boxShadow: "0 18px 40px rgba(0,0,0,0.12)",
+          }}
+        >
+          <Stack direction={{ xs: "column", md: "row" }} spacing={5}>
+            {/* Image Section */}
+            <Box flex={1}>
+              <Box
+                component="img"
+                src={product.img}
+                alt={product.name}
+                sx={{
+                  width: "100%",
+                  height: 360,
+                  objectFit: "cover",
+                  borderRadius: 3,
+                }}
+              />
+            </Box>
 
-      <Grid container spacing={6}>
-        {/* Left Side: Product Image */}
-        <Grid item xs={12} md={6}>
-          <Box
-            component="img"
-            src={product.img}
-            alt={product.name}
-            sx={{
-              width: "100%",
-              borderRadius: 4,
-              boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
-              objectFit: "cover"
-            }}
-          />
-        </Grid>
+            {/* Content Section */}
+            <Box flex={1}>
+              <Chip
+                icon={<AccessTimeIcon />}
+                label={`Ending in ${product.timeLeft}`}
+                sx={{
+                  mb: 2,
+                  fontWeight: 600,
+                  backgroundColor: "#194638",
+                  color: "#fff",
+                }}
+              />
 
-        {/* Right Side: Product Details */}
-        <Grid item xs={12} md={6}>
-          <Typography variant="overline" color="primary" fontWeight={700}>
-            {product.category}
-          </Typography>
-          <Typography variant="h3" fontWeight={800} gutterBottom>
-            {product.name}
-          </Typography>
-          
-          <Box sx={{ bgcolor: "#f5f5f5", p: 3, borderRadius: 2, my: 3 }}>
-            <Typography variant="h6">Current Bid</Typography>
-            <Typography variant="h3" color="secondary" fontWeight={700}>
-              ${product.currentBid}
-            </Typography>
-            <Typography variant="body2" color="text.secondary">
-              {product.bids} bids so far
-            </Typography>
-          </Box>
+              <Typography variant="h4" fontWeight={800}>
+                {product.name}
+              </Typography>
 
-          <Typography variant="body1" color="text.secondary" mb={4}>
-            This is a rare {product.name} from the {product.category} category. 
-            Don't miss out on this deadstock item!
-          </Typography>
+              <Typography color="text.secondary" mt={1}>
+                Premium auction item with verified bidders and secure
+                transactions.
+              </Typography>
 
-          <Button 
-            variant="contained" 
-            size="large" 
-            fullWidth 
-            sx={{ py: 2, fontSize: '1.1rem', fontWeight: 700 }}
-          >
-            Place Bid Now
-          </Button>
+              <Divider sx={{ my: 3 }} />
 
-          <Box mt={3}>
-            <Typography variant="subtitle2">Time Left: <strong>{product.timeLeft}</strong></Typography>
-          </Box>
-        </Grid>
-      </Grid>
-    </Container>
+              <Stack spacing={1.5}>
+                <Typography fontSize="1rem">
+                  <GavelIcon fontSize="small" /> Current Bid:{" "}
+                  <b>${product.currentBid}</b>
+                </Typography>
+
+                <Typography fontSize="1rem">
+                  Highest Bid: <b>${product.highestBid}</b>
+                </Typography>
+
+                <Typography fontSize="1rem">
+                  <PersonIcon fontSize="small" /> Highest Bidder:{" "}
+                  <b>{product.highestBidder}</b>
+                </Typography>
+              </Stack>
+
+              <Divider sx={{ my: 3 }} />
+
+              <Stack spacing={2}>
+                <Button
+                  size="large"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#194638",
+                    fontWeight: 700,
+                    borderRadius: 3,
+                    py: 1.5,
+                    "&:hover": {
+                      backgroundColor: "#163b30",
+                    },
+                  }}
+                >
+                  Place Your Bid
+                </Button>
+
+                <Button
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    borderColor: "#194638",
+                    color: "#194638",
+                    fontWeight: 600,
+                    borderRadius: 3,
+                    py: 1.4,
+                    "&:hover": {
+                      backgroundColor: "#194638",
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  Add to Watchlist
+                </Button>
+              </Stack>
+            </Box>
+          </Stack>
+        </Card>
+      </Container>
+    </Box>
   );
 };
 
-export default ProductDetailPage;
+export default  ProductDetailPage;
