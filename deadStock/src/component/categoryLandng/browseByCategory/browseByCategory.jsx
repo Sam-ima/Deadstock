@@ -13,15 +13,12 @@ import { useNavigate } from 'react-router-dom';
 import categories from '../../data/categories';
 import BrowseHeader from './browseHeader';
 import BrowseList from './browseList';
-import useBrowseAutoScroll from './useBrowseAutoScroll';
 import { getCardWidth } from './browse.utils';
 
 const BrowseByCategory = () => {
   const scrollRef = useRef(null);
   const theme = useTheme();
   const navigate = useNavigate();
-  const [autoScroll, setAutoScroll] = useState(true);
-
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
   const isDesktop = useMediaQuery(theme.breakpoints.between('md', 'lg'));
@@ -29,14 +26,14 @@ const BrowseByCategory = () => {
 
   const cardWidth = getCardWidth({ isLarge, isDesktop, isTablet });
 
-  useBrowseAutoScroll({
-    scrollRef,
-    enabled: autoScroll,
-    isMobile,
-    cardWidth,
-    dataLength: categories.length,
-    setCurrentIndex: () => {},
-  });
+  // useBrowseAutoScroll({
+  //   scrollRef,
+  //   enabled: autoScroll,
+  //   isMobile,
+  //   cardWidth,
+  //   dataLength: categories.length,
+  //   setCurrentIndex: () => {},
+  // });
 
   return (
     <Box
@@ -45,15 +42,15 @@ const BrowseByCategory = () => {
         backgroundColor: '#ffffff',
       }}
     >
-      <Container maxWidth="xl">
+      <Container maxWidth="lg">
         <BrowseHeader />
 
         <BrowseList
           categories={categories}
           scrollRef={scrollRef}
           onCategoryClick={slug => navigate(`/category/${slug}`)}
-          onPause={() => setAutoScroll(false)}
-          onResume={() => setAutoScroll(true)}
+          // onPause={() => setAutoScroll(false)}
+          // onResume={() => setAutoScroll(true)}
         />
 
         <Box display="flex" justifyContent="center" mt={5}>
