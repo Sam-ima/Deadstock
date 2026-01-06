@@ -4,8 +4,9 @@ import AnimatedLetters from "../ui/animatedText";
 import HeroActions from "./heroActions";
 
 const HeroContent = () => {
+
   return (
-    <Box textAlign={{ xs: "center", md: "left" }}>
+    <Box textAlign={{ xs: "center", md: "left" }} sx={{p:2}}>
       {/* 🔔 Announcement */}
       <Typography
         sx={{

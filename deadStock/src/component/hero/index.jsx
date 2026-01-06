@@ -12,9 +12,8 @@ const Hero = () => {
         alignItems: "center",
         bgcolor: "#fff",
         color: "#FFD2C2",
-       
         overflow: "hidden",
-        py: { xs: 10, sm: 8, md: 5 },
+        py: { xs: "65px", sm: "100px", md: "20px",lg:"40px" },
 
       
       }}
