@@ -1,126 +1,141 @@
-// src/pages/ProductDetailPage.jsx
-import { useParams, useNavigate } from "react-router-dom";
-import products from "../component/data/products_data";
-import { Box, Container, Typography, Card, CardMedia, Stack, Button, Grid } from "@mui/material";
-import CategoryCard from "../component/categoryLandng/categoryCard";
-
-const deriveCategory = (name) => {
-  const n = name.toLowerCase();
-  if (n.includes("watch") || n.includes("appliance") || n.includes("headphones")) return "electronics";
-  if (n.includes("shirt") || n.includes("jacket")) return "fashion-apparel";
-  if (n.includes("flower") || n.includes("garden")) return "home-garden";
-  if (n.includes("drill") || n.includes("forklift") || n.includes("machine")) return "industrial-equipment";
-  if (n.includes("honey") || n.includes("coffee") || n.includes("food")) return "food-beverage";
-  if (n.includes("skin") || n.includes("hair") || n.includes("beauty")) return "health-beauty";
-  if (n.includes("bike") || n.includes("tent") || n.includes("camping")) return "sports-outdoors";
-  if (n.includes("tire") || n.includes("car") || n.includes("engine")) return "automotive";
-  return "others";
-};
+// src/pages/auctionDetail.page.jsx
+import { useParams } from "react-router-dom";
+import {
+  Box,
+  Typography,
+  Container,
+  Card,
+  Button,
+  Stack,
+  Divider,
+  Chip,
+} from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import GavelIcon from "@mui/icons-material/Gavel";
+import PersonIcon from "@mui/icons-material/Person";
+import {products} from"../component/data/products_data";
+// import { biddingItems } from "../component/data/bidding_data";
 
 const ProductDetailPage = () => {
-  const navigate = useNavigate();
-  const { slug, title } = useParams();
+  const { id } = useParams();
 
-  // Find the current product
   const product = products.find(
-    (p) => deriveCategory(p.name) === slug && p.name === decodeURIComponent(title)
+    (item) => item.id.toString() === id
   );
 
   if (!product) {
-    return (
-      <Box sx={{ py: 6, textAlign: "center" }}>
-        <Typography variant="h5">Product not found.</Typography>
-      </Box>
-    );
+    return <Typography>Product not found</Typography>;
   }
 
-  // Related products: same category, exclude current product
-  const relatedProducts = products
-    .filter((p) => deriveCategory(p.name) === slug && p.name !== product.name)
-    .map((p) => ({
-      title: p.name,
-      image: p.img,
-      slug: deriveCategory(p.name),
-    }));
-
   return (
-    <Box sx={{ py: 6 }}>
-      <Container maxWidth="md">
-        {/* Main Product */}
-        <Card sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, p: 2 }}>
-          <CardMedia
-            component="img"
-            image={product.img}
-            alt={product.name}
-            sx={{ width: { xs: "100%", md: 300 }, borderRadius: 2 }}
-          />
-          <Box sx={{ flex: 1, ml: { md: 3 }, mt: { xs: 2, md: 0 } }}>
-            <Typography variant="h4" fontWeight={700} mb={2}>
-              {product.name}
-            </Typography>
-
-            <Typography variant="h6" color="#f97316" fontWeight={600} mb={2}>
-              Price: {product.price}
-            </Typography>
-
-            <Typography mb={2}>Delivery Time: {product.time}</Typography>
-            <Typography mb={2}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.
-              Praesent efficitur nulla ac nulla laoreet, at luctus ex eleifend.
-            </Typography>
-
-            <Stack direction="row" spacing={2}>
-              <Button
-                variant="contained"
+    <Box sx={{ backgroundColor: "#f4f6f8", minHeight: "100vh", py: 6 }}>
+      <Container maxWidth="lg">
+        <Card
+          sx={{
+            borderRadius: 4,
+            p: { xs: 2, md: 4 },
+            boxShadow: "0 18px 40px rgba(0,0,0,0.12)",
+          }}
+        >
+          <Stack direction={{ xs: "column", md: "row" }} spacing={5}>
+            {/* Image Section */}
+            <Box flex={1}>
+              <Box
+                component="img"
+                src={product.img}
+                alt={product.name}
                 sx={{
-                  backgroundColor: "#194638ff",
-                  color: "#fff",
-                  textTransform: "none",
-                  fontWeight: 600,
-                  borderRadius: 20,
-                  px: 3,
-                  "&:hover": { backgroundColor: "#059669" },
+                  width: "100%",
+                  height: 360,
+                  objectFit: "cover",
+                  borderRadius: 3,
                 }}
-              >
-                Buy Now
-              </Button>
+              />
+            </Box>
 
-              <Button
-                variant="contained"
+            {/* Content Section */}
+            <Box flex={1}>
+              <Chip
+                icon={<AccessTimeIcon />}
+                label={`Ending in ${product.timeLeft}`}
                 sx={{
-                  backgroundColor: "#f97316",
-                  color: "#fff",
-                  textTransform: "none",
+                  mb: 2,
                   fontWeight: 600,
-                  borderRadius: 20,
-                  px: 3,
-                  "&:hover": { backgroundColor: "#ea580c" },
+                  backgroundColor: "#194638",
+                  color: "#fff",
                 }}
-              >
-                Add to Cart
-              </Button>
-            </Stack>
-          </Box>
+              />
+
+              <Typography variant="h4" fontWeight={800}>
+                {product.name}
+              </Typography>
+
+              <Typography color="text.secondary" mt={1}>
+                Premium auction item with verified bidders and secure
+                transactions.
+              </Typography>
+
+              <Divider sx={{ my: 3 }} />
+
+              <Stack spacing={1.5}>
+                <Typography fontSize="1rem">
+                  <GavelIcon fontSize="small" /> Current Bid:{" "}
+                  <b>${product.currentBid}</b>
+                </Typography>
+
+                <Typography fontSize="1rem">
+                  Highest Bid: <b>${product.highestBid}</b>
+                </Typography>
+
+                <Typography fontSize="1rem">
+                  <PersonIcon fontSize="small" /> Highest Bidder:{" "}
+                  <b>{product.highestBidder}</b>
+                </Typography>
+              </Stack>
+
+              <Divider sx={{ my: 3 }} />
+
+              <Stack spacing={2}>
+                <Button
+                  size="large"
+                  variant="contained"
+                  sx={{
+                    backgroundColor: "#194638",
+                    fontWeight: 700,
+                    borderRadius: 3,
+                    py: 1.5,
+                    "&:hover": {
+                      backgroundColor: "#163b30",
+                    },
+                  }}
+                >
+                  Place Your Bid
+                </Button>
+
+                <Button
+                  size="large"
+                  variant="outlined"
+                  sx={{
+                    borderColor: "#194638",
+                    color: "#194638",
+                    fontWeight: 600,
+                    borderRadius: 3,
+                    py: 1.4,
+                    "&:hover": {
+                      backgroundColor: "#194638",
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  Add to Watchlist
+                </Button>
+              </Stack>
+            </Box>
+          </Stack>
         </Card>
-
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <Box sx={{ mt: 6 }}>
-            <Typography variant="h5" fontWeight={700} mb={3} textAlign="center">
-              Related Products
-            </Typography>
-            <Grid container spacing={3} justifyContent="center">
-              {relatedProducts.map((item, idx) => (
-                <Grid item xs={12} sm={6} md={4} key={idx}>
-                  <CategoryCard category={item} isMobile={false} />
-                </Grid>
-              ))}
-            </Grid>
-          </Box>
-        )}
       </Container>
     </Box>
   );
 };
 
-export default ProductDetailPage;
+export default  ProductDetailPage;
