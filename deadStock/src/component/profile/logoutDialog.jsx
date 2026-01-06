@@ -5,7 +5,7 @@ import {
   Button,
 } from "@mui/material";
 
-const LogoutDialog = ({ open, onClose }) => {
+const logoutDialog = ({ open, onClose }) => {
   const handleLogout = () => {
     localStorage.clear();
     window.location.href = "/login";
@@ -25,4 +25,4 @@ const LogoutDialog = ({ open, onClose }) => {
   );
 };
 
-export default LogoutDialog;
+export default logoutDialog;

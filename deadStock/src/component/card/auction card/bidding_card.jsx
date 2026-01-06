@@ -1,8 +1,12 @@
 import { Card, Typography, Box, Button, Stack } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+
 
 const AuctionProductCard = ({ product }) => {
+   const navigate = useNavigate();
   return (
     <Card
+    onClick={() => navigate(`/product/${product.id}`)}
       sx={{
         width: 280,
         borderRadius: 3,
@@ -71,6 +75,10 @@ const AuctionProductCard = ({ product }) => {
         </Stack>
 
         <Button
+         onClick={(e) => {
+         e.stopPropagation();
+          // bid logic here
+        }}
           fullWidth
           sx={{
             mt: 2,
