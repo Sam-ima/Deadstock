@@ -46,6 +46,8 @@ const router = createBrowserRouter(
           </ThemeProvider>
         }
       />
+      {/* auth */}
+      <Route path="auth" element={<AuthPage/>}/>
 
       {/* Category Routes */}
       <Route path="/category" element={<CategoryPage />} />

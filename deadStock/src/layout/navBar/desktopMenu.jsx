@@ -1,9 +1,15 @@
 import { Box, Button } from "@mui/material";
 
-const ITEM_HEIGHT = 44; // button height
+const ITEM_HEIGHT = 44;
 const MAX_ITEMS = 5;
 
-const DesktopMenu = ({ items }) => {
+const DesktopMenu = ({ items = [] }) => {
+  console.log("items",items)
+  // Safety guard
+  if (!Array.isArray(items) || items.length === 0) {
+    return null;
+  }
+
   return (
     <Box
       sx={{
@@ -15,18 +21,11 @@ const DesktopMenu = ({ items }) => {
         borderRadius: 1,
         minWidth: 200,
         zIndex: 99,
-
-        /* Height & scroll logic */
         maxHeight: ITEM_HEIGHT * MAX_ITEMS,
         overflowY: "auto",
-
-        /* Padding */
         py: 0.5,
 
-        /* Subtle scrollbar styling */
-        "&::-webkit-scrollbar": {
-          width: "6px",
-        },
+        "&::-webkit-scrollbar": { width: "6px" },
         "&::-webkit-scrollbar-thumb": {
           backgroundColor: "#d1d1d1",
           borderRadius: "10px",
@@ -36,9 +35,9 @@ const DesktopMenu = ({ items }) => {
         },
       }}
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <Button
-          key={item}
+          key={index}
           fullWidth
           sx={{
             justifyContent: "flex-start",
@@ -48,10 +47,7 @@ const DesktopMenu = ({ items }) => {
             fontSize: "0.9rem",
             color: "#000",
             borderRadius: 0,
-
-            "&:hover": {
-              backgroundColor: "#f5f5f5",
-            },
+            "&:hover": { backgroundColor: "#f5f5f5" },
           }}
         >
           {item}
