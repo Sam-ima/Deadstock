@@ -27,6 +27,7 @@ const AuctionsPage = lazy(() => import("./pages/auction.page"));
 const Profile = lazy(() => import("./pages/profilePage"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const ProductDetailPage = lazy(() => import("./pages/productDetailPage.jsx"));
+const ResetPassword=lazy(()=>import("./component/forms/passwordReset/resetPassword.jsx"))
 
 /* ---------- Router Configuration ---------- */
 const router = createBrowserRouter(
@@ -47,19 +48,15 @@ const router = createBrowserRouter(
         }
       />
       {/* auth */}
-      <Route path="auth" element={<AuthPage/>}/>
+      <Route path="auth" element={<AuthPage />} />
+      <Route path="/reset-password" element={<ResetPassword/>}/>
 
       {/* Category Routes */}
       <Route path="/category" element={<CategoryPage />} />
       <Route path="/category/:slug" element={<CategoryPage />} />
 
       {/* Product Detail */}
-           <Route
-          path="/product/:id/:title"
-          element={<ProductDetailPage />}
-        />
-
-
+      <Route path="/product/:id/:title" element={<ProductDetailPage />} />
     </Route>
   )
 );
