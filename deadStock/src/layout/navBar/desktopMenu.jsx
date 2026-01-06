@@ -1,6 +1,15 @@
 import { Box, Button } from "@mui/material";
 
-const DesktopMenu = ({ items }) => {
+const ITEM_HEIGHT = 44;
+const MAX_ITEMS = 5;
+
+const DesktopMenu = ({ items = [] }) => {
+  console.log("items",items)
+  // Safety guard
+  if (!Array.isArray(items) || items.length === 0) {
+    return null;
+  }
+
   return (
     <Box
       sx={{
@@ -8,24 +17,37 @@ const DesktopMenu = ({ items }) => {
         top: "100%",
         left: 0,
         background: "#fff",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+        boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
         borderRadius: 1,
-        minWidth: 180,
+        minWidth: 200,
         zIndex: 99,
-        py: 1,
+        maxHeight: ITEM_HEIGHT * MAX_ITEMS,
+        overflowY: "auto",
+        py: 0.5,
+
+        "&::-webkit-scrollbar": { width: "6px" },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#d1d1d1",
+          borderRadius: "10px",
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+          backgroundColor: "#a8a8a8",
+        },
       }}
     >
-      {items.map((item) => (
+      {items.map((item, index) => (
         <Button
-          key={item}
+          key={index}
           fullWidth
           sx={{
             justifyContent: "flex-start",
             px: 2,
-            py: 1,
+            height: ITEM_HEIGHT,
             textTransform: "none",
+            fontSize: "0.9rem",
             color: "#000",
-            "&:hover": { background: "#f0f0f0" },
+            borderRadius: 0,
+            "&:hover": { backgroundColor: "#f5f5f5" },
           }}
         >
           {item}

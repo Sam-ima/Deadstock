@@ -14,8 +14,6 @@ const Hero = () => {
         color: "#FFD2C2",
         overflow: "hidden",
         py: { xs: "65px", sm: "100px", md: "20px",lg:"40px" },
-
-      
       }}
     >
       <Container maxWidth="lg">

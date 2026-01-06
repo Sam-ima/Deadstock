@@ -6,16 +6,24 @@ import categories from "../../component/data/categories_data";
 import businessOptions from "../../component/data/business_data";
 import DesktopMenu from "./desktopMenu";
 
-const navItems = [
-  { label: "Home" },
-  { label: "Categories", submenu: categories },
-  { label: "Auction" },
-  { label: "For Business", submenu: businessOptions.map((b) => b.label) },
-];
-
 const NavItems = ({ scrolled }) => {
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
+
+  const navItems = [
+    { label: "Home" },
+    {
+      label: "Categories",
+      submenu: Array.isArray(categories) ? categories : [],
+    },
+    { label: "Auction" },
+    {
+      label: "For Business",
+      submenu: Array.isArray(businessOptions)
+        ? businessOptions.map((b) => b.label)
+        : [],
+    },
+  ];
 
   return (
     <>
@@ -23,14 +31,12 @@ const NavItems = ({ scrolled }) => {
         <Box
           key={item.label}
           sx={{ position: "relative" }}
-          onMouseEnter={() => item.submenu && setActiveMenu(item.label)}
+          onMouseEnter={() => item.submenu?.length && setActiveMenu(item.label)}
           onMouseLeave={() => setActiveMenu(null)}
         >
           <Button
-            endIcon={item.submenu ? <ChevronDown size={14} /> : null}
-            onClick={() =>
-              item.label === "Auctions" && navigate("/auctions")
-            }
+            endIcon={item.submenu?.length ? <ChevronDown size={14} /> : null}
+            onClick={() => item.label === "Auction" && navigate("/auctions")}
             sx={{
               textTransform: "none",
               fontSize: "0.95rem",
@@ -51,8 +57,8 @@ const NavItems = ({ scrolled }) => {
             {item.label}
           </Button>
 
-          {item.submenu && activeMenu === item.label && (
-            <DesktopMenu items={item.submenu} scrolled={scrolled} />
+          {item.submenu?.length > 0 && activeMenu === item.label && (
+            <DesktopMenu items={item.submenu} />
           )}
         </Box>
       ))}
