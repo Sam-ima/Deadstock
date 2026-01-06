@@ -55,9 +55,10 @@ const router = createBrowserRouter(
 
       {/* Product Detail */}
       <Route
-        path="/product/:slug/:title"
+        path="/product/:id"
         element={<ProductDetailPage />}
       />
+
     </Route>
   )
 );
