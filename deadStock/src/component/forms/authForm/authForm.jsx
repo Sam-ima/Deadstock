@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   TextField,
   Button,
@@ -5,11 +6,15 @@ import {
   Typography,
   Divider,
   Box,
+  IconButton,
 } from "@mui/material";
+import { Visibility, VisibilityOff, Google } from "@mui/icons-material";
 
 export const AuthForm = ({ mode, setMode, role }) => {
   const isSignup = mode === "signup";
   const isSellerSignup = isSignup && role === "seller";
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const accent =
     role === "buyer"
@@ -24,14 +29,13 @@ export const AuthForm = ({ mode, setMode, role }) => {
           {isSignup ? "Create Account" : "Welcome Back"}
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          {isSignup
-            ? "Join our marketplace today"
-            : "Login to continue"}
+          {isSignup ? "Join our marketplace today" : "Login to continue"}
         </Typography>
       </Stack>
 
       <Divider />
 
+      {/* ===== FORM ===== */}
       <Box
         sx={{
           display: "grid",
@@ -42,23 +46,53 @@ export const AuthForm = ({ mode, setMode, role }) => {
           gap: 2,
         }}
       >
-        {isSignup && (
-          <TextField label="Full Name" fullWidth sx={inputStyle} />
-        )}
+        {isSignup && <TextField label="Full Name" fullWidth sx={inputStyle} />}
 
         <TextField label="Email Address" type="email" fullWidth sx={inputStyle} />
 
-        <TextField label="Password" type="password" fullWidth sx={inputStyle} />
+        {/* Password */}
+        <TextField
+          label="Password"
+          type={showPassword ? "text" : "password"}
+          fullWidth
+          sx={inputStyle}
+          InputProps={{
+            endAdornment: (
+              <IconButton
+                onClick={() => setShowPassword((p) => !p)}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            ),
+          }}
+        />
 
         {isSignup && (
           <TextField
             label="Confirm Password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             fullWidth
             sx={inputStyle}
           />
         )}
       </Box>
+
+      {/* ===== FORGOT PASSWORD ===== */}
+      {!isSignup && (
+        <Typography
+          variant="body2"
+          textAlign="right"
+          sx={{
+            cursor: "pointer",
+            color: "#EF6C00",
+            fontWeight: 600,
+            "&:hover": { textDecoration: "underline" },
+          }}
+        >
+          Forgot password?
+        </Typography>
+      )}
 
       {/* ===== SELLER INFO ===== */}
       {isSellerSignup && (
@@ -77,15 +111,12 @@ export const AuthForm = ({ mode, setMode, role }) => {
           >
             <TextField label="Store / Business Name" sx={inputStyle} />
             <TextField label="Phone Number" type="tel" sx={inputStyle} />
-
             <TextField
               label="Business Address"
               sx={{ gridColumn: "1 / -1", ...inputStyle }}
             />
-
             <TextField label="City" sx={inputStyle} />
             <TextField label="Country" sx={inputStyle} />
-
             <TextField
               label="PAN / VAT Number"
               sx={{ gridColumn: "1 / -1", ...inputStyle }}
@@ -114,6 +145,20 @@ export const AuthForm = ({ mode, setMode, role }) => {
         }}
       >
         {isSignup ? "Create Account" : "Login"}
+      </Button>
+
+      {/* ===== GOOGLE AUTH ===== */}
+      <Button
+        variant="outlined"
+        startIcon={<Google />}
+        sx={{
+          py: 1.2,
+          borderRadius: 3,
+          textTransform: "none",
+          fontWeight: 600,
+        }}
+      >
+        Continue with Google
       </Button>
 
       {/* ===== TOGGLE ===== */}
