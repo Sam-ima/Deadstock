@@ -1,12 +1,15 @@
 import { Card, Typography, Box, Button, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-
+import makeSlug from "../../../utils/slugify";
+// import { products } from "../../component/data/products_data";
 
 const AuctionProductCard = ({ product }) => {
    const navigate = useNavigate();
   return (
     <Card
-    onClick={() => navigate(`/product/${product.id}`)}
+    onClick={() =>
+  navigate(`/product/${product.id}/${makeSlug(product.name)}`)
+}
       sx={{
         width: 280,
         borderRadius: 3,
