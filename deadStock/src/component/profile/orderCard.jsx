@@ -6,7 +6,7 @@ const statusColor = {
   Processing: "warning",
 };
 
-const OrderCard = ({ title, size, date, price, status }) => {
+const orderCard = ({ title, size, date, price, status }) => {
   return (
     <Box
       sx={{
@@ -37,4 +37,4 @@ const OrderCard = ({ title, size, date, price, status }) => {
   );
 };
 
-export default OrderCard;
+export default orderCard;

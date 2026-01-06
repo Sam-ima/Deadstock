@@ -59,7 +59,15 @@ const ProfileHeader = () => {
             {profile.username}
           </Typography>
 
-          <Chip label="VERIFIED BUYER" color="primary" sx={{ mt: 1 }} />
+          <Chip
+          label="VERIFIED BUYER"
+          sx={{
+            mt: 1,
+            bgcolor: "#2E7D32",
+            color: "#fff",
+            fontWeight: 600,
+          }}
+        />
         </Box>
       </Fade>
 
