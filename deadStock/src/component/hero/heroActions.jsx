@@ -3,7 +3,9 @@ import { useNavigate } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const HeroActions = () => {
-    const navigate=useNavigate();
+
+  const navigate=useNavigate();
+
   return (
     <Box
       sx={{
@@ -36,25 +38,6 @@ const HeroActions = () => {
         View Bidding Products
       </Button>
 
-      {/* <Button
-        variant="contained"
-        endIcon={<ArrowForwardIcon />}
-        sx={{
-          background: "#c5791bff",
-          color: "#fff",
-          px: { xs: 3, md: 4 },
-          py: 1.4,
-          borderRadius: "30px",
-          textTransform: "none",
-          fontSize: "1rem",
-          width: { xs: "100%", sm: "auto" },
-          "&:hover": {
-            background: "#101111ff",
-          },
-        }}
-      >
-        Start Selling
-      </Button> */}
     </Box>
   );
 };
