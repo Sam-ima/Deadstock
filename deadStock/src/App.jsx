@@ -19,7 +19,8 @@ import RootLayout from "./root_layout";
 // import ProductDetailPage from "./pages/productdetail.page";
 
 import AuthPage from "./pages/authPage.jsx";
-import darkTheme from "./theme/darkTheme";
+import ProfilePage from "./pages/profilePage";
+
 
 /* ---------- Lazy Loaded Pages ---------- */
 const LandingPage = lazy(() => import("./pages/landingPage"));
@@ -36,17 +37,9 @@ const router = createBrowserRouter(
       {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/auctions" element={<AuctionsPage />} />
+      <Route path="/profile" element={<ProfilePage />} />
 
-      {/* Profile with Theme */}
-      <Route
-        path="/profile"
-        element={
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <Profile />
-          </ThemeProvider>
-        }
-      />
+    
       {/* auth */}
       <Route path="auth" element={<AuthPage />} />
       <Route path="/reset-password" element={<ResetPassword/>}/>
