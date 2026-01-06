@@ -7,6 +7,8 @@ import {
   Divider,
   Box,
   IconButton,
+  FormControlLabel,
+  Checkbox,
 } from "@mui/material";
 import { Visibility, VisibilityOff, Google } from "@mui/icons-material";
 
@@ -15,10 +17,11 @@ export const AuthForm = ({ mode, setMode, role }) => {
   const isSellerSignup = isSignup && role === "seller";
 
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const accent =
     role === "buyer"
-      ? "linear-gradient(135deg, #1B5E20, #4CAF50)"
+      ? "linear-gradient(135deg, #2E7D32, #2E7D32)"
       : "linear-gradient(135deg, #E65100, #FF9800)";
 
   return (
@@ -48,7 +51,12 @@ export const AuthForm = ({ mode, setMode, role }) => {
       >
         {isSignup && <TextField label="Full Name" fullWidth sx={inputStyle} />}
 
-        <TextField label="Email Address" type="email" fullWidth sx={inputStyle} />
+        <TextField
+          label="Email Address"
+          type="email"
+          fullWidth
+          sx={inputStyle}
+        />
 
         {/* Password */}
         <TextField
@@ -58,10 +66,7 @@ export const AuthForm = ({ mode, setMode, role }) => {
           sx={inputStyle}
           InputProps={{
             endAdornment: (
-              <IconButton
-                onClick={() => setShowPassword((p) => !p)}
-                edge="end"
-              >
+              <IconButton onClick={() => setShowPassword((p) => !p)} edge="end">
                 {showPassword ? <VisibilityOff /> : <Visibility />}
               </IconButton>
             ),
@@ -77,22 +82,36 @@ export const AuthForm = ({ mode, setMode, role }) => {
           />
         )}
       </Box>
+      {/* remember me  */}
+      <Box sx={{display:"flex",justifyContent:"space-between"}}>
+        {!isSignup && (
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+            }
+            label="Remember me"
+          />
+        )}
 
-      {/* ===== FORGOT PASSWORD ===== */}
-      {!isSignup && (
-        <Typography
-          variant="body2"
-          textAlign="right"
-          sx={{
-            cursor: "pointer",
-            color: "#EF6C00",
-            fontWeight: 600,
-            "&:hover": { textDecoration: "underline" },
-          }}
-        >
-          Forgot password?
-        </Typography>
-      )}
+        {/* ===== FORGOT PASSWORD ===== */}
+        {!isSignup && (
+          <Typography
+            variant="body2"
+            textAlign="right"
+            sx={{
+              cursor: "pointer",
+              color: "#EF6C00",
+              fontWeight: 600,
+              "&:hover": { textDecoration: "underline" },
+            }}
+          >
+            Forgot password?
+          </Typography>
+        )}
+      </Box>
 
       {/* ===== SELLER INFO ===== */}
       {isSellerSignup && (
