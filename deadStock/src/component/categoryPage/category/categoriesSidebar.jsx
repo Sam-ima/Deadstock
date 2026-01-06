@@ -1,45 +1,59 @@
+// src/pages/categories/CategoriesSidebar.jsx
 import { Box, Typography, Tooltip, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-const CategoriesSidebar = ({ categories, active, onSelect }) => {
+const CategoriesSidebar = ({
+  category,
+  subcategories,
+  activeSubcategory,
+  onSelect,
+}) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <Box
       sx={{
-        width: isMobile ? 72 : 200,
+        width: isMobile ? 80 : 240,
         borderRight: '1px solid',
         borderColor: 'grey.200',
         p: isMobile ? 1 : 3,
         backgroundColor: '#FAFAFA',
-        transition: 'width 0.3s ease',
       }}
     >
-      {!isMobile && (
-        <Typography fontWeight={700} mb={2} fontSize="1.1rem">
-          Categories
+      {/* Category Name → SHOW ALL */}
+      {!isMobile && category && (
+        <Typography
+          onClick={() => onSelect(null)}   // 👈 IMPORTANT
+          fontWeight={800}
+          mb={2}
+          fontSize="1.1rem"
+          color={!activeSubcategory ? '#2E7D32' : 'text.primary'}
+          sx={{
+            cursor: 'pointer',
+            '&:hover': {
+              color: '#1B5E20',
+            },
+          }}
+        >
+          {category.name}
         </Typography>
       )}
 
-      {categories.map(cat => {
-        const isActive = active === cat.slug;
+      {subcategories.map(sub => {
+        const isActive = activeSubcategory?.id === sub.id;
 
         return (
           <Tooltip
-            key={cat.slug}
-            title={isMobile ? cat.name : ''}
+            key={sub.id}
+            title={isMobile ? sub.name : ''}
             placement="right"
             arrow
           >
             <Box
-              onClick={() => onSelect(cat)}
+              onClick={() => onSelect(sub)}
               sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: isMobile ? 'center' : 'flex-start',
-                gap: 1.5,
-                px: isMobile ? 1 : 2,
+                px: 2,
                 py: 1.2,
                 borderRadius: 2,
                 cursor: 'pointer',
@@ -52,13 +66,7 @@ const CategoriesSidebar = ({ categories, active, onSelect }) => {
                 },
               }}
             >
-              {cat.icon}
-
-              {!isMobile && (
-                <Typography fontSize="0.95rem">
-                  {cat.name}
-                </Typography>
-              )}
+              {!isMobile && sub.name}
             </Box>
           </Tooltip>
         );
