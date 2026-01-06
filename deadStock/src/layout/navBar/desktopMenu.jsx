@@ -1,6 +1,6 @@
 import { Box, Button } from "@mui/material";
 
-const ITEM_HEIGHT = 44;
+const ITEM_HEIGHT =35;
 const MAX_ITEMS = 5;
 
 const DesktopMenu = ({ items = [] }) => {
@@ -23,7 +23,7 @@ const DesktopMenu = ({ items = [] }) => {
         zIndex: 99,
         maxHeight: ITEM_HEIGHT * MAX_ITEMS,
         overflowY: "auto",
-        py: 0.5,
+        py: 0.1,
 
         "&::-webkit-scrollbar": { width: "6px" },
         "&::-webkit-scrollbar-thumb": {
