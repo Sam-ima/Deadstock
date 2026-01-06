@@ -3,6 +3,7 @@ import { Container } from "@mui/material";
 import ProductDetail from "../component/productdetai";
 import { useParams } from "react-router-dom";
 import { products } from "../component/data/products_data"; 
+import { Box } from "lucide-react";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const ProductDetailPage = () => {
           justifyContent: "center",
         }}
       >
-        <div>Loading...</div>
+        <Box>Loading...</Box>
       </Container>
     );
   }
