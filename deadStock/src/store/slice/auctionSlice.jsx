@@ -1,44 +1,34 @@
+// src/redux/auctionSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  selectedProduct: null,
-  isWishlisted: false,
-  bidAmount: 0,
-  snackbar: {
-    open: false,
-    message: "",
-  },
+  wishlist: [],
+  bids: {}, // { [productId]: bidAmount }
+  selectedImages: {}, // { [productId]: selectedImageUrl }
 };
 
 const auctionSlice = createSlice({
   name: "auction",
   initialState,
   reducers: {
-    setProduct(state, action) {
-      state.selectedProduct = action.payload;
-      state.bidAmount = action.payload.currentBid + 10;
+    toggleWishlist: (state, action) => {
+      const productId = action.payload;
+      if (state.wishlist.includes(productId)) {
+        state.wishlist = state.wishlist.filter((id) => id !== productId);
+      } else {
+        state.wishlist.push(productId);
+      }
     },
-    toggleWishlist(state) {
-      state.isWishlisted = !state.isWishlisted;
+    setBid: (state, action) => {
+      const { productId, amount } = action.payload;
+      state.bids[productId] = amount;
     },
-    updateBid(state, action) {
-      state.bidAmount = action.payload;
-    },
-    showSnackbar(state, action) {
-      state.snackbar = { open: true, message: action.payload };
-    },
-    closeSnackbar(state) {
-      state.snackbar.open = false;
+    setSelectedImage: (state, action) => {
+      const { productId, imageUrl } = action.payload;
+      state.selectedImages[productId] = imageUrl;
     },
   },
 });
 
-export const {
-  setProduct,
-  toggleWishlist,
-  updateBid,
-  showSnackbar,
-  closeSnackbar,
-} = auctionSlice.actions;
-
+export const { toggleWishlist, setBid, setSelectedImage } = auctionSlice.actions;
 export default auctionSlice.reducer;
