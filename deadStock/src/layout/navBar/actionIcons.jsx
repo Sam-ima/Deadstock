@@ -21,7 +21,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          px: 1.5,
+          px: 1,
           height: 38,
           borderRadius: "20px",
           backgroundColor: "rgba(255, 255, 255, 0.15)",
@@ -41,7 +41,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
             ml: 1,
             color: "#fff",
             fontSize: "0.9rem",
-            width: { xs: 130, sm: 180, md: 200 },
+            width: { xs: 130, sm: 180, md: 100,lg:200 },
           }}
         />
       </Paper>
@@ -56,11 +56,11 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
       {/* Login Button */}
       {!isMobile && (
         <Button
-          startIcon={<User size={18} />}
+          startIcon={<User size={15} />}
           onClick={() => navigate("/auth")}
           sx={{
-            ml: 1,
-            px: 3,
+            ml: 0,
+            px: 1,
             py: 1,
             borderRadius: "24px",
             textTransform: "none",
@@ -72,7 +72,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
             },
           }}
         >
-          Login / Register
+          Login/Register
         </Button>
       )}
 

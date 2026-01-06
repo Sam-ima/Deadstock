@@ -7,11 +7,11 @@ const AuthContainer = ({ children }) => {
       sx={{
         // maxWidth: 1200,
         // width: "100%",
-        minHeight: "100vh",
+        minHeight: "90vh",
         display: "grid",
         placeItems: "center",
         px: 2,
-        m: { xs: 0, sm: 10, md: 10 },
+        m: { xs: 0, sm: 10, md: 5,lg:10 },
         py: { xs: 9, sm: 0 },
       }}
     >
