@@ -1,63 +1,64 @@
-import React, { useState } from "react";
-import { Box, Button } from "@mui/material";
-import { ChevronDown } from "lucide-react";
+import { Box, MenuItem, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import categories from "../../component/data/categories_data";
-import businessOptions from "../../component/data/business_data";
-import DesktopMenu from "./desktopMenu";
 
-const navItems = [
-  { label: "Home" },
-  { label: "Categories", submenu: categories },
-  { label: "Auction" },
-  { label: "For Business", submenu: businessOptions.map((b) => b.label) },
-];
+const MAX_VISIBLE_ITEMS = 5;
 
-const NavItems = ({ scrolled }) => {
-  const [activeMenu, setActiveMenu] = useState(null);
+const DesktopMenu = ({ items, scrolled }) => {
   const navigate = useNavigate();
 
   return (
-    <>
-      {navItems.map((item) => (
-        <Box
-          key={item.label}
-          sx={{ position: "relative" }}
-          onMouseEnter={() => item.submenu && setActiveMenu(item.label)}
-          onMouseLeave={() => setActiveMenu(null)}
-        >
-          <Button
-            endIcon={item.submenu ? <ChevronDown size={14} /> : null}
-            onClick={() =>
-              item.label === "Auctions" && navigate("/auctions")
-            }
-            sx={{
-              textTransform: "none",
-              fontSize: "0.95rem",
-              fontWeight: 600,
-              color: "#ffffff",
-              px: 1,
-              py: 1.5,
-              minHeight: 48,
-              borderRadius: 0,
-              whiteSpace: "nowrap",
-              transition: "color 0.3s ease",
-              "&:hover": {
-                backgroundColor: "transparent",
-                color: scrolled ? "#000" : "#FFD27D",
-              },
-            }}
-          >
-            {item.label}
-          </Button>
+    <Box
+      sx={{
+        position: "absolute",
+        top: "100%",
+        left: 0,
+        mt: 1,
+        width: 220,
+        maxHeight: `${MAX_VISIBLE_ITEMS * 44}px`, // 5 items
+        overflowY: "auto",
+        backgroundColor: "#fff",
+        borderRadius: 1,
+        boxShadow: "0 10px 30px rgba(0,0,0,0.15)",
+        zIndex: 1000,
 
-          {item.submenu && activeMenu === item.label && (
-            <DesktopMenu items={item.submenu} scrolled={scrolled} />
-          )}
-        </Box>
+        /* Scrollbar styling */
+        "&::-webkit-scrollbar": {
+          width: "6px",
+        },
+        "&::-webkit-scrollbar-thumb": {
+          backgroundColor: "#ccc",
+          borderRadius: "10px",
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+          backgroundColor: "#999",
+        },
+      }}
+    >
+      {items.map((item, index) => (
+        <MenuItem
+          key={index}
+          onClick={() =>
+            navigate(
+              typeof item === "string"
+                ? `/category/${item.toLowerCase()}`
+                : `/category/${item.label.toLowerCase()}`
+            )
+          }
+          sx={{
+            fontSize: "0.9rem",
+            py: 1.2,
+            "&:hover": {
+              backgroundColor: "#f5f5f5",
+            },
+          }}
+        >
+          <Typography noWrap>
+            {typeof item === "string" ? item : item.label}
+          </Typography>
+        </MenuItem>
       ))}
-    </>
+    </Box>
   );
 };
 
-export default NavItems;
+export default DesktopMenu;
