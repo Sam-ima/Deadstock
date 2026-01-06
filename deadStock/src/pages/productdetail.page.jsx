@@ -1,125 +1,98 @@
-// src/pages/ProductDetailPage.jsx
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import products from "../component/data/products_data";
-import { Box, Container, Typography, Card, CardMedia, Stack, Button, Grid } from "@mui/material";
-import CategoryCard from "../component/categoryLandng/categoryCard";
-
-const deriveCategory = (name) => {
-  const n = name.toLowerCase();
-  if (n.includes("watch") || n.includes("appliance") || n.includes("headphones")) return "electronics";
-  if (n.includes("shirt") || n.includes("jacket")) return "fashion-apparel";
-  if (n.includes("flower") || n.includes("garden")) return "home-garden";
-  if (n.includes("drill") || n.includes("forklift") || n.includes("machine")) return "industrial-equipment";
-  if (n.includes("honey") || n.includes("coffee") || n.includes("food")) return "food-beverage";
-  if (n.includes("skin") || n.includes("hair") || n.includes("beauty")) return "health-beauty";
-  if (n.includes("bike") || n.includes("tent") || n.includes("camping")) return "sports-outdoors";
-  if (n.includes("tire") || n.includes("car") || n.includes("engine")) return "automotive";
-  return "others";
-};
+import { Box, Container, Grid, Typography, Button, Breadcrumbs, Link } from "@mui/material";
+import products from "../component/data/products_data"; 
 
 const ProductDetailPage = () => {
-  const navigate = useNavigate();
+  // 1. Grab params from URL
   const { slug, title } = useParams();
+  const navigate = useNavigate();
 
-  // Find the current product
+  // 2. Filter data: Replace hyphens in URL title back to spaces to match data
+  const formattedTitle = title.replace(/-/g, " ");
+  
   const product = products.find(
-    (p) => deriveCategory(p.name) === slug && p.name === decodeURIComponent(title)
+    (p) => p.name.toLowerCase() === formattedTitle.toLowerCase()
   );
 
+  // 3. Handle product not found
   if (!product) {
     return (
-      <Box sx={{ py: 6, textAlign: "center" }}>
-        <Typography variant="h5">Product not found.</Typography>
-      </Box>
+      <Container sx={{ py: 10, textAlign: 'center' }}>
+        <Typography variant="h5">Product not found</Typography>
+        <Button onClick={() => navigate('/category')}>Back to Categories</Button>
+      </Container>
     );
   }
 
-  // Related products: same category, exclude current product
-  const relatedProducts = products
-    .filter((p) => deriveCategory(p.name) === slug && p.name !== product.name)
-    .map((p) => ({
-      title: p.name,
-      image: p.img,
-      slug: deriveCategory(p.name),
-    }));
-
   return (
-    <Box sx={{ py: 6 }}>
-      <Container maxWidth="md">
-        {/* Main Product */}
-        <Card sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, p: 2 }}>
-          <CardMedia
+    <Container maxWidth="lg" sx={{ py: 8 }}>
+      {/* Breadcrumbs for better UX */}
+      <Breadcrumbs sx={{ mb: 4 }}>
+        <Link underline="hover" color="inherit" onClick={() => navigate('/')} sx={{ cursor: 'pointer' }}>
+          Home
+        </Link>
+        <Link underline="hover" color="inherit" onClick={() => navigate(`/category/${slug}`)} sx={{ cursor: 'pointer' }}>
+          {slug.toUpperCase()}
+        </Link>
+        <Typography color="text.primary">{product.name}</Typography>
+      </Breadcrumbs>
+
+      <Grid container spacing={6}>
+        {/* Left Side: Product Image */}
+        <Grid item xs={12} md={6}>
+          <Box
             component="img"
-            image={product.img}
+            src={product.img}
             alt={product.name}
-            sx={{ width: { xs: "100%", md: 300 }, borderRadius: 2 }}
+            sx={{
+              width: "100%",
+              borderRadius: 4,
+              boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
+              objectFit: "cover"
+            }}
           />
-          <Box sx={{ flex: 1, ml: { md: 3 }, mt: { xs: 2, md: 0 } }}>
-            <Typography variant="h4" fontWeight={700} mb={2}>
-              {product.name}
+        </Grid>
+
+        {/* Right Side: Product Details */}
+        <Grid item xs={12} md={6}>
+          <Typography variant="overline" color="primary" fontWeight={700}>
+            {product.category}
+          </Typography>
+          <Typography variant="h3" fontWeight={800} gutterBottom>
+            {product.name}
+          </Typography>
+          
+          <Box sx={{ bgcolor: "#f5f5f5", p: 3, borderRadius: 2, my: 3 }}>
+            <Typography variant="h6">Current Bid</Typography>
+            <Typography variant="h3" color="secondary" fontWeight={700}>
+              ${product.currentBid}
             </Typography>
-
-            <Typography variant="h6" color="#f97316" fontWeight={600} mb={2}>
-              Price: {product.price}
+            <Typography variant="body2" color="text.secondary">
+              {product.bids} bids so far
             </Typography>
-
-            <Typography mb={2}>Delivery Time: {product.time}</Typography>
-            <Typography mb={2}>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla facilisi.
-              Praesent efficitur nulla ac nulla laoreet, at luctus ex eleifend.
-            </Typography>
-
-            <Stack direction="row" spacing={2}>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#194638ff",
-                  color: "#fff",
-                  textTransform: "none",
-                  fontWeight: 600,
-                  borderRadius: 20,
-                  px: 3,
-                  "&:hover": { backgroundColor: "#059669" },
-                }}
-              >
-                Buy Now
-              </Button>
-
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#f97316",
-                  color: "#fff",
-                  textTransform: "none",
-                  fontWeight: 600,
-                  borderRadius: 20,
-                  px: 3,
-                  "&:hover": { backgroundColor: "#ea580c" },
-                }}
-              >
-                Add to Cart
-              </Button>
-            </Stack>
           </Box>
-        </Card>
 
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <Box sx={{ mt: 6 }}>
-            <Typography variant="h5" fontWeight={700} mb={3} textAlign="center">
-              Related Products
-            </Typography>
-            <Grid container spacing={3} justifyContent="center">
-              {relatedProducts.map((item, idx) => (
-                <Grid item xs={12} sm={6} md={4} key={idx}>
-                  <CategoryCard category={item} isMobile={false} />
-                </Grid>
-              ))}
-            </Grid>
+          <Typography variant="body1" color="text.secondary" mb={4}>
+            This is a rare {product.name} from the {product.category} category. 
+            Don't miss out on this deadstock item!
+          </Typography>
+
+          <Button 
+            variant="contained" 
+            size="large" 
+            fullWidth 
+            sx={{ py: 2, fontSize: '1.1rem', fontWeight: 700 }}
+          >
+            Place Bid Now
+          </Button>
+
+          <Box mt={3}>
+            <Typography variant="subtitle2">Time Left: <strong>{product.timeLeft}</strong></Typography>
           </Box>
-        )}
-      </Container>
-    </Box>
+        </Grid>
+      </Grid>
+    </Container>
   );
 };
 
