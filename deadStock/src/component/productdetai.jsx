@@ -78,16 +78,17 @@ const ProductDetail = ({ product }) => {
     }
   };
 
-  // Mock gallery images if not provided
-  const galleryImages = product.galleryImages || [
-    product.img,
-        "https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=1000&auto=format&fit=crop",
+  const galleryImages =
+    product.galleryImages || [
+      product.img,
+      "https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=1000&auto=format&fit=crop",
       "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1508685096489-7aac29bca228?q=80&w=1000&auto=format&fit=crop",  ];
+      "https://images.unsplash.com/photo-1508685096489-7aac29bca228?q=80&w=1000&auto=format&fit=crop",
+    ];
 
   return (
     <>
-      {/* Enhanced Navigation Bar */}
+      {/* Navigation Bar */}
       <Box
         sx={{
           position: "sticky",
@@ -95,31 +96,29 @@ const ProductDetail = ({ product }) => {
           zIndex: 1000,
           backgroundColor: "white",
           borderBottom: "2px solid #f0f0f0",
-          py: 1.5,
-          px: { xs: 2, md: 4 },
+          py: { xs: 1, sm: 1.5 },
+          px: { xs: 2, sm: 3, md: 4 },
           boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)",
         }}
       >
         <Container maxWidth="lg">
-          <Stack direction="row" alignItems="center" spacing={3}>
-            <IconButton 
+          <Stack direction="row" alignItems="center" spacing={2}>
+            <IconButton
               onClick={() => navigate(-1)}
               sx={{
                 backgroundColor: lightBg,
-                "&:hover": {
-                  backgroundColor: "#e8f5e8",
-                },
+                "&:hover": { backgroundColor: "#e8f5e8" },
+                p: { xs: 0.5, sm: 1 },
               }}
             >
-              <ArrowBack sx={{ color: primaryColor }} />
+              <ArrowBack sx={{ color: primaryColor, fontSize: { xs: 20, sm: 24 } }} />
             </IconButton>
-            
-            <Breadcrumbs aria-label="breadcrumb" sx={{ flexGrow: 1 }}>
+            <Breadcrumbs aria-label="breadcrumb" sx={{ flexGrow: 1, fontSize: { xs: 12, sm: 14 } }}>
               <Link
                 underline="hover"
                 color="inherit"
                 onClick={() => navigate("/")}
-                sx={{ cursor: "pointer", "&:hover": { color: primaryColor } }}
+                sx={{ cursor: "pointer", fontSize: { xs: 12, sm: 14 } }}
               >
                 Home
               </Link>
@@ -127,49 +126,30 @@ const ProductDetail = ({ product }) => {
                 underline="hover"
                 color="inherit"
                 onClick={() => navigate("/auctions")}
-                sx={{ cursor: "pointer", "&:hover": { color: primaryColor } }}
+                sx={{ cursor: "pointer", fontSize: { xs: 12, sm: 14 } }}
               >
                 Auctions
               </Link>
-              <Typography color="text.primary">{product.category}</Typography>
+              <Typography color="text.primary" sx={{ fontSize: { xs: 12, sm: 14 } }}>
+                {product.category}
+              </Typography>
             </Breadcrumbs>
-
             <Stack direction="row" spacing={1}>
-              <IconButton 
-                onClick={() => setIsWishlisted(!isWishlisted)}
-                sx={{
-                  backgroundColor: lightBg,
-                  "&:hover": {
-                    backgroundColor: "#e8f5e8",
-                  },
-                }}
-              >
-                {isWishlisted ? (
-                  <Favorite sx={{ color: "#e53935" }} />
-                ) : (
-                  <FavoriteBorder sx={{ color: primaryColor }} />
-                )}
+              <IconButton onClick={() => setIsWishlisted(!isWishlisted)} sx={{ p: { xs: 0.5, sm: 1 } }}>
+                {isWishlisted ? <Favorite sx={{ color: "#e53935", fontSize: { xs: 18, sm: 24 } }} /> : <FavoriteBorder sx={{ color: primaryColor, fontSize: { xs: 18, sm: 24 } }} />}
               </IconButton>
-              <IconButton 
-                onClick={handleShare}
-                sx={{
-                  backgroundColor: lightBg,
-                  "&:hover": {
-                    backgroundColor: "#e8f5e8",
-                  },
-                }}
-              >
-                <Share sx={{ color: primaryColor }} />
+              <IconButton onClick={handleShare} sx={{ p: { xs: 0.5, sm: 1 } }}>
+                <Share sx={{ color: primaryColor, fontSize: { xs: 18, sm: 24 } }} />
               </IconButton>
             </Stack>
           </Stack>
         </Container>
       </Box>
 
-      {/* Main Product Detail */}
-      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
-        <Grid container spacing={5}>
-          {/* Left Column - Images */}
+      {/* Main Content */}
+      <Container maxWidth="xl" sx={{ py: { xs: 2, sm: 3, md: 5 } }}>
+        <Grid container spacing={{ xs: 3, sm: 4, md: 5 }}>
+          {/* Images */}
           <Grid item xs={12} lg={7}>
             <Paper
               elevation={0}
@@ -178,40 +158,37 @@ const ProductDetail = ({ product }) => {
                 overflow: "hidden",
                 border: "2px solid #e8f5e9",
                 backgroundColor: "white",
-                position: "relative",
-                mb: 3,
+                mb: { xs: 2, md: 3 },
               }}
             >
-              {/* Featured Image */}
               <Box
                 component="img"
                 src={selectedImage}
                 alt={product.name}
                 sx={{
                   width: "100%",
-                  height: { xs: 300, md: 500 },
+                  height: { xs: 250, sm: 350, md: 500 },
                   objectFit: "contain",
                   display: "block",
                   backgroundColor: lightBg,
-                  p: 2,
+                  p: { xs: 1, sm: 2 },
                 }}
               />
-              
-              {/* Auction Badge */}
               <Box
                 sx={{
                   position: "absolute",
-                  top: 20,
-                  left: 20,
+                  top: { xs: 10, sm: 20 },
+                  left: { xs: 10, sm: 20 },
                   backgroundColor: primaryColor,
                   color: "white",
-                  px: 3,
-                  py: 1,
+                  px: { xs: 2, sm: 3 },
+                  py: { xs: 0.5, sm: 1 },
                   borderRadius: 2,
                   display: "flex",
                   alignItems: "center",
                   gap: 1,
                   boxShadow: "0 4px 12px rgba(46, 125, 50, 0.3)",
+                  fontSize: { xs: 10, sm: 14 },
                 }}
               >
                 <Gavel fontSize="small" />
@@ -220,21 +197,20 @@ const ProductDetail = ({ product }) => {
                 </Typography>
               </Box>
             </Paper>
-            
+
             {/* Thumbnail Gallery */}
-            <Stack direction="row" spacing={2} sx={{ overflowX: "auto", pb: 1 }}>
+            <Stack direction="row" spacing={1.5} sx={{ overflowX: "auto", pb: 1 }}>
               {galleryImages.map((img, index) => (
                 <Box
                   key={index}
                   onClick={() => setSelectedImage(img)}
                   sx={{
-                    width: 100,
-                    height: 100,
+                    width: { xs: 60, sm: 80, md: 100 },
+                    height: { xs: 60, sm: 80, md: 100 },
                     borderRadius: 2,
                     overflow: "hidden",
                     cursor: "pointer",
                     border: selectedImage === img ? `3px solid ${primaryColor}` : "2px solid #e0e0e0",
-                    backgroundColor: "white",
                     flexShrink: 0,
                     transition: "all 0.3s ease",
                     "&:hover": {
@@ -243,90 +219,43 @@ const ProductDetail = ({ product }) => {
                     },
                   }}
                 >
-                  <Box
-                    component="img"
-                    src={img}
-                    alt={`${product.name} ${index + 1}`}
-                    sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                  />
+                  <Box component="img" src={img} alt={`${product.name} ${index + 1}`} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 </Box>
               ))}
             </Stack>
           </Grid>
 
-          {/* Right Column - Product Info */}
+          {/* Product Info */}
           <Grid item xs={12} lg={5}>
-            <Stack spacing={4}>
-              {/* Product Title and Category */}
+            <Stack spacing={{ xs: 3, md: 4 }}>
+              {/* Title */}
               <Box>
-                <Chip
-                  label={product.category}
-                  sx={{
-                    backgroundColor: lightGreen,
-                    color: "white",
-                    fontWeight: 600,
-                    mb: 2,
-                  }}
-                />
-                <Typography 
-                  variant="h3" 
-                  fontWeight={700}
-                  sx={{
-                    color: darkGreen,
-                    mb: 2,
-                    lineHeight: 1.2,
-                  }}
-                >
+                <Chip label={product.category} sx={{ backgroundColor: lightGreen, color: "white", fontWeight: 600, mb: 1 }} />
+                <Typography variant="h5" fontWeight={700} sx={{ color: darkGreen, mb: 1, lineHeight: 1.2, fontSize: { xs: 20, sm: 24, md: 32 } }}>
                   {product.name}
                 </Typography>
-                <Typography 
-                  variant="body1" 
-                  color="text.secondary"
-                  sx={{ 
-                    fontSize: "1.1rem",
-                    lineHeight: 1.6,
-                  }}
-                >
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: 12, sm: 14, md: 16 }, lineHeight: 1.5 }}>
                   {product.description || "Premium auction item in excellent condition"}
                 </Typography>
               </Box>
 
-              {/* Ratings and Seller Info */}
-              <Paper
-                elevation={0}
-                sx={{
-                  p: 3,
-                  borderRadius: 3,
-                  backgroundColor: lightBg,
-                  border: "1px solid #e0f2e1",
-                }}
-              >
-                <Stack spacing={2}>
+              {/* Ratings */}
+              <Paper elevation={0} sx={{ p: 2, borderRadius: 3, backgroundColor: lightBg, border: "1px solid #e0f2e1" }}>
+                <Stack spacing={1.5}>
                   <Stack direction="row" alignItems="center" spacing={1}>
-                    <Rating 
-                      value={product.rating || 4.5} 
-                      precision={0.5} 
-                      readOnly 
-                      sx={{ color: accentColor }}
-                    />
-                    <Typography variant="body2" color="text.secondary">
+                    <Rating value={product.rating || 4.5} precision={0.5} readOnly sx={{ color: accentColor, fontSize: { xs: 16, sm: 20 } }} />
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: 10, sm: 12 } }}>
                       ({product.reviewCount || 124} reviews)
                     </Typography>
                   </Stack>
-                  
                   <Divider sx={{ borderColor: "#c8e6c9" }} />
-                  
-                  <Stack direction="row" alignItems="center" spacing={2}>
-                    <Person sx={{ color: primaryColor }} />
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <Person sx={{ color: primaryColor, fontSize: { xs: 18, sm: 20 } }} />
                     <Box>
-                      <Typography variant="body2" color="text.secondary">
+                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: 10, sm: 12 } }}>
                         Seller
                       </Typography>
-                      <Typography variant="body1" fontWeight={600}>
+                      <Typography variant="body1" fontWeight={600} sx={{ fontSize: { xs: 12, sm: 14 } }}>
                         {product.seller || "Premium Auctions Inc."}
                         <Verified fontSize="small" sx={{ color: primaryColor, ml: 0.5, verticalAlign: "middle" }} />
                       </Typography>
@@ -706,7 +635,7 @@ const ProductDetail = ({ product }) => {
       </Container>
 
       {/* Enhanced Snackbar */}
-      <Snackbar
+       <Snackbar
         open={showSnackbar}
         autoHideDuration={3000}
         onClose={() => setShowSnackbar(false)}
@@ -715,14 +644,7 @@ const ProductDetail = ({ product }) => {
         <Alert
           onClose={() => setShowSnackbar(false)}
           severity="success"
-          sx={{
-            width: "100%",
-            backgroundColor: primaryColor,
-            color: "white",
-            "& .MuiAlert-icon": { color: "white" },
-            borderRadius: 2,
-            boxShadow: "0 8px 16px rgba(46, 125, 50, 0.3)",
-          }}
+          sx={{ width: "100%", backgroundColor: primaryColor, color: "white", borderRadius: 2 }}
         >
           {snackbarMessage}
         </Alert>
