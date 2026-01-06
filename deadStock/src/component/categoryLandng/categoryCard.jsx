@@ -17,13 +17,10 @@ const CategoryCard = ({ category, onClick }) => {
         alignItems: 'center',
         justifyContent: 'center',
         cursor: 'pointer',
-        position: 'relative',
-
-        transition:
-          'transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease, background-color 0.25s ease',
+        transition: 'all 0.25s ease',
 
         '&:hover': {
-          transform: 'translateY(-1px)', // softer lift
+          transform: 'translateY(-2px)',
           borderColor: '#2E7D32',
           backgroundColor: '#FAFFFB',
           boxShadow: '0 6px 16px rgba(46,125,50,0.18)',
@@ -36,7 +33,6 @@ const CategoryCard = ({ category, onClick }) => {
         },
       }}
     >
-      {/* Icon wrapper */}
       <Box
         className="icon-wrapper"
         sx={{
@@ -48,28 +44,18 @@ const CategoryCard = ({ category, onClick }) => {
           alignItems: 'center',
           justifyContent: 'center',
           color: '#2E7D32',
-
-          transition:
-            'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.25s ease, color 0.25s ease',
+          transition: 'all 0.3s ease',
         }}
       >
         {category.icon}
       </Box>
 
-      {/* Category name */}
       <Typography
         fontSize="0.7rem"
         fontWeight={600}
         mt={1}
         textAlign="center"
-        lineHeight={1.2}
-        sx={{
-          px: 0.5,
-          maxWidth: '100%',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-        }}
+        noWrap
       >
         {category.name}
       </Typography>

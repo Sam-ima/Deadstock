@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 import CategoryCard from '../categoryCard';
 
 const BrowseList = ({
-  browseData,
+  categories,
   scrollRef,
   onCategoryClick,
   onPause,
@@ -19,23 +19,19 @@ const BrowseList = ({
         gridAutoFlow: 'column',
         gridAutoColumns: 'max-content',
         gap: 1.5,
-
         overflowX: 'auto',
         scrollBehavior: 'smooth',
-
-        justifyContent: 'center',   // ⭐ THIS CENTERS WHEN FEW ITEMS
-        width: '100%',              // ⭐ TAKE FULL WIDTH
-
+        justifyContent: 'center',
+        width: '100%',
         scrollbarWidth: 'none',
         '&::-webkit-scrollbar': { display: 'none' },
       }}
     >
-
-      {browseData.map(cat => (
+      {categories.map(category => (
         <CategoryCard
-          key={cat.slug}
-          category={cat}
-          onClick={() => onCategoryClick(cat.slug)}
+          key={category.id}
+          category={category}
+          onClick={() => onCategoryClick(category.slug)}
         />
       ))}
     </Box>

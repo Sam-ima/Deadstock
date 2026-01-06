@@ -10,7 +10,7 @@ import {
 import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
 import { useNavigate } from 'react-router-dom';
 
-import browseData from '../../data/browse_data';
+import categories from '../../data/categories';
 import BrowseHeader from './browseHeader';
 import BrowseList from './browseList';
 import useBrowseAutoScroll from './useBrowseAutoScroll';
@@ -34,7 +34,7 @@ const BrowseByCategory = () => {
     enabled: autoScroll,
     isMobile,
     cardWidth,
-    dataLength: browseData.length,
+    dataLength: categories.length,
     setCurrentIndex: () => {},
   });
 
@@ -43,51 +43,18 @@ const BrowseByCategory = () => {
       sx={{
         py: { xs: 3, sm: 4, md: 6 },
         backgroundColor: '#ffffff',
-      }}  
+      }}
     >
       <Container maxWidth="xl">
         <BrowseHeader />
 
-        {/* <Box position="relative"> */}
-          {/* Left fade
-          <Box
-            sx={{
-              position: 'absolute',
-              left: 0,
-              top: 0,
-              bottom: 0,
-              width: 60,
-              // background:
-              //   'linear-gradient(to right, #f8f9ff, transparent)',
-              zIndex: 2,
-              pointerEvents: 'none',
-            }}
-          /> */}
-
-          {/* Right fade */}
-          {/* <Box
-            sx={{
-              position: 'absolute',
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: 60,
-              background:
-                'linear-gradient(to left, #f8f9ff, transparent)',
-              zIndex: 2,
-              pointerEvents: 'none',
-            }}
-          /> */}
-
-          <BrowseList
-            browseData={browseData}
-            scrollRef={scrollRef}
-            cardWidth={cardWidth}
-            onCategoryClick={slug => navigate(`/category/${slug}`)}
-            onPause={() => setAutoScroll(false)}
-            onResume={() => setAutoScroll(true)}
-          />
-        {/* </Box> */}
+        <BrowseList
+          categories={categories}
+          scrollRef={scrollRef}
+          onCategoryClick={slug => navigate(`/category/${slug}`)}
+          onPause={() => setAutoScroll(false)}
+          onResume={() => setAutoScroll(true)}
+        />
 
         <Box display="flex" justifyContent="center" mt={5}>
           <Button
