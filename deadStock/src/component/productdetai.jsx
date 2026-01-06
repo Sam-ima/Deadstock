@@ -1,3 +1,102 @@
+import React, { useState } from "react";
+import { Container, Grid, Box, IconButton, Stack, Breadcrumbs, Link, Typography, Snackbar, Alert } from "@mui/material";
+import { ArrowBack, Favorite, FavoriteBorder, Share } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+
+// Components
+import ImageGallery from "../component/auctionDetail/ImageGallery";
+import ProductInfo from "../component/auctionDetail/productInfo";
+import AuctionTimer from "../component/auctionDetail/auctionTimer";
+import BidSection from "../component/auctionDetail/bidSection";
+import BidHistory from "../component/auctionDetail/bidHistory";
+import ProductSpecs from "../component/auctionDetail/ProductSpecs";
+
+const ProductDetail = ({ product }) => {
+  const navigate = useNavigate();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+
+  const handleShare = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: product.name,
+        text: `Check out ${product.name} on our auction site!`,
+        url: window.location.href,
+      });
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setSnackbarMessage("Link copied to clipboard!");
+      setShowSnackbar(true);
+    }
+  };
+
+  const primaryColor = "#2E7D32";
+  const lightBg = "#f8fff8";
+
+  return (
+    <Container maxWidth="xl" sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+      {/* Navigation Bar */}
+      <Box sx={{ position: "sticky", top: 0, zIndex: 1000, backgroundColor: "white", borderBottom: "2px solid #f0f0f0", py: 1.5, px: { xs: 2, md: 4 }, boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)" }}>
+        <Stack direction="row" alignItems="center" spacing={2}>
+          <IconButton onClick={() => navigate(-1)} sx={{ backgroundColor: lightBg, "&:hover": { backgroundColor: "#e8f5e8" } }}>
+            <ArrowBack sx={{ color: primaryColor }} />
+          </IconButton>
+          <Breadcrumbs sx={{ flexGrow: 1 }}>
+            <Link underline="hover" color="inherit" onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>Home</Link>
+            <Typography color="text.primary">{product.category}</Typography>
+          </Breadcrumbs>
+          <Stack direction="row" spacing={1}>
+            <IconButton onClick={() => setIsWishlisted(!isWishlisted)}>
+              {isWishlisted ? <Favorite sx={{ color: "#e53935" }} /> : <FavoriteBorder sx={{ color: primaryColor }} />}
+            </IconButton>
+            <IconButton onClick={handleShare}><Share sx={{ color: primaryColor }} /></IconButton>
+          </Stack>
+        </Stack>
+      </Box>
+
+      {/* Main Content */}
+      <Grid container spacing={5} sx={{ py: { xs: 2, md: 5 } }}>
+        {/* LEFT COLUMN: Media and Detailed Info */}
+        <Grid item xs={12} lg={7}>
+          <Stack spacing={4}>
+            <ImageGallery product={product} />
+            <Box>
+              <ProductSpecs product={product} />
+            </Box>
+          </Stack>
+        </Grid>
+
+        {/* RIGHT COLUMN: Bidding and History (Sticky) */}
+        <Grid item xs={12} lg={5}>
+          <Box sx={{ position: { lg: "sticky" }, top: "100px" }}>
+            <Stack spacing={3}>
+              <ProductInfo product={product} />
+              <AuctionTimer product={product} />
+              <BidSection product={product} />
+              <BidHistory product={product} />
+            </Stack>
+          </Box>
+        </Grid>
+      </Grid>
+
+      <Snackbar
+        open={showSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setShowSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity="success" sx={{ width: "100%", backgroundColor: primaryColor, color: "white" }}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+    </Container>
+  );
+};
+
+export default ProductDetail;
+
+
 // import React, { useState } from "react";
 // import {
 //   Container,
@@ -655,143 +754,4 @@
 
 // export default ProductDetail;
 
-// src/pages/ProductDetail.jsx
-// src/pages/ProductDetail.jsx
-import React, { useState } from "react";
-import { Container, Grid, Box, IconButton, Stack, Breadcrumbs, Link, Typography, Snackbar, Alert } from "@mui/material";
-import { ArrowBack, Favorite, FavoriteBorder, Share } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
 
-// Components
-import ImageGallery from "../component/auctionDetail/ImageGallery";
-import ProductInfo from "../component/auctionDetail/productInfo";
-import AuctionTimer from "../component/auctionDetail/auctionTimer";
-import BidSection from "../component/auctionDetail/bidSection";
-import BidHistory from "../component/auctionDetail/bidHistory";
-import ProductSpecs from "../component/auctionDetail/ProductSpecs";
-
-const ProductDetail = ({ product }) => {
-  const navigate = useNavigate();
-
-  // Wishlist and Snackbar states
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: `Check out ${product.name} on our auction site!`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      setSnackbarMessage("Link copied to clipboard!");
-      setShowSnackbar(true);
-    }
-  };
-
-  // Colors
-  const primaryColor = "#2E7D32";
-  const lightBg = "#f8fff8";
-
-  return (
-    <>
-      {/* Navigation Bar */}
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-          backgroundColor: "white",
-          borderBottom: "2px solid #f0f0f0",
-          py: { xs: 1, sm: 1.5 },
-          px: { xs: 2, sm: 3, md: 4 },
-          boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)",
-        }}
-      >
-        <Container maxWidth="lg">
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <IconButton
-              onClick={() => navigate(-1)}
-              sx={{
-                backgroundColor: lightBg,
-                "&:hover": { backgroundColor: "#e8f5e8" },
-                p: { xs: 0.5, sm: 1 },
-              }}
-            >
-              <ArrowBack sx={{ color: primaryColor, fontSize: { xs: 20, sm: 24 } }} />
-            </IconButton>
-
-            <Breadcrumbs aria-label="breadcrumb" sx={{ flexGrow: 1, fontSize: { xs: 12, sm: 14 } }}>
-              <Link underline="hover" color="inherit" onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>
-                Home
-              </Link>
-              <Link underline="hover" color="inherit" onClick={() => navigate("/auctions")} sx={{ cursor: "pointer" }}>
-                Auctions
-              </Link>
-              <Typography color="text.primary">{product.category}</Typography>
-            </Breadcrumbs>
-
-            <Stack direction="row" spacing={1}>
-              <IconButton onClick={() => setIsWishlisted(!isWishlisted)} sx={{ p: { xs: 0.5, sm: 1 } }}>
-                {isWishlisted ? <Favorite sx={{ color: "#e53935" }} /> : <FavoriteBorder sx={{ color: primaryColor }} />}
-              </IconButton>
-              <IconButton onClick={handleShare} sx={{ p: { xs: 0.5, sm: 1 } }}>
-                <Share sx={{ color: primaryColor }} />
-              </IconButton>
-            </Stack>
-          </Stack>
-        </Container>
-      </Box>
-
-      {/* Main Content */}
-      <Container maxWidth="xl" sx={{ py: { xs: 2, sm: 3, md: 5 } }}>
-        <Grid container spacing={{ xs: 3, sm: 4, md: 5 }}>
-          {/* Image Gallery */}
-          <Grid item xs={12} lg={7}>
-            <ImageGallery product={product} />
-          </Grid>
-
-          {/* Product Info + Auction + Bidding */}
-          <Grid item xs={12} lg={5}>
-            <Stack spacing={{ xs: 3, md: 4 }}>
-              <ProductInfo product={product} />
-              <AuctionTimer product={product} />
-              <BidSection product={product} />
-            </Stack>
-          </Grid>
-        </Grid>
-
-        {/* Additional Details Section */}
-        <Grid container spacing={4} sx={{ mt: { xs: 4, md: 8 } }}>
-          <Grid item xs={12} md={8}>
-            <ProductSpecs product={product} />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <BidHistory product={product} />
-          </Grid>
-        </Grid>
-      </Container>
-
-      {/* Snackbar */}
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setShowSnackbar(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          onClose={() => setShowSnackbar(false)}
-          severity="success"
-          sx={{ width: "100%", backgroundColor: primaryColor, color: "white", borderRadius: 2 }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </>
-  );
-};
-
-export default ProductDetail;

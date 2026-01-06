@@ -1,74 +1,83 @@
 // src/components/BrowseByCategory/BrowseByCategory.jsx
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState } from "react";
 import {
   Box,
   Button,
   Container,
+  Grid,
   useTheme,
-  useMediaQuery,
-} from '@mui/material';
-import KeyboardDoubleArrowRightIcon from '@mui/icons-material/KeyboardDoubleArrowRight';
-import { useNavigate } from 'react-router-dom';
+} from "@mui/material";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import { useNavigate } from "react-router-dom";
 
-import categories from '../../data/categories';
-import BrowseHeader from './browseHeader';
-import BrowseList from './browseList';
-import { getCardWidth } from './browse.utils';
+import categories from "../../data/categories";
+import BrowseHeader from "./browseHeader";
+import BrowseList from "./browseList";
+import CategoryCard from "../categoryCard";
 
 const BrowseByCategory = () => {
   const scrollRef = useRef(null);
-  const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
-  const isDesktop = useMediaQuery(theme.breakpoints.between('md', 'lg'));
-  const isLarge = useMediaQuery(theme.breakpoints.up('lg'));
+  const theme = useTheme();
 
-  const cardWidth = getCardWidth({ isLarge, isDesktop, isTablet });
-
-  // useBrowseAutoScroll({
-  //   scrollRef,
-  //   enabled: autoScroll,
-  //   isMobile,
-  //   cardWidth,
-  //   dataLength: categories.length,
-  //   setCurrentIndex: () => {},
-  // });
+  const [showAll, setShowAll] = useState(false);
 
   return (
-    <Box
-      sx={{
-        py: { xs: 3, sm: 4, md: 6 },
-        backgroundColor: '#ffffff',
-      }}
-    >
+    <Box sx={{ py: { xs: 3, sm: 4, md: 6 }, backgroundColor: "#ffffff" }}>
       <Container maxWidth="lg">
         <BrowseHeader />
 
-        <BrowseList
-          categories={categories}
-          scrollRef={scrollRef}
-          onCategoryClick={slug => navigate(`/category/${slug}`)}
-          // onPause={() => setAutoScroll(false)}
-          // onResume={() => setAutoScroll(true)}
-        />
+        {/* 🔹 CAROUSEL VIEW */}
+        {!showAll && (
+          <BrowseList
+            categories={categories}
+            scrollRef={scrollRef}
+            onCategoryClick={(slug) => navigate(`/category/${slug}`)}
+          />
+        )}
 
+        {/* 🔹 GRID VIEW (NO DOTS, NO SCROLL) */}
+        {showAll && (
+          <Grid container spacing={3} mt={1} justifyContent="center">
+            {categories.map((category) => (
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={4}
+                lg={3}
+                key={category.id}
+                display="flex"
+                justifyContent="center"
+              >
+                <CategoryCard
+                  category={category}
+                  onClick={() =>
+                    navigate(`/category/${category.slug}`)
+                  }
+                />
+              </Grid>
+            ))}
+          </Grid>
+        )}
+
+        {/* 🔹 TOGGLE BUTTON */}
         <Box display="flex" justifyContent="center" mt={5}>
           <Button
             variant="outlined"
             size="large"
             endIcon={<KeyboardDoubleArrowRightIcon />}
-            onClick={() => navigate('/category')}
+            onClick={() => setShowAll((prev) => !prev)}
             sx={{
-              color: '#2E7D32',
-              borderColor: '#2E7D32',
+              color: "#2E7D32",
+              borderColor: "#2E7D32",
               borderRadius: 3,
               px: 4,
               py: 1.2,
               fontWeight: 600,
             }}
           >
-            View All Categories
+            {showAll ? "View Less Categories" : "View All Categories"}
           </Button>
         </Box>
       </Container>
