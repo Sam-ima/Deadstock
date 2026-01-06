@@ -28,7 +28,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/category" element={<CategoryPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />
-        <Route path="/product/:slug/:title" element={<ProductDetailPage />} />
+        <Route path="/products/:id" element={<ProductDetailPage/>} />
         <Route path="/auth" element={<AuthPage />} />
       </Route>
     </Routes>
