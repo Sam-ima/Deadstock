@@ -8,7 +8,6 @@ import Profile from "./pages/profilePage";
 import CategoryPage from "./pages/categoryPage.jsx";
 import ProductDetailPage from "./pages/productdetail.page";
 
-import darkTheme from "./theme/darkTheme";
 
 function App() {
   return (
@@ -16,16 +15,6 @@ function App() {
       <Route element={<RootLayout />}>
         <Route path="/" element={<LandingPage />} />
         <Route path="/auctions" element={<AuctionsPage />} />
-        <Route
-          path="/profile"
-          element={
-            <ThemeProvider theme={darkTheme}>
-              <CssBaseline />
-              <Profile />
-            </ThemeProvider>
-          }
-        />
-
         <Route path="/profile" element={<Profile />} />
         <Route path="/category" element={<CategoryPage />} />
         <Route path="/category/:slug" element={<CategoryPage />} />

@@ -15,9 +15,9 @@ import {
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
 import EditIcon from "@mui/icons-material/Edit";
-import SectionCard from "../../common/sectionCard";
+import sectionCard from "../common/sectionCard";
 
-const PersonalInfo = () => {
+const personalInfo = () => {
   const [open, setOpen] = useState(false);
   const [info, setInfo] = useState({
     email: "j.smith@example.com",
@@ -33,7 +33,7 @@ const PersonalInfo = () => {
         </IconButton>
       </Typography>
 
-      <SectionCard>
+      <sectionCard>
         <List>
           <ListItem>
             <ListItemIcon><EmailIcon /></ListItemIcon>
@@ -45,7 +45,7 @@ const PersonalInfo = () => {
             <ListItemText primary="Phone" secondary={info.phone} />
           </ListItem>
         </List>
-      </SectionCard>
+      </sectionCard>
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogContent>
@@ -80,4 +80,4 @@ const PersonalInfo = () => {
   );
 };
 
-export default PersonalInfo;
+export default personalInfo;

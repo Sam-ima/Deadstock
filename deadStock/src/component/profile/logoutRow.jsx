@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 
-const LogoutRow = ({ onClick }) => {
+const logoutRow = ({ onClick }) => {
   return (
     <Box
       onClick={onClick}
@@ -27,4 +27,4 @@ const LogoutRow = ({ onClick }) => {
   );
 };
 
-export default LogoutRow;
+export default logoutRow;
