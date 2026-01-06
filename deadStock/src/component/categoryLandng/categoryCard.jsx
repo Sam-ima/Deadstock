@@ -33,6 +33,7 @@ const CategoryCard = ({ category, onClick }) => {
         },
       }}
     >
+      {/* Icon */}
       <Box
         className="icon-wrapper"
         sx={{
@@ -45,17 +46,28 @@ const CategoryCard = ({ category, onClick }) => {
           justifyContent: 'center',
           color: '#2E7D32',
           transition: 'all 0.3s ease',
+          flexShrink: 0,
         }}
       >
         {category.icon}
       </Box>
 
+      {/* Category Name */}
       <Typography
         fontSize="0.7rem"
         fontWeight={600}
-        mt={1}
         textAlign="center"
-        noWrap
+        sx={{
+          mt: 1,
+          px: 0.5,
+          lineHeight: 1.2,
+          maxWidth: '100%',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,        // 👈 limit to 2 lines
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        }}
       >
         {category.name}
       </Typography>
