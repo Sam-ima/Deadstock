@@ -5,9 +5,9 @@ import { Paper, Stack, Typography, Box } from "@mui/material";
 const BidHistory = () => {
   const bids = [
     { bidder: "AlexJohnson", amount: 9200, time: "2 hours ago" },
-    { bidder: "SarahW", amount: 9100, time: "3 hours ago" },
-    { bidder: "Mike88", amount: 9000, time: "5 hours ago" },
-    { bidder: "CollectorPro", amount: 8900, time: "1 day ago" },
+    // { bidder: "SarahW", amount: 9100, time: "3 hours ago" },
+    // { bidder: "Mike88", amount: 9000, time: "5 hours ago" },
+    // { bidder: "CollectorPro", amount: 8900, time: "1 day ago" },
   ];
 
   return (
