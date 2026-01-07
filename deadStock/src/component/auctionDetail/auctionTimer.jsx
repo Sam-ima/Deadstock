@@ -4,17 +4,19 @@ import { Timer, MonetizationOn, Person, Star } from "@mui/icons-material";
 
 const AuctionTimer = ({ product }) => {
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        p: { xs: 2, sm: 3, md: 4 },
-        borderRadius: { xs: 2, md: 3 },
-        backgroundColor: "#1B5E20",
-        color: "white",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
+<Paper
+  elevation={0}
+  sx={{
+    p: { xs: 2, sm: 3, md: 4 },
+    borderRadius: { xs: 2, md: 3 },
+    backgroundColor: "#1B5E20",
+    color: "white",
+    width: "100%",       
+    // border: "5px solid purple",
+  }}
+>
+
+
       <Stack spacing={{ xs: 2, sm: 3 }}>
         {/* Timer */}
         <Stack direction="row" alignItems="center" spacing={{ xs: 1.5, sm: 2 }}>

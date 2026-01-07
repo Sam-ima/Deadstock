@@ -36,7 +36,7 @@ const ProductCard = ({ product }) => {
     <Box
       onClick={() => navigate(`/product/${product.slug}`)}
       sx={{
-        width: '100%',
+        width: { xs: '270px', sm: '280px', md: '280px' },
         maxWidth: 320,
         border: "1px solid",
         borderColor: "grey.200",
@@ -60,7 +60,8 @@ const ProductCard = ({ product }) => {
           alt={product.name}
           sx={{
             width: "100%",
-            height: 200,
+            // height: 200,
+            height: { xs: 180, sm: 200, md: 220 },
             objectFit: "cover",
           }}
         />
@@ -90,11 +91,18 @@ const ProductCard = ({ product }) => {
         {/* Product Name */}
         <Typography
           fontWeight={600}
-          fontSize="0.95rem"
+          // fontSize="0.95rem"
           sx={{
             lineHeight: 1.3,
             // mb: 1,
-            height: 38,
+            fontSize: {
+            xs: "16px",   // mobile
+            // sm: "16px",   // small tablets
+            md: "18px",   // tablets / small laptop
+            lg: "20px",   // desktop
+          },
+            height: {xs:28 , sm:30, md: 32 },
+            // backgroundColor:'red',
             overflow: 'hidden',
             display: '-webkit-box',
             WebkitLineClamp: 2,
@@ -110,13 +118,15 @@ const ProductCard = ({ product }) => {
           <Typography fontSize="0.75rem" color="text.secondary" ml={0.5}>
             ({product.rating})
           </Typography>
-          <Typography fontSize="0.7rem" color="text.secondary" ml={0.5}>
+          {/* <Typography fontSize="0.7rem" color="text.secondary" ml={0.5}>
             • {product.reviews} reviews
-          </Typography>
+          </Typography> */}
         </Stack>
 
         {/* Price Section */}
-        <Box mb={1.5}>
+        <Box 
+        // sx={{backgroundColor:'blue'}}
+        >
           <Stack direction="row" alignItems="center" spacing={1}>
             <Typography
               fontWeight={700}
@@ -149,12 +159,12 @@ const ProductCard = ({ product }) => {
             alignItems: 'center',
             justifyContent: 'space-between',
             mt: 1,
-            pt: 1.5,
+            pt: { xs: 1, sm: 1.2, md: 1.5 },
             borderTop: '1px solid #f0f0f0'
           }}
         >
-          <Typography
-            fontSize="0.8rem"
+          <Typography 
+            sx={{fontSize:{xs:'0.8rem',sm:'0.85rem',md:'0.9rem'},}}
             color="text.secondary"
             fontWeight={500}
           >
@@ -165,7 +175,7 @@ const ProductCard = ({ product }) => {
           </Typography>
           
           <Typography
-            fontSize="0.75rem"
+            sx={{fontSize:{xs:'0.8rem',sm:'0.85rem',md:'0.9rem'},}}
             color="text.secondary"
             fontWeight={500}
           >

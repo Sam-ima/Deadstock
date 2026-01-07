@@ -1,5 +1,16 @@
 import React, { useState } from "react";
-import { Container, Grid, Box, IconButton, Stack, Breadcrumbs, Link, Typography, Snackbar, Alert } from "@mui/material";
+import {
+  Container,
+  Grid,
+  Box,
+  IconButton,
+  Stack,
+  Breadcrumbs,
+  Link,
+  Typography,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import { ArrowBack, Favorite, FavoriteBorder, Share } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
@@ -35,58 +46,140 @@ const ProductDetail = ({ product }) => {
   const lightBg = "#f8fff8";
 
   return (
-    <Container maxWidth="xl" sx={{ display: "flex", flexDirection: "column", border: "7px solid red", alignItems: "flex-start" }}>
+    <Container
+      maxWidth="xl"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center", // center content on mobile
+        px: { xs: 1, sm: 2, md: 4 },
+      }}
+    >
       {/* Navigation Bar */}
-      <Box sx={{ position: "sticky", top: 0, zIndex: 1000, backgroundColor: "white", borderBottom: "2px solid #f0f0f0", py: 1.5, px: { xs: 2, md: 4 }, boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)" }}>
+      <Box
+        sx={{
+          position: "sticky",
+          top: 0,
+          zIndex: 1000,
+          backgroundColor: "white",
+          borderBottom: "2px solid #f0f0f0",
+          py: 1.5,
+          px: { xs: 2, md: 4 },
+          boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)",
+          width: "100%",
+        }}
+      >
         <Stack direction="row" alignItems="center" spacing={2}>
-          <IconButton onClick={() => navigate(-1)} sx={{ backgroundColor: lightBg, "&:hover": { backgroundColor: "#e8f5e8" } }}>
+          <IconButton
+            onClick={() => navigate(-1)}
+            sx={{ backgroundColor: lightBg, "&:hover": { backgroundColor: "#e8f5e8" } }}
+          >
             <ArrowBack sx={{ color: primaryColor }} />
           </IconButton>
+
           <Breadcrumbs sx={{ flexGrow: 1 }}>
-            <Link underline="hover" color="inherit" onClick={() => navigate("/")} sx={{ cursor: "pointer" }}>Home</Link>
+            <Link
+              underline="hover"
+              color="inherit"
+              onClick={() => navigate("/")}
+              sx={{ cursor: "pointer" }}
+            >
+              Home
+            </Link>
             <Typography color="text.primary">{product.category}</Typography>
           </Breadcrumbs>
+
           <Stack direction="row" spacing={1}>
             <IconButton onClick={() => setIsWishlisted(!isWishlisted)}>
-              {isWishlisted ? <Favorite sx={{ color: "#e53935" }} /> : <FavoriteBorder sx={{ color: primaryColor }} />}
+              {isWishlisted ? (
+                <Favorite sx={{ color: "#e53935" }} />
+              ) : (
+                <FavoriteBorder sx={{ color: primaryColor }} />
+              )}
             </IconButton>
-            <IconButton onClick={handleShare}><Share sx={{ color: primaryColor }} /></IconButton>
+            <IconButton onClick={handleShare}>
+              <Share sx={{ color: primaryColor }} />
+            </IconButton>
           </Stack>
         </Stack>
       </Box>
 
       {/* Main Content */}
-      <Grid container spacing={20} sx={{ py: { xs: 2, md: 5 } ,border: "7px solid pink"}}>
-        {/* LEFT COLUMN: Media and Detailed Info */}
-        <Grid item xs={12} lg={7}>
-          <Stack spacing={4}>
-            <ImageGallery product={product} />
-            <Box>
-              <ProductSpecs product={product} />
-            </Box>
-          </Stack>
-        </Grid>
+<Grid
+  container
+  spacing={{ xs: 2, sm: 3, md: 5 }}
+  justifyContent="center" 
+  sx={{ width: "100%" , border: "5px solid red"}}
+>
+  {/* LEFT COLUMN */}
+  <Grid
+    item
+    xs={12}
+    md={7}
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+       alignItems: "center", 
+    }}
+  >
+    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: "100%" }}>
+      
+      {/* Product Info – mobile only */}
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
+        <ProductInfo product={product} />
+      </Box>
 
-        {/* RIGHT COLUMN: Bidding and History (Sticky) */}
-        <Grid item xs={12} lg={5}>
-          <Box sx={{ position: { lg: "sticky" }, top: "100px" }}>
-            <Stack spacing={3}>
-              <ProductInfo product={product} />
-              <AuctionTimer product={product} />
-              <BidSection product={product} />
-              <BidHistory product={product} />
-            </Stack>
-          </Box>
-        </Grid>
-      </Grid>
+      <ImageGallery product={product} />
+      <ProductSpecs product={product} />
+    </Stack>
+  </Grid>
 
+  {/* RIGHT COLUMN */}
+  <Grid
+    item
+    xs={12}
+    md={5}
+    sx={{
+      display: "flex",
+      flexDirection: "column",
+       alignItems: "center",    
+    }}
+  >
+    <Box
+      sx={{
+        position: { md: "sticky" },
+        top: { md: "100px" },
+        width: {xs:"140%",sm:"100%"  }          // 🔥 EXACT SAME AS LEFT
+        // border: "5px solid blue",
+      }}
+    >
+      <Stack spacing={{ xs: 2, md: 3 }}>
+        
+        {/* Product Info – desktop only */}
+        <Box sx={{ display: { xs: "none", md: "block" } }}>
+          <ProductInfo product={product} />
+        </Box>
+
+        <AuctionTimer product={product} />
+        <BidSection product={product} />
+        <BidHistory product={product} />
+      </Stack>
+    </Box>
+  </Grid>
+</Grid>
+
+
+      {/* Snackbar */}
       <Snackbar
         open={showSnackbar}
         autoHideDuration={3000}
         onClose={() => setShowSnackbar(false)}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
-        <Alert severity="success" sx={{ width: "100%", backgroundColor: primaryColor, color: "white" }}>
+        <Alert
+          severity="success"
+          sx={{ width: "100%", backgroundColor: primaryColor, color: "white" }}
+        >
           {snackbarMessage}
         </Alert>
       </Snackbar>
@@ -95,6 +188,7 @@ const ProductDetail = ({ product }) => {
 };
 
 export default ProductDetail;
+
 
 
 // import React, { useState } from "react";
