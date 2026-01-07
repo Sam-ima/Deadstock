@@ -4,7 +4,7 @@ const ITEM_HEIGHT =35;
 const MAX_ITEMS = 5;
 
 const DesktopMenu = ({ items = [] }) => {
-  console.log("items",items)
+  // console.log("items",items)
   // Safety guard
   if (!Array.isArray(items) || items.length === 0) {
     return null;
