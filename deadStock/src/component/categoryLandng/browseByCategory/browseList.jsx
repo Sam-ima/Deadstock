@@ -25,52 +25,56 @@ const BrowseList = ({
     const container = scrollRef.current;
     if (!container || categories.length === 0) return;
 
-    const updateActiveDot = () => {
-      if (!itemRef.current) return;
+    const itemWidth = itemRef.current.offsetWidth + 12;
+    const loopPoint = itemWidth * categories.length;
 
-      const itemWidth = itemRef.current.offsetWidth + 12;
-      const index =
-        Math.round(container.scrollLeft / itemWidth) % categories.length;
+    const startAutoScroll = () => {
+      intervalRef.current = setInterval(() => {
+        container.scrollLeft += AUTO_SCROLL_SPEED;
 
-      setActiveIndex(index);
+        // 🔁 seamless loop
+        if (container.scrollLeft >= loopPoint) {
+          container.scrollLeft -= loopPoint;
+        }
+
+        const index =
+          Math.floor(container.scrollLeft / itemWidth) % categories.length;
+        setActiveIndex(index);
+      }, AUTO_SCROLL_INTERVAL);
     };
 
-    intervalRef.current = setInterval(() => {
-      container.scrollLeft += AUTO_SCROLL_SPEED;
+    startAutoScroll();
 
-      if (container.scrollLeft >= container.scrollWidth / 2) {
-        container.scrollLeft = 0;
-      }
+    return () => clearInterval(intervalRef.current);
+  }, [categories.length]);
 
-      updateActiveDot();
-    }, AUTO_SCROLL_INTERVAL);
-
-    container.addEventListener("scroll", updateActiveDot);
-
-    return () => {
-      clearInterval(intervalRef.current);
-      container.removeEventListener("scroll", updateActiveDot);
-    };
-  }, [categories.length, scrollRef]);
 
   const handleMouseEnter = () => {
     clearInterval(intervalRef.current);
-    onPause?.();
   };
 
   const handleMouseLeave = () => {
-    onResume?.();
-    const container = scrollRef.current;
-    if (!container) return;
+    clearInterval(intervalRef.current);
 
     intervalRef.current = setInterval(() => {
+      const container = scrollRef.current;
+      if (!container || !itemRef.current) return;
+
+      const itemWidth = itemRef.current.offsetWidth + 12;
+      const loopPoint = itemWidth * categories.length;
+
       container.scrollLeft += AUTO_SCROLL_SPEED;
 
-      if (container.scrollLeft >= container.scrollWidth / 2) {
-        container.scrollLeft = 0;
+      if (container.scrollLeft >= loopPoint) {
+        container.scrollLeft -= loopPoint;
       }
+
+      const index =
+        Math.floor(container.scrollLeft / itemWidth) % categories.length;
+      setActiveIndex(index);
     }, AUTO_SCROLL_INTERVAL);
   };
+
 
   const scrollToIndex = (index) => {
     if (!itemRef.current || !scrollRef.current) return;
