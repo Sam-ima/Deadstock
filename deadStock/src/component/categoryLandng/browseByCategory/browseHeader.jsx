@@ -35,7 +35,7 @@ const BrowseHeader = () => {
             sm: "18px",   // small tablets
             md: "20px",   // tablets / small laptop
             lg: "22px",   // desktop
-            xl: "26px",   // large screens
+            xl: "24px",   // large screens
           },}}
       >
         Explore items by category and find exactly what you need
