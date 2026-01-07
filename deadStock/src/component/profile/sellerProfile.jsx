@@ -1,32 +1,30 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Container } from "@mui/material";
 import ProfileHeader from "./profileHeader";
-import SellerProducts from "./sellerProducts";
-import { sellerData } from "../data/sellerData";
+import ProfileInfoCard from "./profileInfo";
+import { authUser } from "../data/authUser"; 
+import SellerActions from "./sellerActions";
+import SectionCard from "../common/sectionCard";
+import OrdersList from "./ordersList";
+
 
 const sellerProfile = () => {
   return (
-    <Box p={3} bgcolor="#fff" minHeight="100vh">
-      <ProfileHeader role="seller" />
+    <Container
+      maxWidth="sm"
+      sx={{ bgcolor: "#fff", minHeight: "100vh", py: 3 }}
+    >
+      <SectionCard user={authUser}/>
+      {/* Pass authUser to ProfileHeader */}
+      <ProfileHeader user={authUser} />
 
-      <Typography variant="h6" mb={1}>
-        Seller Stats
-      </Typography>
+      {/* Seller-specific info card */}
 
-      <Typography>Selling: {sellerData.stats.selling}</Typography>
-      <Typography>Sold: {sellerData.stats.sold}</Typography>
-      <Typography>Rating: {sellerData.stats.rating}</Typography>
+      <ProfileInfoCard user={authUser} />
 
-      <Button
-        fullWidth
-        variant="contained"
-        sx={{ my: 2 }}
-        onClick={() => alert("Add Product Clicked")}
-      >
-        Add Product
-      </Button>
-
-      <SellerProducts products={sellerData.products} />
-    </Box>
+      <OrdersList user={authUser} />
+    
+      <SellerActions user={authUser} />
+    </Container>
   );
 };
 
