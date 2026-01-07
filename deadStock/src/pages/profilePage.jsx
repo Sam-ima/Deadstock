@@ -4,10 +4,14 @@ import BuyerProfile from "../component/profile/buyerProfile";
 import SellerProfile from "../component/profile/sellerProfile";
 
 
-const profilePage = () => {
-  return authUser.role === ROLES.SELLER
+const profilePage = (maxWidth="lg") => {
+
+  
+  maxWidth="lg";
+  return authUser.role === ROLES.BUYER
     ? <SellerProfile />
     : <BuyerProfile />;
+
 };
 
 export default profilePage;
