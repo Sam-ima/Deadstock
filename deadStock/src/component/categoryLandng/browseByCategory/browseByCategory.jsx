@@ -1,11 +1,12 @@
 // src/components/BrowseByCategory/BrowseByCategory.jsx
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
   Container,
   Grid,
   useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useNavigate } from "react-router-dom";
@@ -16,29 +17,57 @@ import BrowseList from "./browseList";
 import CategoryCard from "../categoryCard";
 
 const BrowseByCategory = () => {
-  const scrollRef = useRef(null);
   const navigate = useNavigate();
-  const theme = useTheme();
-
   const [showAll, setShowAll] = useState(false);
 
+  const theme = useTheme();
+
+  // 🔹 screen breakpoints
+  const isXs = useMediaQuery(theme.breakpoints.only("xs"));
+  const isSm = useMediaQuery(theme.breakpoints.only("sm"));
+  const isMd = useMediaQuery(theme.breakpoints.only("md"));
+  const isLg = useMediaQuery(theme.breakpoints.only("lg"));
+
+  // 🔹 responsive visible count
+  const getVisibleCount = () => {
+    if (isXs) return 2;
+    if (isSm) return 4;
+    if (isMd) return 6;
+    if (isLg) return 9;
+    return 10; // xl
+  };
+
+  const visibleCount = getVisibleCount();
+
+  const visibleCategories = showAll
+    ? categories
+    : categories.slice(0, visibleCount);
+
+  const showToggle = categories.length > visibleCount;
+
   return (
-    <Box sx={{ py: { xs: 3, sm: 4, md: 6 }, backgroundColor: "#ffffff" }}>
+    <Box sx={{ py: { xs: 3, sm: 4, md: 5 }, backgroundColor: "#a02222ff" }}>
       <Container maxWidth="lg">
         <BrowseHeader />
 
-        {/* 🔹 CAROUSEL VIEW */}
+        {/* 🔹 SINGLE ROW VIEW */}
         {!showAll && (
           <BrowseList
-            categories={categories}
-            scrollRef={scrollRef}
-            onCategoryClick={(slug) => navigate(`/category/${slug}`)}
+            categories={visibleCategories}
+            onCategoryClick={(slug) =>
+              navigate(`/category/${slug}`)
+            }
           />
         )}
 
-        {/* 🔹 GRID VIEW (NO DOTS, NO SCROLL) */}
+        {/* 🔹 GRID VIEW */}
         {showAll && (
-          <Grid container spacing={3} mt={1} justifyContent="center">
+          <Grid
+            container
+            spacing={3}
+            mt={2}
+            justifyContent="center"
+          >
             {categories.map((category) => (
               <Grid
                 item
@@ -62,24 +91,26 @@ const BrowseByCategory = () => {
         )}
 
         {/* 🔹 TOGGLE BUTTON */}
-        <Box display="flex" justifyContent="center" mt={5}>
-          <Button
-            variant="outlined"
-            size="large"
-            endIcon={<KeyboardDoubleArrowRightIcon />}
-            onClick={() => setShowAll((prev) => !prev)}
-            sx={{
-              color: "#2E7D32",
-              borderColor: "#2E7D32",
-              borderRadius: 3,
-              px: 4,
-              py: 1.2,
-              fontWeight: 600,
-            }}
-          >
-            {showAll ? "View Less Categories" : "View All Categories"}
-          </Button>
-        </Box>
+        {showToggle && (
+          <Box display="flex" justifyContent="center" mt={5}>
+            <Button
+              variant="outlined"
+              size="large"
+              endIcon={<KeyboardDoubleArrowRightIcon />}
+              onClick={() => setShowAll((prev) => !prev)}
+              sx={{
+                color: "#2E7D32",
+                borderColor: "#2E7D32",
+                borderRadius: 3,
+                px: 4,
+                py: 1.2,
+                fontWeight: 600,
+              }}
+            >
+              {showAll ? "View Less Categories" : "View All Categories"}
+            </Button>
+          </Box>
+        )}
       </Container>
     </Box>
   );
