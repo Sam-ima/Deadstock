@@ -11,16 +11,18 @@ import {
 import { ChevronDown, ChevronUp, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import categories from "../../component/data/categories_data";
-import businessOptions from "../../component/data/business_data";
+
+const ITEM_HEIGHT = 35;
+const VISIBLE_ITEMS = 5;
 
 const ITEM_HEIGHT = 35;
 const VISIBLE_ITEMS = 5;
 
 const navItems = [
   { label: "Categories", submenu: categories },
-  { label: "Auctions" },
-  { label: "Featured Deals" },
-  { label: "For Business", submenu: businessOptions.map((b) => b.label) },
+  { label: "Auctions", path: "/auctions" },
+  { label: "Featured Deals", path: "/featured" },
+  { label: "Sell Now", path: "/how-to-sell" },
 ];
 
 const MobileDrawer = ({ open, onClose }) => {
@@ -29,6 +31,11 @@ const MobileDrawer = ({ open, onClose }) => {
 
   const toggleSubmenu = (label) => {
     setOpenSubmenu((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    onClose();
   };
 
   return (
@@ -41,7 +48,7 @@ const MobileDrawer = ({ open, onClose }) => {
                 onClick={() =>
                   item.submenu
                     ? toggleSubmenu(item.label)
-                    : navigate("/auctions")
+                    : handleNavigation(item.path)
                 }
               >
                 <ListItemText primary={item.label} />
@@ -55,6 +62,7 @@ const MobileDrawer = ({ open, onClose }) => {
                   <Box
                     sx={{
                       maxHeight: ITEM_HEIGHT * VISIBLE_ITEMS,
+                      overflowY: "auto",
                       overflowY: "scroll",
                       overflowX: "hidden",
 
@@ -101,10 +109,7 @@ const MobileDrawer = ({ open, onClose }) => {
             <Button
               fullWidth
               startIcon={<User />}
-              onClick={() => {
-                navigate("/auth");
-                onClose();
-              }}
+              onClick={() => handleNavigation("/auth")}
               sx={{
                 borderRadius: "24px",
                 textTransform: "none",
