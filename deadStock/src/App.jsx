@@ -21,14 +21,16 @@ import RootLayout from "./root_layout";
 import AuthPage from "./pages/authPage.jsx";
 import ProfilePage from "./pages/profilePage";
 
-
 /* ---------- Lazy Loaded Pages ---------- */
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
 const Profile = lazy(() => import("./pages/profilePage"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const ProductDetailPage = lazy(() => import("./pages/productDetailPage.jsx"));
-const ResetPassword=lazy(()=>import("./component/forms/passwordReset/resetPassword.jsx"))
+const ResetPassword = lazy(() =>
+  import("./component/forms/passwordReset/resetPassword.jsx")
+);
+const HowToSell = lazy(() => import("./pages/howToSellPage.jsx"));
 
 /* ---------- Router Configuration ---------- */
 const router = createBrowserRouter(
@@ -39,11 +41,10 @@ const router = createBrowserRouter(
       <Route path="/auctions" element={<AuctionsPage />} />
       <Route path="/profile" element={<ProfilePage />} />
 
-    
       {/* auth */}
       <Route path="auth" element={<AuthPage />} />
-      <Route path="/reset-password" element={<ResetPassword/>}/>
-
+      <Route path="/reset-password" element={<ResetPassword />} />
+      <Route path="/how-to-sell" element={<HowToSell />} />
       {/* Category Routes */}
       <Route path="/category" element={<CategoryPage />} />
       <Route path="/category/:slug" element={<CategoryPage />} />
