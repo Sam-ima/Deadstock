@@ -9,23 +9,23 @@ import {
   Button,
 } from "@mui/material";
 import { ChevronDown, ChevronUp, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import categories from "../../component/data/categories_data";
 
 const ITEM_HEIGHT = 35;
 const VISIBLE_ITEMS = 5;
 
-
 const navItems = [
+  { label: "Home", path: "/" },
   { label: "Categories", submenu: categories },
   { label: "Auctions", path: "/auctions" },
-  { label: "Featured Deals", path: "/featured" },
   { label: "Sell Now", path: "/how-to-sell" },
 ];
 
 const MobileDrawer = ({ open, onClose }) => {
   const [openSubmenu, setOpenSubmenu] = useState({});
   const navigate = useNavigate();
+  const location = useLocation();
 
   const toggleSubmenu = (label) => {
     setOpenSubmenu((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -40,67 +40,67 @@ const MobileDrawer = ({ open, onClose }) => {
     <Drawer anchor="left" open={open} onClose={onClose}>
       <Box width={280} p={2} height="100%" bgcolor="#f9f9f9ff">
         <List>
-          {navItems.map((item) => (
-            <Box key={item.label}>
-              <ListItemButton
-                onClick={() =>
-                  item.submenu
-                    ? toggleSubmenu(item.label)
-                    : handleNavigation(item.path)
-                }
-              >
-                <ListItemText primary={item.label} />
-                {item.submenu &&
-                  (openSubmenu[item.label] ? <ChevronUp /> : <ChevronDown />)}
-              </ListItemButton>
+          {navItems.map((item) => {
+            const isActive = item.path && location.pathname === item.path;
 
-              {/* ===== SUBMENU ===== */}
-              {item.submenu && (
-                <Collapse in={openSubmenu[item.label]}>
-                  <Box
-                    sx={{
-                      maxHeight: ITEM_HEIGHT * VISIBLE_ITEMS,
-                      overflowY: "auto",
-                      overflowY: "scroll",
-                      overflowX: "hidden",
-
-                      /* Always reserve scrollbar space */
-                      scrollbarGutter: "stable",
-
-                      /* Webkit browsers */
-                      "&::-webkit-scrollbar": {
-                        width: "6px",
-                      },
-                      "&::-webkit-scrollbar-track": {
-                        backgroundColor: "#c4a0a0ff",
-                      },
-                      "&::-webkit-scrollbar-thumb": {
-                        backgroundColor: "#145a43",
-                        borderRadius: "10px",
-                      },
-                      "&::-webkit-scrollbar-thumb:hover": {
-                        backgroundColor: "#0b3d2e",
-                      },
-
-                      scrollbarWidth: "thin",
-                      // scrollbarColor: "#145a43 #eeeeee",
+            return (
+              <Box key={item.label}>
+                <ListItemButton
+                  onClick={() =>
+                    item.submenu
+                      ? toggleSubmenu(item.label)
+                      : handleNavigation(item.path)
+                  }
+                  sx={{
+                    borderRadius: 2,
+                    mb: 0.5,
+                    backgroundColor: isActive
+                      ? "rgba(20,90,67,0.12)"
+                      : "transparent",
+                    "&:hover": {
+                      backgroundColor: "rgba(20,90,67,0.18)",
+                    },
+                  }}
+                >
+                  <ListItemText
+                    primary={item.label}
+                    primaryTypographyProps={{
+                      fontWeight: isActive ? 700 : 500,
+                      color: isActive ? "#145a43" : "inherit",
                     }}
-                  >
-                    <List disablePadding>
-                      {item.submenu.map((sub) => (
-                        <ListItemButton
-                          key={sub}
-                          sx={{ pl: 4, height: ITEM_HEIGHT }}
-                        >
-                          <ListItemText primary={sub} />
-                        </ListItemButton>
-                      ))}
-                    </List>
-                  </Box>
-                </Collapse>
-              )}
-            </Box>
-          ))}
+                  />
+                  {item.submenu &&
+                    (openSubmenu[item.label] ? <ChevronUp /> : <ChevronDown />)}
+                </ListItemButton>
+
+                {/* ===== SUBMENU ===== */}
+                {item.submenu && (
+                  <Collapse in={openSubmenu[item.label]}>
+                    <Box
+                      sx={{
+                        maxHeight: ITEM_HEIGHT * VISIBLE_ITEMS,
+                        overflowY: "auto",
+                      }}
+                    >
+                      <List disablePadding>
+                        {item.submenu.map((sub) => (
+                          <ListItemButton
+                            key={sub}
+                            sx={{
+                              pl: 4,
+                              height: ITEM_HEIGHT,
+                            }}
+                          >
+                            <ListItemText primary={sub} />
+                          </ListItemButton>
+                        ))}
+                      </List>
+                    </Box>
+                  </Collapse>
+                )}
+              </Box>
+            );
+          })}
 
           {/* ===== AUTH BUTTON ===== */}
           <Box mt={3}>
