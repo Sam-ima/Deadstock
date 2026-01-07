@@ -5,28 +5,28 @@ import StarIcon from '@mui/icons-material/Star';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 import { styled } from '@mui/material/styles';
 
-const ConditionChip = styled(Chip)(({ theme, condition }) => {
-  let color;
-  switch(condition?.toLowerCase()) {
-    case 'new': color = '#4CAF50'; break;
-    case 'like new': color = '#2196F3'; break;
-    case 'excellent': color = '#FF9800'; break;
-    case 'good': color = '#9C27B0'; break;
-    case 'vintage':
-    case 'antique':
-    case 'collectible': color = '#795548'; break;
-    case 'mixed': color = '#607D8B'; break;
-    default: color = '#757575';
-  }
-  return {
-    backgroundColor: `${color}15`,
-    color: color,
-    border: `1px solid ${color}30`,
-    fontWeight: 600,
-    fontSize: '0.7rem',
-    height: 20,
-  };
-});
+// const ConditionChip = styled(Chip)(({ theme, condition }) => {
+//   let color;
+//   switch(condition?.toLowerCase()) {
+//     case 'new': color = '#4CAF50'; break;
+//     case 'like new': color = '#2196F3'; break;
+//     case 'excellent': color = '#FF9800'; break;
+//     case 'good': color = '#9C27B0'; break;
+//     case 'vintage':
+//     case 'antique':
+//     case 'collectible': color = '#795548'; break;
+//     case 'mixed': color = '#607D8B'; break;
+//     default: color = '#757575';
+//   }
+//   return {
+//     backgroundColor: `${color}15`,
+//     color: color,
+//     border: `1px solid ${color}30`,
+//     fontWeight: 600,
+//     fontSize: '0.7rem',
+//     height: 20,
+//   };
+// });
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
@@ -117,13 +117,13 @@ const ProductCard = ({ product }) => {
         )}
 
         {/* Condition Badge */}
-        <Box sx={{ position: "absolute", top: 12, right: 12 }}>
+        {/* <Box sx={{ position: "absolute", top: 12, right: 12 }}>
           <ConditionChip
             label={product.condition}
             condition={product.condition}
             size="small"
           />
-        </Box>
+        </Box> */}
       </Box>
 
       {/* Content Section */}
