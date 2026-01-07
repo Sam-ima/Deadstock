@@ -3,8 +3,9 @@ import { ROLES } from "../component/constants/roles";
 import BuyerProfile from "../component/profile/buyerProfile";
 import SellerProfile from "../component/profile/sellerProfile";
 
+
 const profilePage = () => {
-  return authUser.role === ROLES.BUYER
+  return authUser.role === ROLES.SELLER
     ? <SellerProfile />
     : <BuyerProfile />;
 };

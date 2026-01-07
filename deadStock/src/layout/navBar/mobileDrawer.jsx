@@ -15,6 +15,7 @@ import categories from "../../component/data/categories_data";
 const ITEM_HEIGHT = 35;
 const VISIBLE_ITEMS = 5;
 
+
 const navItems = [
   { label: "Categories", submenu: categories },
   { label: "Auctions", path: "/auctions" },
@@ -60,6 +61,29 @@ const MobileDrawer = ({ open, onClose }) => {
                     sx={{
                       maxHeight: ITEM_HEIGHT * VISIBLE_ITEMS,
                       overflowY: "auto",
+                      overflowY: "scroll",
+                      overflowX: "hidden",
+
+                      /* Always reserve scrollbar space */
+                      scrollbarGutter: "stable",
+
+                      /* Webkit browsers */
+                      "&::-webkit-scrollbar": {
+                        width: "6px",
+                      },
+                      "&::-webkit-scrollbar-track": {
+                        backgroundColor: "#c4a0a0ff",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#145a43",
+                        borderRadius: "10px",
+                      },
+                      "&::-webkit-scrollbar-thumb:hover": {
+                        backgroundColor: "#0b3d2e",
+                      },
+
+                      scrollbarWidth: "thin",
+                      // scrollbarColor: "#145a43 #eeeeee",
                     }}
                   >
                     <List disablePadding>
