@@ -11,6 +11,7 @@ const BiddingSection = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        cursor:"pointer"
       }}
     >
       <Container maxWidth="lg">
