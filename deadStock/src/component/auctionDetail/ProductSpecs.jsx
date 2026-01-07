@@ -20,20 +20,29 @@ const ProductSpecs = ({ product }) => {
     <Paper
       elevation={0}
       sx={{
-        p: { xs: 3, md: 4 },
+        p: { xs: 2, sm: 3, md: 4 }, // responsive padding
         borderRadius: 3,
         backgroundColor: "#f8fff8",
         border: "2px solid #e0f2e1",
       }}
     >
-      <Stack spacing={3}>
+      <Stack spacing={{ xs: 2, sm: 2.5, md: 3 }}> {/* responsive spacing */}
         {/* Product Description */}
         <Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: "#1B5E20", mb: 1 }}>
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            sx={{ color: "#1B5E20", mb: 1, fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" } }}
+          >
             Product Description
           </Typography>
-          <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.6 }}>
-            {product.description || "This is a premium auction item with excellent quality and craftsmanship."}
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ lineHeight: 1.6, fontSize: { xs: "0.85rem", sm: "0.9rem", md: "1rem" } }}
+          >
+            {product.description ||
+              "This is a premium auction item with excellent quality and craftsmanship."}
           </Typography>
         </Box>
 
@@ -41,16 +50,25 @@ const ProductSpecs = ({ product }) => {
 
         {/* Specifications */}
         <Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: "#1B5E20", mb: 2 }}>
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            sx={{ color: "#1B5E20", mb: 2, fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" } }}
+          >
             Specifications
           </Typography>
-          <Stack spacing={1.5}>
+          <Stack spacing={{ xs: 1, sm: 1.5 }}>
             {specs.map((spec, index) => (
-              <Stack key={index} direction="row" justifyContent="space-between">
-                <Typography variant="body2" color="text.secondary">
+              <Stack
+                key={index}
+                direction="row"
+                justifyContent="space-between"
+                sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" } }}
+              >
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" } }}>
                   {spec.label}
                 </Typography>
-                <Typography variant="body1" fontWeight={600}>
+                <Typography variant="body1" fontWeight={600} sx={{ fontSize: { xs: "0.8rem", sm: "0.9rem", md: "1rem" } }}>
                   {spec.value}
                 </Typography>
               </Stack>
@@ -62,7 +80,11 @@ const ProductSpecs = ({ product }) => {
 
         {/* Features / Highlights */}
         <Box>
-          <Typography variant="h5" fontWeight={700} sx={{ color: "#1B5E20", mb: 2 }}>
+          <Typography
+            variant="h5"
+            fontWeight={700}
+            sx={{ color: "#1B5E20", mb: 2, fontSize: { xs: "1.1rem", sm: "1.25rem", md: "1.5rem" } }}
+          >
             Highlights
           </Typography>
           <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -75,6 +97,9 @@ const ProductSpecs = ({ product }) => {
                   color: "#1B5E20",
                   fontWeight: 600,
                   mb: 1,
+                  fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" }, // responsive font
+                  py: { xs: 0.3, sm: 0.4, md: 0.5 },
+                  px: { xs: 0.8, sm: 1, md: 1.2 },
                 }}
               />
             ))}
