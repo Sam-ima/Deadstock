@@ -201,7 +201,7 @@ const CategoriesPage = () => {
                 <Typography
                   fontWeight={600}
                   sx={{
-                    fontSize: '0.95rem',
+                    fontSize: {xs:'0.85rem',sm:'0.88rem',md:'0.9rem'},
                     color: category.slug === slug ? category.color : 'text.primary',
                     lineHeight: 1.2
                   }}
