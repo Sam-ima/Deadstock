@@ -7,13 +7,13 @@ const Hero = () => {
     <Box
       sx={{
         position: "relative",
-        minHeight: { xs: "70vh", md: "80vh" },
+        minHeight: { xs: "30vh",sm:"40vh", md: "80vh",lg:"80vh" },
         display: "flex",
         alignItems: "center",
         bgcolor: "#fff",
         color: "#FFD2C2",
         overflow: "hidden",
-        py: { xs: "65px", sm: "100px", md: "20px",lg:"40px" },
+        mt: { xs: "65px", sm: "100px", md: "20px",lg:"10px" },
       }}
     >
       <Container maxWidth="lg">

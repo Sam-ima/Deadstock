@@ -1,16 +1,10 @@
 import { useState } from "react";
-import {
-  TextField,
-  Button,
-  Stack,
-  Typography,
-  Divider,
-  Box,
-  IconButton,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
-import { Visibility, VisibilityOff, Google } from "@mui/icons-material";
+import { Stack } from "@mui/material";
+import AuthHeader from "./formHeader";
+import AuthFields from "./authFields";
+import RememberForgot from "./rememberForgot";
+import SellerFields from "./sellerFields";
+import AuthActions from "./authActions";
 
 export const AuthForm = ({ mode, setMode, role }) => {
   const isSignup = mode === "signup";
@@ -26,176 +20,30 @@ export const AuthForm = ({ mode, setMode, role }) => {
 
   return (
     <Stack spacing={2}>
-      {/* ===== TITLE ===== */}
-      <Stack spacing={0.5} textAlign="center">
-        <Typography variant="h5" fontWeight={700}>
-          {isSignup ? "Create Account" : "Welcome Back"}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {isSignup ? "Join our marketplace today" : "Login to continue"}
-        </Typography>
-      </Stack>
+      <AuthHeader isSignup={isSignup} />
 
-      <Divider />
+      <AuthFields
+        isSignup={isSignup}
+        showPassword={showPassword}
+        setShowPassword={setShowPassword}
+        inputStyle={inputStyle}
+      />
 
-      {/* ===== FORM ===== */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: isSellerSignup ? "1fr 1fr" : "1fr",
-          },
-          gap: 2,
-        }}
-      >
-        {isSignup && <TextField label="Full Name" fullWidth sx={inputStyle} />}
-
-        <TextField
-          label="Email Address"
-          type="email"
-          fullWidth
-          sx={inputStyle}
+      {!isSignup && (
+        <RememberForgot
+          rememberMe={rememberMe}
+          setRememberMe={setRememberMe}
         />
-
-        {/* Password */}
-        <TextField
-          label="Password"
-          type={showPassword ? "text" : "password"}
-          fullWidth
-          sx={inputStyle}
-          InputProps={{
-            endAdornment: (
-              <IconButton onClick={() => setShowPassword((p) => !p)} edge="end">
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            ),
-          }}
-        />
-
-        {isSignup && (
-          <TextField
-            label="Confirm Password"
-            type={showPassword ? "text" : "password"}
-            fullWidth
-            sx={inputStyle}
-          />
-        )}
-      </Box>
-      {/* remember me  */}
-      <Box sx={{display:"flex",justifyContent:"space-between"}}>
-        {!isSignup && (
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-              />
-            }
-            label="Remember me"
-          />
-        )}
-
-        {/* ===== FORGOT PASSWORD ===== */}
-        {!isSignup && (
-          <Typography
-            variant="body2"
-            textAlign="right"
-            sx={{
-              cursor: "pointer",
-              color: "#EF6C00",
-              fontWeight: 600,
-              "&:hover": { textDecoration: "underline" },
-            }}
-          >
-            Forgot password?
-          </Typography>
-        )}
-      </Box>
-
-      {/* ===== SELLER INFO ===== */}
-      {isSellerSignup && (
-        <>
-          <Divider sx={{ my: 1 }}>Business Details</Divider>
-
-          <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns: {
-                xs: "1fr",
-                md: "1fr 1fr",
-              },
-              gap: 2,
-            }}
-          >
-            <TextField label="Store / Business Name" sx={inputStyle} />
-            <TextField label="Phone Number" type="tel" sx={inputStyle} />
-            <TextField
-              label="Business Address"
-              sx={{ gridColumn: "1 / -1", ...inputStyle }}
-            />
-            <TextField label="City" sx={inputStyle} />
-            <TextField label="Country" sx={inputStyle} />
-            <TextField
-              label="PAN / VAT Number"
-              sx={{ gridColumn: "1 / -1", ...inputStyle }}
-            />
-          </Box>
-        </>
       )}
 
-      {/* ===== SUBMIT ===== */}
-      <Button
-        size="large"
-        sx={{
-          mt: 1,
-          py: 1.4,
-          fontWeight: 700,
-          borderRadius: 3,
-          textTransform: "none",
-          background: accent,
-          color: "#fff",
-          boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
-          "&:hover": {
-            transform: "translateY(-1px)",
-            boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
-          },
-          transition: "0.3s",
-        }}
-      >
-        {isSignup ? "Create Account" : "Login"}
-      </Button>
+      {isSellerSignup && <SellerFields inputStyle={inputStyle} />}
 
-      {/* ===== GOOGLE AUTH ===== */}
-      <Button
-        variant="outlined"
-        startIcon={<Google />}
-        sx={{
-          py: 1.2,
-          borderRadius: 3,
-          textTransform: "none",
-          fontWeight: 600,
-        }}
-      >
-        Continue with Google
-      </Button>
-
-      {/* ===== TOGGLE ===== */}
-      <Typography variant="body2" textAlign="center" color="text.secondary">
-        {isSignup ? "Already have an account?" : "New here?"}
-        <Button
-          variant="text"
-          onClick={() => setMode(isSignup ? "login" : "signup")}
-          sx={{
-            ml: 1,
-            textTransform: "none",
-            fontWeight: 700,
-            color: role === "buyer" ? "#2E7D32" : "#EF6C00",
-          }}
-        >
-          {isSignup ? "Login" : "Sign Up"}
-        </Button>
-      </Typography>
+      <AuthActions
+        isSignup={isSignup}
+        setMode={setMode}
+        role={role}
+        accent={accent}
+      />
     </Stack>
   );
 };
