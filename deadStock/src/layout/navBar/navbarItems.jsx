@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Button } from "@mui/material";
 import { ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import categories from "../../component/data/categories_data";
-import businessOptions from "../../component/data/business_data";
 import DesktopMenu from "./desktopMenu";
 
 const NavItems = ({ scrolled }) => {
@@ -11,18 +10,13 @@ const NavItems = ({ scrolled }) => {
   const navigate = useNavigate();
 
   const navItems = [
-    { label: "Home" },
+    { label: "Home", path: "/" },
     {
       label: "Categories",
       submenu: Array.isArray(categories) ? categories : [],
     },
-    { label: "Auction" },
-    {
-      label: "For Business",
-      submenu: Array.isArray(businessOptions)
-        ? businessOptions.map((b) => b.label)
-        : [],
-    },
+    { label: "Auction", path: "/auctions" },
+    { label: "Sell Now", path: "/how-to-sell" },
   ];
 
   return (
@@ -36,7 +30,7 @@ const NavItems = ({ scrolled }) => {
         >
           <Button
             endIcon={item.submenu?.length ? <ChevronDown size={14} /> : null}
-            onClick={() => item.label === "Auction" && navigate("/auctions")}
+            onClick={() => item.path && navigate(item.path)}
             sx={{
               textTransform: "none",
               fontSize: "0.95rem",
