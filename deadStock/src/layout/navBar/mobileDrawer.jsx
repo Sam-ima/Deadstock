@@ -15,8 +15,6 @@ import categories from "../../component/data/categories_data";
 const ITEM_HEIGHT = 35;
 const VISIBLE_ITEMS = 5;
 
-const ITEM_HEIGHT = 35;
-const VISIBLE_ITEMS = 5;
 
 const navItems = [
   { label: "Categories", submenu: categories },

@@ -1,28 +1,20 @@
-import { Box, Typography, Button } from "@mui/material";
+import { Container } from "@mui/material";
 import ProfileHeader from "./profileHeader";
-import BuyerOrders from "./buyerOrders";
-import { buyerData } from "../data/buyerData";
-import settingsSection from "./settingsSection";
+import ProfileInfoCard from "./profileInfo";
+import { authUser } from "../data/authUser"; // your logged-in user
 
 const buyerProfile = () => {
   return (
-    <Box
-      p={{ xs: 2, md: 4 }}
-      bgcolor="#fff"
-      minHeight="100vh"
-      maxWidth={500}
-      mx="auto"
+    <Container
+      maxWidth="sm"
+      sx={{ bgcolor: "#fff", minHeight: "100vh", py: 3 }}
     >
-      <ProfileHeader role="buyer" />
+      {/* Pass authUser to ProfileHeader */}
+      <ProfileHeader user={authUser} />
 
-      <Typography variant="h6" mb={2}>
-        Recent Orders
-      </Typography>
-
-      <BuyerOrders orders={buyerData.orders} />
-
-      <settingsSection />
-    </Box>
+      {/* Seller-specific info card */}
+      <ProfileInfoCard user={authUser} />
+    </Container>
   );
 };
 
