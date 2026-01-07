@@ -5,20 +5,22 @@ const AuthContainer = ({ children }) => {
   return (
     <Box
       sx={{
-        // maxWidth: 1200,
+        maxWidth: 1500,
         // width: "100%",
-        minHeight: "100vh",
+        minHeight: "90vh",
         display: "grid",
+
         placeItems: "center",
-        px: 2,
-        m: { xs: 0, sm: 10, md: 10 },
-        py: { xs: 9, sm: 0 },
+        px: 0,
+        mx:"auto",
+        m: { xs: 0, sm: 10, md: 5,lg:10 },
+        py: { xs: 9, sm: 0,md:8,lg:5 },
       }}
     >
       <Paper
         elevation={0}
         sx={{
-          maxWidth: 900,
+          maxWidth: 1200,
           minHeight: 560,
           display: "flex",
           borderRadius: 4,
@@ -35,7 +37,7 @@ const AuthContainer = ({ children }) => {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            px: 4,
+            px: {xs:5,sm:5,md:5,lg:10},
             bgcolor: "#f6f2e9",
           }}
         >
@@ -43,9 +45,10 @@ const AuthContainer = ({ children }) => {
             component="img"
             src={AuthImage}
             alt="Buy Sell Illustration"
+            loading="lazy"
             sx={{
-              width: "100%",
-              maxWidth: 350,
+              width:{md:450,lg:550},
+              maxWidth: 550,
               mb: 3,
               height: 300,
             }}

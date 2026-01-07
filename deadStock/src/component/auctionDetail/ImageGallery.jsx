@@ -1,11 +1,11 @@
-// src/components/ProductDetail/ImageGallery.jsx
 import React from "react";
-import { Box, Stack, Paper } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedImage } from "../../store/slice/auctionSlice";
 
 const ImageGallery = ({ product }) => {
   const dispatch = useDispatch();
+
   const selectedImage = useSelector(
     (state) => state.auction.selectedImages[product.id] || product.img
   );
@@ -20,14 +20,12 @@ const ImageGallery = ({ product }) => {
 
   return (
     <>
-      <Paper
-        elevation={0}
+      {/* Main Image */}
+      <Box
         sx={{
-          borderRadius: 3,
-          overflow: "hidden",
-          border: "2px solid #e8f5e9",
-          backgroundColor: "white",
-          mb: { xs: 2, md: 3 },
+          display: "flex",
+          justifyContent: "center",
+          mb: { xs: 1.5, sm: 2, md: 3 },
         }}
       >
         <Box
@@ -36,36 +34,63 @@ const ImageGallery = ({ product }) => {
           alt={product.name}
           sx={{
             width: "100%",
-            height: { xs: 250, sm: 350, md: 500 },
-            objectFit: "contain",
-            display: "block",
+            maxWidth: { xs: 220, sm: 280, md: 350, lg: 400 },
+            height: { xs: 180, sm: 240, md: 300, lg: 340 },
+            borderRadius: { xs: 1, sm: 2 },
+            objectFit: "cover",
             backgroundColor: "#f8fff8",
-            p: { xs: 1, sm: 2 },
           }}
         />
-      </Paper>
+      </Box>
 
-      <Stack direction="row" spacing={1.5} sx={{ overflowX: "auto", pb: 1 }}>
+      {/* Thumbnails */}
+      <Stack
+        direction="row"
+        spacing={{ xs: 0.8, sm: 1, md: 1.5 }}
+        sx={{
+          overflowX: "auto",
+          pb: 1,
+          px: { xs: 0.5, sm: 0 },
+          scrollbarWidth: "none",
+          "&::-webkit-scrollbar": { display: "none" },
+        }}
+      >
         {galleryImages.map((img, index) => (
           <Box
             key={index}
-            onClick={() => dispatch(setSelectedImage({ productId: product.id, imageUrl: img }))}
+            onClick={() =>
+              dispatch(
+                setSelectedImage({ productId: product.id, imageUrl: img })
+              )
+            }
             sx={{
-              width: { xs: 60, sm: 80, md: 100 },
-              height: { xs: 60, sm: 80, md: 100 },
+              width: { xs: 48, sm: 60, md: 72 },
+              height: { xs: 48, sm: 60, md: 72 },
               borderRadius: 2,
               overflow: "hidden",
               cursor: "pointer",
-              border: selectedImage === img ? `3px solid #2E7D32` : "2px solid #e0e0e0",
               flexShrink: 0,
-              transition: "all 0.3s ease",
+              border:
+                selectedImage === img
+                  ? "2px solid #2E7D32"
+                  : "1.5px solid #e0e0e0",
+              transition: "all 0.2s ease",
               "&:hover": {
                 borderColor: "#d8a855",
-                transform: "translateY(-2px)",
+                transform: "translateY(-1px)",
               },
             }}
           >
-            <Box component="img" src={img} alt={`${product.name} ${index + 1}`} sx={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <Box
+              component="img"
+              src={img}
+              alt={`${product.name} ${index + 1}`}
+              sx={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
           </Box>
         ))}
       </Stack>
