@@ -56,11 +56,7 @@ const categories = [
     depreciationType: 'MODERATE',
     color: '#9C27B0',
   },
-  {
-    id: 'cat_home_garden',
-    name: 'Home & Garden',
-    slug: 'home-garden',
-    description: 'Furniture, decor, and gardening supplies',
+  {  description: 'Furniture, decor, and gardening supplies',
     icon: <HomeIcon fontSize="small" />,
     depreciationType: 'SLOW',
     color: '#4CAF50',
@@ -101,42 +97,7 @@ const categories = [
     depreciationType: 'SEASONAL',
     color: '#607D8B',
   },
-  {
-    id: 'cat_music',
-    name: 'Musical Instruments',
-    slug: 'music',
-    description: 'Instruments, audio equipment, and accessories',
-    icon: <MusicNoteIcon fontSize="small" />,
-    depreciationType: 'SLOW',
-    color: '#009688',
-  },
-  {
-    id: 'cat_books',
-    name: 'Books & Media',
-    slug: 'books',
-    description: 'Books, magazines, DVDs, and vinyl records',
-    icon: <BookIcon fontSize="small" />,
-    depreciationType: 'SEASONAL',
-    color: '#607D8B',
-  },
-  {
-    id: 'cat_music',
-    name: 'Musical Instruments',
-    slug: 'music',
-    description: 'Instruments, audio equipment, and accessories',
-    icon: <MusicNoteIcon fontSize="small" />,
-    depreciationType: 'SLOW',
-    color: '#009688',
-  },
-  {
-    id: 'cat_books',
-    name: 'Books & Media',
-    slug: 'books',
-    description: 'Books, magazines, DVDs, and vinyl records',
-    icon: <BookIcon fontSize="small" />,
-    depreciationType: 'SEASONAL',
-    color: '#607D8B',
-  },
+  
 ];
 
 export default categories;

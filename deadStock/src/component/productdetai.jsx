@@ -35,7 +35,7 @@ const ProductDetail = ({ product }) => {
   const lightBg = "#f8fff8";
 
   return (
-    <Container maxWidth="xl" sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start"}}>
+    <Container maxWidth="xl" sx={{ display: "flex", flexDirection: "column", border: "7px solid red", alignItems: "flex-start" }}>
       {/* Navigation Bar */}
       <Box sx={{ position: "sticky", top: 0, zIndex: 1000, backgroundColor: "white", borderBottom: "2px solid #f0f0f0", py: 1.5, px: { xs: 2, md: 4 }, boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)" }}>
         <Stack direction="row" alignItems="center" spacing={2}>
@@ -56,7 +56,7 @@ const ProductDetail = ({ product }) => {
       </Box>
 
       {/* Main Content */}
-      <Grid container spacing={5} sx={{ py: { xs: 2, md: 5 } }}>
+      <Grid container spacing={20} sx={{ py: { xs: 2, md: 5 } ,border: "7px solid pink"}}>
         {/* LEFT COLUMN: Media and Detailed Info */}
         <Grid item xs={12} lg={7}>
           <Stack spacing={4}>

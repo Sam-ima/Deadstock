@@ -33,6 +33,7 @@ const ProductDetailPage = () => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
+          
         }}
       >
         <Box>Loading...</Box>
@@ -54,7 +55,7 @@ const ProductDetailPage = () => {
           justifyContent: "center",
         }}
       >
-        <div>Product not found</div>
+        <Box>Product not found</Box>
       </Container>
     );
   }
@@ -67,6 +68,7 @@ const ProductDetailPage = () => {
         paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
         paddingBottom: "0px",
         minHeight: "100vh",
+         
       }}
     >
       <ProductDetail product={product} />
