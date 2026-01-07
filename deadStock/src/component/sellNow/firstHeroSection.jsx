@@ -2,15 +2,15 @@ import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
+  
   const navigate = useNavigate();
+
   return (
     <Box
       sx={{
-        // bgcolor: "#0B2A1E",
-        // color: "#fff",
         textAlign: "center",
         py: { xs: 5, md: 5 },
-        px: 2
+        px: 2,
       }}
     >
       <Typography variant="h3" fontWeight={700} color="#bd6213ff">
