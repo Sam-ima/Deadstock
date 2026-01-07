@@ -61,9 +61,9 @@ const AuctionProductCard = ({ product }) => {
         </Typography>
 
         <Stack spacing={0.8} mt={1}>
-          <Typography fontSize="0.85rem" color="text.secondary">
+          {/* <Typography fontSize="0.85rem" color="text.secondary">
             Current Bid: <b>${product.currentBid}</b>
-          </Typography>
+          </Typography> */}
 
           <Typography fontSize="0.85rem" color="text.secondary">
             Highest Bid: <b>${product.highestBid}</b>

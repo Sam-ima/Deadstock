@@ -1,4 +1,4 @@
-export const sellerData = [
+const sellerData = [
   {
     id: 1,
     name: "Rolex Submariner 1965",

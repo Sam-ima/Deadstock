@@ -7,7 +7,8 @@ import UpcomingAuctions from "../component/ auction/upcoming_section";
 
 const AuctionsPage = () => {
   return (
-    <Box sx={{ mb: 0 }}>
+    <Box sx={{ mb: 0,paddingTop: {xs:"50px",sm:"50px",md:"50px",lg:"60px"},
+          paddingBottom: "0px", }}>
       <LiveAuctions />
       <BiddingSection  />
       <UpcomingAuctions />

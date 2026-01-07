@@ -12,23 +12,20 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import EmailIcon from "@mui/icons-material/Email";
-import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EditIcon from "@mui/icons-material/Edit";
 import SectionCard from "../common/sectionCard";
 
-
-const profileInfo = () => {
+const shippingInfo = () => {
   const [open, setOpen] = useState(false);
-  const [info, setInfo] = useState({
-    email: "roshnigiri@gmail.com",
-    phone: "9812345678",
-  });
+  const [address, setAddress] = useState(
+    "123 Sneaker St, Apt 4B, New York"
+  );
 
   return (
     <>
       <Typography variant="h6" mb={1}>
-        Personal Info
+        Shipping
         <IconButton size="small" onClick={() => setOpen(true)}>
           <EditIcon fontSize="small" />
         </IconButton>
@@ -37,13 +34,8 @@ const profileInfo = () => {
       <SectionCard>
         <List>
           <ListItem>
-            <ListItemIcon><EmailIcon /></ListItemIcon>
-            <ListItemText primary="Email" secondary={info.email} />
-          </ListItem>
-
-          <ListItem>
-            <ListItemIcon><PhoneIcon /></ListItemIcon>
-            <ListItemText primary="Phone" secondary={info.phone} />
+            <ListItemIcon><LocationOnIcon /></ListItemIcon>
+            <ListItemText primary="Primary Address" secondary={address} />
           </ListItem>
         </List>
       </SectionCard>
@@ -51,22 +43,16 @@ const profileInfo = () => {
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogContent>
           <TextField
-            label="Email"
+            label="Address"
             fullWidth
-            margin="dense"
-            value={info.email}
-            onChange={(e) => setInfo({ ...info, email: e.target.value })}
-          />
-          <TextField
-            label="Phone"
-            fullWidth
-            margin="dense"
-            value={info.phone}
-            onChange={(e) => setInfo({ ...info, phone: e.target.value })}
+            multiline
+            rows={3}
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)} color="orange">Cancel</Button>
+          <Button onClick={() => setOpen(false)}>Cancel</Button>
           <Button variant="contained" onClick={() => setOpen(false)} color="success">
             Save
           </Button>
@@ -76,4 +62,4 @@ const profileInfo = () => {
   );
 };
 
-export default profileInfo;
+export default shippingInfo;
