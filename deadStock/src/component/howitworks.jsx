@@ -6,17 +6,17 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 
 const steps = [
   {
-    icon: <RocketLaunchIcon sx={{ fontSize: 48 }} color="primary" />,
+    icon: <RocketLaunchIcon sx={{ fontSize: 48 ,color:"#176337ff"}} color="primary" />,
     title: "Register & Discover",
     description: "Explore unique items and auctions."
   },
   {
-    icon: <GavelIcon sx={{ fontSize: 48 }} color="primary" />,
+    icon: <GavelIcon sx={{ fontSize: 48 ,color:"#176337ff"}} color="primary" />,
     title: "Place Your Bid",
     description: "Bid live and track auctions in real time."
   },
   {
-    icon: <PaymentsIcon sx={{ fontSize: 48 }} color="primary" />,
+    icon: <PaymentsIcon sx={{ fontSize: 48,color:"#176337ff" }} color="primary" />,
     title: "Win & Pay",
     description: "Secure checkout after winning."
   }
