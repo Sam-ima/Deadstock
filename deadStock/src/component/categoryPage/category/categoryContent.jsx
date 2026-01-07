@@ -1,8 +1,19 @@
 // src/pages/categories/CategoryContent.jsx
 import { Box, Typography, Grid, Container } from "@mui/material";
-import ProductCard from "../product/productCard";
+import ProductCard from "../product/productCard/productCard";
 
 const CategoryContent = ({ category, products, activeSubcategory }) => {
+  if (!category) {
+    // ⚠️ If category is undefined, show a fallback message
+    return (
+      <Box sx={{ textAlign: 'center', py: 10 }}>
+        <Typography variant="h4" color="text.secondary">
+          Category not found
+        </Typography>
+      </Box>
+    );
+  }
+
   const hasProducts = products && products.length > 0;
 
   return (
@@ -28,7 +39,7 @@ const CategoryContent = ({ category, products, activeSubcategory }) => {
               lg: 550,
               xl: 650,
             },
-            backgroundImage: `url(${category.image})`,
+            backgroundImage: category.image ? `url(${category.image})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
@@ -213,7 +224,7 @@ const CategoryContent = ({ category, products, activeSubcategory }) => {
             </Grid>
           </>
         ) : (
-          // ✅ EMPTY STATE
+          // EMPTY STATE
           <Box
             sx={{
               textAlign: 'center',

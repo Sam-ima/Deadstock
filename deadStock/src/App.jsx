@@ -27,6 +27,7 @@ const AuctionsPage = lazy(() => import("./pages/auction.page"));
 const Profile = lazy(() => import("./pages/profilePage"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const ProductDetailPage = lazy(() => import("./pages/productDetailPage.jsx"));
+const ProductDescriptionPage = lazy(() => import("./pages/productDescriptionPage.jsx"));
 const ResetPassword = lazy(() =>
   import("./component/forms/passwordReset/resetPassword.jsx")
 );
@@ -47,8 +48,8 @@ const router = createBrowserRouter(
       <Route path="/how-to-sell" element={<HowToSell />} />
       {/* Category Routes */}
       <Route path="/category" element={<CategoryPage />} />
-      <Route path="/category/:slug" element={<CategoryPage />} />
-
+      <Route path="/category/:slug" element={<CategoryPage />} />  
+      <Route path="/product/:slug" element={<ProductDescriptionPage/>} />
       {/* Product Detail */}
       <Route path="/product/:id/:title" element={<ProductDetailPage />} />
     </Route>
