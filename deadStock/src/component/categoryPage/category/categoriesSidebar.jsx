@@ -14,7 +14,7 @@ const CategoriesSidebar = ({
   return (
     <Box
       sx={{
-        width: { xs: 110, sm: 200, md: 240 }, // responsive width
+        width: { xs: 110, sm: 180, md: 220 }, // responsive width
         borderRight: "1px solid",
         borderColor: "grey.200",
         p: { xs: 1.5, sm: 2, md: 3 },
