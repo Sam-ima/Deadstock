@@ -52,6 +52,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CreditCardIcon from "@mui/icons-material/CreditCard";
 import LockIcon from "@mui/icons-material/Lock";
+import { useNavigate } from "react-router-dom";
+
 
 const theme = createTheme({
   palette: {
@@ -199,6 +201,8 @@ const SAMPLE_PRODUCTS = [
 
 const CartHeader = ({ toggleSidebar }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
+
 
   return (
     <Paper 
@@ -359,7 +363,7 @@ const Sidebar = ({ open, onClose }) => {
   );
 };
 
-const CartItem = ({ product, onUpdateQuantity, onRemove }) => {
+const CartItem = ({ product, onUpdateQuantity, onRemove, onBuyNow }) => {
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [itemQuantity, setItemQuantity] = useState(product.quantity);
 
@@ -544,20 +548,22 @@ const CartItem = ({ product, onUpdateQuantity, onRemove }) => {
                   <DeleteIcon fontSize="small" />
                 </IconButton>
                 
-                <Button
-                  variant="outlined"
-                  size="small"
-                  sx={{
-                    borderColor: 'primary.main',
-                    color: 'primary.main',
-                    '&:hover': {
-                      borderColor: 'primary.dark',
-                      bgcolor: 'primary.50'
-                    }
-                  }}
-                >
-                  Buy Now
-                </Button>
+<Button
+  variant="outlined"
+  size="small"
+  onClick={() => onBuyNow(product)}
+  sx={{
+    borderColor: 'primary.main',
+    color: 'primary.main',
+    '&:hover': {
+      borderColor: 'primary.dark',
+      bgcolor: 'primary.50'
+    }
+  }}
+>
+  Buy Now
+</Button>
+
               </Box>
             </Box>
           </Box>
@@ -826,6 +832,16 @@ const AddToCart = () => {
   const isTablet = useMediaQuery(theme.breakpoints.down('md'));
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [cartItems, setCartItems] = useState(SAMPLE_PRODUCTS);
+  const navigate = useNavigate();
+
+  const handleBuyNow = (product) => {
+  navigate("/checkout", {
+    state: {
+      product,
+      quantity: product.quantity,
+    },
+  });
+};
 
   // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => {
@@ -961,6 +977,7 @@ const AddToCart = () => {
                           product={item}
                           onUpdateQuantity={handleUpdateQuantity}
                           onRemove={handleRemoveItem}
+                           onBuyNow={handleBuyNow}
                         />
                       ))}
 
