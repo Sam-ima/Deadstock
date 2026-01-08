@@ -13,16 +13,17 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
     <Paper
       elevation={0}
       sx={{
-        p: { xs: 2, sm: 3, md: 4 },
+        p: { xs: 2, sm: 3 },
         borderRadius: { xs: 2, md: 3 },
         backgroundColor: "#f8fff8",
-        // border: "2px solid #e0f2e1",
-        // border:"5px solid gray",
+        width: "100%", // Ensure full width
+        boxSizing: "border-box", // Include padding in width
+         border:"2px solid yellow"
       }}
     >
-      <Stack spacing={{ xs: 2, sm: 3 }}>
+      <Stack spacing={{ xs: 2, sm: 3 }} sx={{ width: "100%" , border:"2px solid purple"}}>
         {/* Place Bid Section */}
-        <Box>
+        <Box sx={{ width: "100%" }}>
           <Typography
             variant="h6"
             fontWeight={600}
@@ -36,6 +37,7 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
             spacing={{ xs: 1, sm: 2 }}
             alignItems="center"
             mb={1}
+            sx={{ width: "100%" }}
           >
             <TextField
               fullWidth
@@ -67,31 +69,30 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
                   borderRadius: 2,
                   backgroundColor: "white",
                   fontSize: { xs: 12, sm: 14, md: 16 },
+                  width: "100%", // Ensure full width
+                  border:"2px solid black"
                 },
               }}
             />
-<Button
-  variant="contained"
-  onClick={() => onPlaceBid(bidAmount)}
-  sx={{
-    width: { xs: "100%", sm: "auto" },       // full width on mobile
-    minWidth: { xs: "100%", sm: 140 },      // keep original minWidth on larger screens
-    height: { xs: 34, sm: 40, md: 40 },     // responsive height
-    borderRadius: { xs: 1.5, sm: 2 },       // slightly smaller radius on mobile
-    fontWeight: 700,
-    fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" }, // responsive font
-    backgroundColor: "#2E7D32",
-    "&:hover": {
-      backgroundColor: "#1B5E20",
-      transform: "translateY(-1px)",
-    },
-    // py: { xs: 1, sm: 1.5, md: 2 },          // responsive vertical padding
-    // px: { xs: 1, sm: 2, md: 3 },            // responsive horizontal padding
-  }}
->
-  Place Bid
-</Button>
-
+            <Button
+              variant="contained"
+              onClick={() => onPlaceBid(bidAmount)}
+              sx={{
+                width: { xs: "100%", sm: "auto" },
+                minWidth: { xs: "100%", sm: 140 },
+                height: { xs: 34, sm: 40, md: 40 },
+                borderRadius: { xs: 1.5, sm: 2 },
+                fontWeight: 700,
+                fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
+                backgroundColor: "#2E7D32",
+                "&:hover": {
+                  backgroundColor: "#1B5E20",
+                  transform: "translateY(-1px)",
+                },
+              }}
+            >
+              Place Bid
+            </Button>
           </Stack>
 
           <Typography
@@ -103,10 +104,10 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
           </Typography>
         </Box>
 
-        <Divider sx={{ borderColor: "#c8e6c9" }} />
+        <Divider sx={{ borderColor: "#c8e6c9", width: "100%" }} />
 
         {/* Quick Bid Buttons */}
-        <Box>
+        <Box sx={{ width: "100%" }}>
           <Typography
             variant="body2"
             color="text.secondary"
@@ -121,6 +122,7 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
             spacing={{ xs: 0.5, sm: 1, md: 2 }}
             flexWrap="wrap"
             gap={1}
+            sx={{ width: "100%" }}
           >
             {[50, 100, 250, 500].map((amount) => (
               <Button
@@ -148,29 +150,26 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
         </Box>
 
         {/* Buy Now Button */}
-       <Button
-  variant="contained"
-  fullWidth
-  onClick={onBuyNow}
-  sx={{
-    // py: { xs: 1.5, sm: 2.5, md: 3 },          // responsive vertical padding
-    // px: { xs: 1, sm: 2, md: 3 },              // responsive horizontal padding
-    borderRadius: { xs: 2, sm: 3 },           // smaller radius on mobile
-    fontWeight: 800,
-    fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },  // responsive font
-    backgroundColor: "#d8a855",
-    color: "#1B5E20",
-    textTransform: "uppercase",
-    letterSpacing: "1px",
-    minHeight: { xs: 30, sm: 40, md: 50 },    // responsive height
-    "&:hover": { backgroundColor: "#c89c48", transform: "translateY(-2px)" },
-  }}
->
-  Buy Now - $
-  {product.buyNowPrice?.toLocaleString() ||
-    (product.highestBid * 1.2).toLocaleString()}
-</Button>
-
+        <Button
+          variant="contained"
+          fullWidth
+          onClick={onBuyNow}
+          sx={{
+            borderRadius: { xs: 2, sm: 3 },
+            fontWeight: 800,
+            fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
+            backgroundColor: "#d8a855",
+            color: "#1B5E20",
+            textTransform: "uppercase",
+            letterSpacing: "1px",
+            minHeight: { xs: 30, sm: 40, md: 50 },
+            "&:hover": { backgroundColor: "#c89c48", transform: "translateY(-2px)" },
+          }}
+        >
+          Buy Now - $
+          {product.buyNowPrice?.toLocaleString() ||
+            (product.highestBid * 1.2).toLocaleString()}
+        </Button>
       </Stack>
     </Paper>
   );
