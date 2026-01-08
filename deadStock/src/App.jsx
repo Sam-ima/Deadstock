@@ -19,12 +19,12 @@ import RootLayout from "./root_layout";
 // import ProductDetailPage from "./pages/productdetail.page";
 
 import AuthPage from "./pages/authPage.jsx";
-import ProfilePage from "./pages/profilePage";
+
 
 /* ---------- Lazy Loaded Pages ---------- */
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
-const Profile = lazy(() => import("./pages/profilePage"));
+const ProfilePage = lazy(() => import("./pages/profilePage"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const ProductDetailPage = lazy(() => import("./pages/productDetailPage.jsx"));
 const ProductDescriptionPage = lazy(() => import("./pages/productDescriptionPage.jsx"));
