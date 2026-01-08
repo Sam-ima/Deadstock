@@ -233,14 +233,14 @@ const CartHeader = ({ toggleSidebar }) => {
               <MenuIcon />
             </IconButton>
           )}
-          
+{/*           
           <StoreIcon sx={{ 
             color: 'white', 
             fontSize: { xs: 28, sm: 32 },
             display: { xs: 'none', sm: 'block' }
-          }} />
+          }} /> */}
           
-          <Box>
+          {/* <Box>
             <Typography variant="h5" sx={{ 
               color: 'white', 
               fontWeight: 700,
@@ -253,8 +253,8 @@ const CartHeader = ({ toggleSidebar }) => {
               fontSize: { xs: '0.75rem', sm: '0.875rem' }
             }}>
               Business Solutions
-            </Typography>
-          </Box>
+            </Typography> */}
+          {/* </Box> */}
         </Box>
         
         <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 2, sm: 3 } }}>
