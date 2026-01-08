@@ -19,7 +19,7 @@ import RootLayout from "./root_layout";
 // import ProductDetailPage from "./pages/productdetail.page";
 
 import AuthPage from "./pages/authPage.jsx";
-
+import AddToCart from "./pages/cart.page.jsx";
 
 /* ---------- Lazy Loaded Pages ---------- */
 const LandingPage = lazy(() => import("./pages/landingPage"));
@@ -52,6 +52,8 @@ const router = createBrowserRouter(
       <Route path="/product/:slug" element={<ProductDescriptionPage/>} />
       {/* Product Detail */}
       <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
+      <Route path="/add-to-cart" element={<AddToCart />} />
+
       
     </Route>
   )
