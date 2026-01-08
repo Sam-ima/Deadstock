@@ -12,6 +12,10 @@ import { ThemeProvider, CssBaseline } from "@mui/material";
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+// Import Context Providers
+import { CartProvider } from './component/categoryPage/productDetail/cartContext.jsx';
+import { AuthProvider } from './component/categoryPage/productDetail/authContext.jsx';
+
 import RootLayout from "./root_layout";
 // import AuctionsPage from "./pages/auction.page";
 // import Profile from "./pages/profilePage";
@@ -59,21 +63,26 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <Suspense fallback={<div className="loading">Loading...</div>}>
-      <RouterProvider router={router} />
+    // Wrap everything with AuthProvider and CartProvider
+    <AuthProvider>
+      <CartProvider>
+        <Suspense fallback={<div className="loading">Loading...</div>}>
+          <RouterProvider router={router} />
 
-      {/* Toast Notifications */}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-        theme="light"
-        transition={Flip}
-      />
-    </Suspense>
+          {/* Toast Notifications */}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            closeOnClick
+            pauseOnHover
+            draggable
+            theme="light"
+            transition={Flip}
+          />
+        </Suspense>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 export default App;
