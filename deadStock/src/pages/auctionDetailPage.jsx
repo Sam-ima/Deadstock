@@ -1,33 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Container, Box } from "@mui/material";
+import { Container } from "@mui/material";
+import AuctionDetail from "../component/productdetai";
 import { useParams } from "react-router-dom";
-import ProductDetail from "../component/productdetai";
-import { products } from "../component/data/products_data";
+import { products } from "../component/data/products_data"; 
+import { Box } from "lucide-react";
 
-const ProductDetailPage = () => {
+const AuctionDetailPage = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const foundProduct = products.find(
-      (p) => p.id === parseInt(id)
-    );
-    setProduct(foundProduct);
-    setLoading(false);
+    // Simulate API call
+    const fetchProduct = () => {
+      const foundProduct = products.find(p => p.id === parseInt(id));
+      setProduct(foundProduct);
+      setLoading(false);
+    };
+
+    fetchProduct();
   }, [id]);
 
   if (loading) {
     return (
       <Container
-        maxWidth={false}
+        maxWidth
         disableGutters
         sx={{
+          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+          paddingBottom: "0px",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-           
+          
         }}
       >
         <Box>Loading...</Box>
@@ -38,9 +44,11 @@ const ProductDetailPage = () => {
   if (!product) {
     return (
       <Container
-        maxWidth={false}
+        maxWidth
         disableGutters
         sx={{
+          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+          paddingBottom: "0px",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
@@ -54,17 +62,18 @@ const ProductDetailPage = () => {
 
   return (
     <Container
-      // maxWidth={false}
+      maxWidth
       disableGutters
       sx={{
-        pt: { xs: "56px", md: "64px" },
+        paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+        paddingBottom: "0px",
         minHeight: "100vh",
-        border:"2px solid red"
+         
       }}
     >
-      <ProductDetail product={product} />
+      <AuctionDetail product={product} />
     </Container>
   );
 };
 
-export default ProductDetailPage;
+export default AuctionDetailPage;
