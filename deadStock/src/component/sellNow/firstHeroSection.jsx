@@ -2,7 +2,6 @@ import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
-  
   const navigate = useNavigate();
 
   return (
@@ -30,7 +29,7 @@ const HeroSection = () => {
 
       <Button
         onClick={() => {
-          navigate("/auth");
+          navigate("/sell-item");
         }}
         size="large"
         sx={{
