@@ -556,7 +556,7 @@ const CartItem = ({ product, onUpdateQuantity, onRemove }) => {
                     }
                   }}
                 >
-                  Save for Later
+                  Buy Now
                 </Button>
               </Box>
             </Box>
@@ -567,83 +567,83 @@ const CartItem = ({ product, onUpdateQuantity, onRemove }) => {
   );
 };
 
-const OrderSummary = ({ subtotal, shipping, tax, discount = 0 }) => {
-  const total = subtotal + shipping + tax - discount;
+// const OrderSummary = ({ subtotal, shipping, tax, discount = 0 }) => {
+  // const total = subtotal + shipping + tax - discount;
 
-  return (
-    <Card sx={{ p: { xs: 2, sm: 3 } }}>
-      <Typography variant="h6" sx={{ 
-        fontWeight: 700, 
-        mb: 3, 
-        color: 'primary.dark',
-        fontSize: { xs: '1rem', sm: '1.125rem' }
-      }}>
-        Order Summary
-      </Typography>
+  // return (
+    // <Card sx={{ p: { xs: 2, sm: 3 } }}>
+    //   <Typography variant="h6" sx={{ 
+    //     fontWeight: 700, 
+    //     mb: 3, 
+    //     color: 'primary.dark',
+    //     fontSize: { xs: '1rem', sm: '1.125rem' }
+    //   }}>
+    //     Order Summary
+    //   </Typography>
       
-      <Box sx={{ mb: 3 }}>
-        {[
-          { label: "Subtotal", value: `$${subtotal.toFixed(2)}` },
-          { label: "Shipping", value: shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`, 
-            color: shipping === 0 ? "success.main" : undefined },
-          { label: "Tax", value: `$${tax.toFixed(2)}` },
-          discount > 0 && { label: "Discount", value: `-$${discount.toFixed(2)}`, color: "success.main" }
-        ].filter(Boolean).map((item, index) => (
-          <Box key={index} sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            mb: 2,
-            alignItems: 'center'
-          }}>
-            <Typography variant="body2" color="text.secondary">
-              {item.label}
-            </Typography>
-            <Typography variant="body1" fontWeight={600} color={item.color}>
-              {item.value}
-            </Typography>
-          </Box>
-        ))}
+    //   <Box sx={{ mb: 3 }}>
+    //     {[
+    //       { label: "Subtotal", value: `$${subtotal.toFixed(2)}` },
+    //       { label: "Shipping", value: shipping === 0 ? "FREE" : `$${shipping.toFixed(2)}`, 
+    //         color: shipping === 0 ? "success.main" : undefined },
+    //       { label: "Tax", value: `$${tax.toFixed(2)}` },
+    //       discount > 0 && { label: "Discount", value: `-$${discount.toFixed(2)}`, color: "success.main" }
+    //     ].filter(Boolean).map((item, index) => (
+    //       <Box key={index} sx={{ 
+    //         display: 'flex', 
+    //         justifyContent: 'space-between', 
+    //         mb: 2,
+    //         alignItems: 'center'
+    //       }}>
+    //         <Typography variant="body2" color="text.secondary">
+    //           {item.label}
+    //         </Typography>
+    //         <Typography variant="body1" fontWeight={600} color={item.color}>
+    //           {item.value}
+    //         </Typography>
+    //       </Box>
+    //     ))}
         
-        <Divider sx={{ my: 2 }} />
+    //     <Divider sx={{ my: 2 }} />
         
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
-          <Typography variant="h6" sx={{ fontWeight: 700 }}>
-            Total
-          </Typography>
-          <Typography variant="h5" sx={{ 
-            color: 'primary.main', 
-            fontWeight: 800,
-            fontSize: { xs: '1.5rem', sm: '1.75rem' }
-          }}>
-            ${total.toFixed(2)}
-          </Typography>
-        </Box>
-      </Box>
+    //     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
+    //       <Typography variant="h6" sx={{ fontWeight: 700 }}>
+    //         Total
+    //       </Typography>
+    //       <Typography variant="h5" sx={{ 
+    //         color: 'primary.main', 
+    //         fontWeight: 800,
+    //         fontSize: { xs: '1.5rem', sm: '1.75rem' }
+    //       }}>
+    //         ${total.toFixed(2)}
+    //       </Typography>
+    //     </Box>
+    //   </Box>
       
-      <Button
-        fullWidth
-        variant="contained"
-        size="large"
-        endIcon={<ArrowForwardIcon />}
-        sx={{
-          py: 1.5,
-          fontSize: { xs: '0.875rem', sm: '1rem' },
-          fontWeight: 700
-        }}
-        onClick={() => alert("Proceeding to checkout...")}
-      >
-        Proceed to Checkout
-      </Button>
+    //   <Button
+    //     fullWidth
+    //     variant="contained"
+    //     size="large"
+    //     endIcon={<ArrowForwardIcon />}
+    //     sx={{
+    //       py: 1.5,
+    //       fontSize: { xs: '0.875rem', sm: '1rem' },
+    //       fontWeight: 700
+    //     }}
+    //     onClick={() => alert("Proceeding to checkout...")}
+    //   >
+    //     Proceed to Checkout
+    //   </Button>
       
-      <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
-        <LockIcon color="success" fontSize="small" />
-        <Typography variant="caption" color="text.secondary">
-          Secure SSL encrypted payment
-        </Typography>
-      </Box>
-    </Card>
-  );
-};
+    //   <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+    //     <LockIcon color="success" fontSize="small" />
+    //     <Typography variant="caption" color="text.secondary">
+    //       Secure SSL encrypted payment
+    //     </Typography>
+    //   </Box>
+    // </Card>
+  // );
+// };
 
 const PromoCode = () => {
   const [promoCode, setPromoCode] = useState('');
@@ -949,11 +949,7 @@ const AddToCart = () => {
                       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
                         Add some products to get started
                       </Typography>
-                      <Button 
-                        variant="contained"
-                        startIcon={<ArrowBackIcon />}
-                        sx={{ mt: 2 }}
-                      >
+                      <Button startIcon={<ArrowBackIcon />} onClick={() => navigate(-1)}>
                         Continue Shopping
                       </Button>
                     </Paper>
@@ -1006,7 +1002,7 @@ const AddToCart = () => {
                 </Grid>
 
                 {/* Right Column - Order Summary */}
-                <Grid item xs={12} lg={4}>
+                {/* <Grid item xs={12} lg={4}>
                   <Box sx={{ position: 'sticky', top: { xs: 0, md: 20 } }}>
                     <OrderSummary 
                       subtotal={subtotal}
@@ -1042,7 +1038,7 @@ const AddToCart = () => {
                       </Button>
                     </Card>
                   </Box>
-                </Grid>
+                </Grid> */}
               </Grid>
 
               {/* Trust Badges */}
