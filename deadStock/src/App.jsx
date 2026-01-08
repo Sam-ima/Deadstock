@@ -25,6 +25,7 @@ import AuthPage from "./pages/authPage.jsx";
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
 const ProfilePage = lazy(() => import("./pages/profilePage"));
+const SellerProfilePage = lazy(() => import("./pages/sellerProfilePage.jsx"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const ProductDetailPage = lazy(() => import("./pages/productDetailPage.jsx"));
 const ProductDescriptionPage = lazy(() => import("./pages/productDescriptionPage.jsx"));
@@ -41,6 +42,8 @@ const router = createBrowserRouter(
       <Route path="/" element={<LandingPage />} />
       <Route path="/auctions" element={<AuctionsPage />} />
       <Route path="/profile" element={<ProfilePage />} />
+
+      <Route path="/SellerProfile" element={<SellerProfilePage />} />
 
       {/* auth */}
       <Route path="auth" element={<AuthPage />} />

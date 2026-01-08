@@ -2,10 +2,10 @@ import { Container } from "@mui/material";
 import ProfileHeader from "./profileHeader";
 import ProfileInfoCard from "./profileInfo";
 import { authUser } from "../data/authUser"; 
-import SectionCard from "../common/sectionCard";
 import OrdersList from "./ordersList";
 import ShippingInfo from "./shippingInfo";
 import SellerProduct from "./sellerProduct";
+import ProfileStats from "./profileStatus";
 
 
 const sellerProfile = () => {
@@ -16,6 +16,8 @@ const sellerProfile = () => {
     >
       {/* <SectionCard user={authUser}/> */}
       <ProfileHeader user={authUser} />
+
+      < ProfileStats user={authUser}/>
 
  
 
