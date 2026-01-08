@@ -1,42 +1,42 @@
 // components/ProfileStats.jsx
 import React from 'react';
 import { Grid, Paper, Typography, Box } from '@mui/material';
-import {
-  ShoppingBag as SellingIcon,
-  CheckCircle as SoldIcon,
-  Star as StarIcon,
-} from '@mui/icons-material';
 
-const ProfileStats = () => {
-  const stats = [
-    { label: 'Selling', value: 24, icon: <SellingIcon />, color: '#2196f3' },
-    { label: 'Sold', value: 158, icon: <SoldIcon />, color: '#4caf50' },
-    { label: 'Rating', value: 4.9, icon: <StarIcon />, color: '#ff9800' },
-  ];
-
+const ProfileStats = ({ stats }) => {
   return (
-    <Grid container spacing={2} sx={{ mb: 3 }}>
+    <Grid container spacing={2} sx={{ mb: 4 }}>
       {stats.map((stat, index) => (
         <Grid item xs={4} key={index}>
           <Paper
             elevation={0}
             sx={{
               p: 2,
-              bgcolor: '#f5f5f5',
+              bgcolor: '#f8f9fa',
               borderRadius: 2,
               textAlign: 'center',
-              height: '100%'
+              height: '100%',
+              border: '1px solid #e9ecef'
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', mb: 1 }}>
-              <Box sx={{ color: stat.color, mr: 1 }}>
-                {stat.icon}
-              </Box>
-              <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                {stat.value}
-              </Typography>
-            </Box>
-            <Typography variant="caption" color="text.secondary">
+            <Typography 
+              variant="h5" 
+              sx={{ 
+                fontWeight: 600,
+                mb: 0.5,
+                fontSize: '1.25rem'
+              }}
+            >
+              {stat.value}
+            </Typography>
+            <Typography 
+              variant="caption" 
+              sx={{ 
+                color: '#666',
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}
+            >
               {stat.label}
             </Typography>
           </Paper>
