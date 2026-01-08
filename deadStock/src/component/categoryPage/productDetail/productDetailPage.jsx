@@ -36,7 +36,7 @@ const ProductDetailPage = () => {
   return (
     <Box sx={{ 
         minHeight: '100vh', 
-        pt: { xs: '35px', sm: '40px', md: '45px', lg: '50px' }, 
+        pt: { xs: '30px', sm: '35px', md: '40px' }, 
         // bgcolor: 'background.default',
         // backgroundColor:"red"
          }}>
