@@ -2,10 +2,10 @@ import { Container } from "@mui/material";
 import ProfileHeader from "./profileHeader";
 import ProfileInfoCard from "./profileInfo";
 import { authUser } from "../data/authUser"; 
-import SellerActions from "./sellerActions";
-import SectionCard from "../common/sectionCard";
 import OrdersList from "./ordersList";
 import ShippingInfo from "./shippingInfo";
+import SellerProduct from "./sellerProduct";
+import ProfileStats from "./profileStatus";
 
 
 const sellerProfile = () => {
@@ -14,19 +14,22 @@ const sellerProfile = () => {
       maxWidth="lg"
       sx={{ bgcolor: "#fff", minHeight: "100vh", py: 3 }}
     >
-      <SectionCard user={authUser}/>
-      {/* Pass authUser to ProfileHeader */}
+      {/* <SectionCard user={authUser}/> */}
       <ProfileHeader user={authUser} />
 
-      {/* Seller-specific info card */}
+      < ProfileStats user={authUser}/>
+
+ 
 
       <ProfileInfoCard user={authUser} />
 
       <ShippingInfo user={authUser} />
 
       <OrdersList user={authUser} />
+
+      <SellerProduct user={authUser} />
     
-      <SellerActions user={authUser} />
+      {/* <SellerActions user={authUser} /> */}
     </Container>
   );
 };
