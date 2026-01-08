@@ -26,7 +26,7 @@ const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
 const ProfilePage = lazy(() => import("./pages/profilePage"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
-const ProductDetailPage = lazy(() => import("./pages/productDetailPage.jsx"));
+const AuctionDetailPage = lazy(() => import("./pages/auctionDetailPage.jsx"));
 const ProductDescriptionPage = lazy(() => import("./pages/productDescriptionPage.jsx"));
 const ResetPassword = lazy(() =>
   import("./component/forms/passwordReset/resetPassword.jsx")
@@ -51,7 +51,7 @@ const router = createBrowserRouter(
       <Route path="/category/:slug" element={<CategoryPage />} />  
       <Route path="/product/:slug" element={<ProductDescriptionPage/>} />
       {/* Product Detail */}
-      <Route path="/product/:id/:title" element={<ProductDetailPage />} />
+      <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
       
     </Route>
   )
