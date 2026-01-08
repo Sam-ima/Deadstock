@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "@mui/material";
-import ProductDetail from "../component/productdetai";
+import { Container, Box } from "@mui/material";
 import { useParams } from "react-router-dom";
-import { products } from "../component/data/products_data"; 
-import { Box } from "lucide-react";
+import ProductDetail from "../component/productdetai";
+import { products } from "../component/data/products_data";
 
 const ProductDetailPage = () => {
   const { id } = useParams();
@@ -11,29 +10,24 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call
-    const fetchProduct = () => {
-      const foundProduct = products.find(p => p.id === parseInt(id));
-      setProduct(foundProduct);
-      setLoading(false);
-    };
-
-    fetchProduct();
+    const foundProduct = products.find(
+      (p) => p.id === parseInt(id)
+    );
+    setProduct(foundProduct);
+    setLoading(false);
   }, [id]);
 
   if (loading) {
     return (
       <Container
-        maxWidth
+        maxWidth={false}
         disableGutters
         sx={{
-          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
-          paddingBottom: "0px",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          
+           
         }}
       >
         <Box>Loading...</Box>
@@ -44,11 +38,9 @@ const ProductDetailPage = () => {
   if (!product) {
     return (
       <Container
-        maxWidth
+        maxWidth={false}
         disableGutters
         sx={{
-          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
-          paddingBottom: "0px",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
@@ -62,13 +54,12 @@ const ProductDetailPage = () => {
 
   return (
     <Container
-      maxWidth
+      // maxWidth={false}
       disableGutters
       sx={{
-        paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
-        paddingBottom: "0px",
+        pt: { xs: "56px", md: "64px" },
         minHeight: "100vh",
-         
+        border:"2px solid red"
       }}
     >
       <ProductDetail product={product} />

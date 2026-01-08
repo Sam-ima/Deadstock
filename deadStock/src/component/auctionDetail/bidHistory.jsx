@@ -85,3 +85,4 @@ const BidHistory = () => {
 };
 
 export default BidHistory;
+  
