@@ -8,7 +8,7 @@ const profilePage = (maxWidth="lg") => {
 
   
   maxWidth="lg";
-  return authUser.role === ROLES.BUYER
+  return authUser.role === ROLES.SELLER
     ? <SellerProfile />
     : <BuyerProfile />;
 

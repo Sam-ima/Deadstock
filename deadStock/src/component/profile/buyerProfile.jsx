@@ -14,10 +14,8 @@ const buyerProfile = () => {
       sx={{ bgcolor: "#fff", minHeight: "100vh", py: 3 }}
     >
       <SectionCard user={authUser}/>
-      {/* Pass authUser to ProfileHeader */}
-      <ProfileHeader user={authUser} />
 
-      {/* Seller-specific info card */}
+      <ProfileHeader user={authUser} />
 
       <ProfileInfoCard user={authUser} />
 
