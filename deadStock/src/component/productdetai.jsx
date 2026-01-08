@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Container,
   Grid,
   Box,
   IconButton,
@@ -10,12 +11,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import {
-  ArrowBack,
-  Favorite,
-  FavoriteBorder,
-  Share,
-} from "@mui/icons-material";
+import { ArrowBack, Favorite, FavoriteBorder, Share } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 // Components
@@ -26,14 +22,11 @@ import BidSection from "../component/auctionDetail/bidSection";
 import BidHistory from "../component/auctionDetail/bidHistory";
 import ProductSpecs from "../component/auctionDetail/ProductSpecs";
 
-const ProductDetail = ({ product }) => {
+const AuctionDetail = ({ product }) => {
   const navigate = useNavigate();
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-
-  const primaryColor = "#2E7D32";
-  const lightBg = "#f8fff8";
 
   const handleShare = () => {
     if (navigator.share) {
@@ -49,28 +42,36 @@ const ProductDetail = ({ product }) => {
     }
   };
 
+  const primaryColor = "#2E7D32";
+  const lightBg = "#f8fff8";
+
   return (
-    <Box sx={{ px: { xs: 1, sm: 2, md: 4 }, width: "100%" }}>
-      {/* ================= NAVBAR ================= */}
+    <Box
+      sx={{
+        // display: "flex",
+        // flexDirection: "column",
+      
+        px: { xs: 1, sm: 2, md: 4 },
+      }}
+    >
+      {/* Navigation Bar */}
       <Box
         sx={{
           position: "sticky",
           top: 0,
           zIndex: 1000,
           backgroundColor: "white",
-          borderBottom: "1px solid #eee",
+          borderBottom: "2px solid #f0f0f0",
           py: 1.5,
           px: { xs: 2, md: 4 },
-          boxShadow: "0 2px 12px rgba(46,125,50,0.08)",
+          boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)",
+          width: "100%",
         }}
       >
         <Stack direction="row" alignItems="center" spacing={2}>
           <IconButton
             onClick={() => navigate(-1)}
-            sx={{
-              backgroundColor: lightBg,
-              "&:hover": { backgroundColor: "#e8f5e8" },
-            }}
+            sx={{ backgroundColor: lightBg, "&:hover": { backgroundColor: "#e8f5e8" } }}
           >
             <ArrowBack sx={{ color: primaryColor }} />
           </IconButton>
@@ -84,9 +85,7 @@ const ProductDetail = ({ product }) => {
             >
               Home
             </Link>
-            <Typography color="text.primary">
-              {product.category}
-            </Typography>
+            <Typography color="text.primary">{product.category}</Typography>
           </Breadcrumbs>
 
           <Stack direction="row" spacing={1}>
@@ -104,80 +103,61 @@ const ProductDetail = ({ product }) => {
         </Stack>
       </Box>
 
-      {/* ================= MAIN CONTENT ================= */}
-      <Grid
-        container
-        spacing={{ xs: 2, sm: 3, md: 4 }}
-        sx={{
-          width: "100%",
-          // maxWidth: "1400px",
-          mx: "auto",
-          mt: 2,
-          border:"5px solid pink"
-        }}
-      >
-        {/* LEFT COLUMN */}
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <Stack
-            spacing={{ xs: 2, md: 4 }}
-            sx={{
-              width: "100%",
-              maxWidth: { xs: "100%", sm: "600px", md: "100%" },
-            }}
-          >
-            {/* Product Info – Mobile */}
-            <Box sx={{ display: { xs: "block", md: "none" }, border:"7px solid skyblue" }}>
-              <ProductInfo product={product} />
-            </Box>
+      {/* Main Content */}
+<Grid
+  container
+  spacing={{ xs: 2, sm: 3, md: 5 }}
+  sx={{ width: "100%" }}
+>
+  {/* LEFT COLUMN */}
+  <Grid
+    item
+    xs={12}
+    md={7}
+    order={{ xs: 1, md: 1 }}
+  >
+    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: "100%" }}>
+      {/* Product Info – mobile only */}
+      <Box sx={{ display: { xs: "block", md: "none" } }}>
+        <ProductInfo product={product} />
+      </Box>
 
-            <ImageGallery product={product} />
-            <ProductSpecs product={product} />
-          </Stack>
-        </Grid>
+      <ImageGallery product={product} />
+      <ProductSpecs product={product} />
+    </Stack>
+  </Grid>
 
-        {/* RIGHT COLUMN */}
-        <Grid
-          item
-          xs={12}
-          md={6}
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-             border:"5px solid gray"
-          }}
-        >
-          <Box
-            sx={{
-              width: "100%",
-               border:"2px solid blue",
-              // maxWidth: { xs: "100%", sm: "600px", md: "100%" },
-              position: { md: "sticky" },
-              top: { md: "100px" },
-            }}
-          >
-            <Stack spacing={{ xs: 2, md: 3 }}>
-              {/* Product Info – Desktop */}
-              <Box sx={{ display: { xs: "none", md: "block" } }}>
-                <ProductInfo product={product} />
-              </Box>
+  {/* RIGHT COLUMN */}
+  <Grid
+    item
+    xs={12}
+    md={5}
+    order={{ xs: 2, md: 2 }}
+  >
+    <Box
+      sx={{
+        position: { md: "sticky" },
+        top: { md: "100px" },
+        width: "100%",
+      }}
+    >
+      <Stack spacing={{ xs: 2, md: 3 }}>
+        {/* Product Info – desktop only */}
+        <Box sx={{ display: { xs: "none", md: "block" } }}>
+          <ProductInfo product={product} />
+        </Box>
 
-              <AuctionTimer product={product} />
-              <BidSection product={product} />
-              <BidHistory product={product} />
-            </Stack>
-          </Box>
-        </Grid>
-      </Grid>
+        <AuctionTimer product={product} />
+        <BidSection product={product} />
+        <BidHistory product={product} />
+      </Stack>
+    </Box>
+  </Grid>
+</Grid>
 
-      {/* ================= SNACKBAR ================= */}
+
+
+      {/* Snackbar */}
       <Snackbar
         open={showSnackbar}
         autoHideDuration={3000}
@@ -186,11 +166,7 @@ const ProductDetail = ({ product }) => {
       >
         <Alert
           severity="success"
-          sx={{
-            width: "100%",
-            backgroundColor: primaryColor,
-            color: "white",
-          }}
+          sx={{ width: "100%", backgroundColor: primaryColor, color: "white" }}
         >
           {snackbarMessage}
         </Alert>
@@ -199,8 +175,7 @@ const ProductDetail = ({ product }) => {
   );
 };
 
-export default ProductDetail;
-
+export default AuctionDetail;
 
 
 

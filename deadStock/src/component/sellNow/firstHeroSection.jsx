@@ -41,10 +41,10 @@ const HeroSection = () => {
           bgcolor: "#10562bff",
           color: "#fff",
           fontWeight: 700,
-          "&:hover": { bgcolor: "#f5ad76ff", color: "#000" },
+          "&:hover": { bgcolor: "#EF6C00", color: "#000" },
         }}
       >
-        List an Item
+        Sell Now
       </Button>
     </Box>
   );
