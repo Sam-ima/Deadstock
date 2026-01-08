@@ -5,7 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import categories from "../../component/data/categories_data";
 import DesktopMenu from "./desktopMenu";
 
-const NavItems = ({ scrolled }) => {
+const NavItems = () => {
   const [activeMenu, setActiveMenu] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -17,7 +17,7 @@ const NavItems = ({ scrolled }) => {
       submenu: Array.isArray(categories) ? categories : [],
     },
     { label: "Auction", path: "/auctions" },
-    { label: "Sell Now", path: "/how-to-sell" },
+    { label: "Sell an item", path: "/how-to-sell" },
   ];
 
   return (

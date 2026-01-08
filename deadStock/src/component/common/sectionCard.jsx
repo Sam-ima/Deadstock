@@ -5,7 +5,6 @@ const sectionCard = ({ children }) => {
     <Card
       sx={{
         borderRadius: 6,
-        hovercolor: "grey.100",
         hover: { boxShadow: 6 },
         hovercolor: "green",
         color: "text.primary",

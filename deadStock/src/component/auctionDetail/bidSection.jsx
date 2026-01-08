@@ -18,10 +18,9 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
         backgroundColor: "#f8fff8",
         width: "100%", // Ensure full width
         boxSizing: "border-box", // Include padding in width
-         border:"2px solid yellow"
       }}
     >
-      <Stack spacing={{ xs: 2, sm: 3 }} sx={{ width: "100%" , border:"2px solid purple"}}>
+      <Stack spacing={{ xs: 2, sm: 3 }} sx={{ width: "100%" }}>
         {/* Place Bid Section */}
         <Box sx={{ width: "100%" }}>
           <Typography
@@ -70,7 +69,6 @@ const BidSection = ({ product, onPlaceBid, onBuyNow }) => {
                   backgroundColor: "white",
                   fontSize: { xs: 12, sm: 14, md: 16 },
                   width: "100%", // Ensure full width
-                  border:"2px solid black"
                 },
               }}
             />
