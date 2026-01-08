@@ -14,7 +14,7 @@ const sellerProfile = () => {
       maxWidth="lg"
       sx={{ bgcolor: "#fff", minHeight: "100vh", py: 3 }}
     >
-      <SectionCard user={authUser}/>
+      {/* <SectionCard user={authUser}/> */}
       <ProfileHeader user={authUser} />
 
  
