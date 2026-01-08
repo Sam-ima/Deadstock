@@ -47,7 +47,10 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
       </Paper>
 
       {/* Cart */}
-      <IconButton color="inherit">
+      <IconButton 
+        color="inherit" 
+        onClick={() => navigate("/cart")} 
+      >
         <Badge badgeContent={3} color="warning">
           <ShoppingCart size={20} />
         </Badge>
