@@ -375,7 +375,7 @@ const products = [
     rating: 4.3,
     reviews: 67,
     images: [Jacket1, Jacket2],
-    description: 'Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.',
+    description: 'Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.lassic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.',
     specifications: {
       material: '100% Genuine Leather',
       color: 'Black',

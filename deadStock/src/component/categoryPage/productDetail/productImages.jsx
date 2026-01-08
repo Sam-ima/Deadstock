@@ -8,7 +8,9 @@ const ProductImages = ({ product, selectedImage, setSelectedImage, isFavorite, s
     : 0;
 
   return (
-    <Box flex={1}>
+    <Box flex={1} sx={{
+      // backgroundColor:'blue'
+      }}>
       <Paper elevation={0} sx={{ borderRadius: 2, overflow: 'hidden', mb: 2, position: 'relative', bgcolor: 'grey.50' }}>
         <Box
           component="img"

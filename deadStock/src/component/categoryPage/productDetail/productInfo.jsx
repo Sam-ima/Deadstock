@@ -10,7 +10,13 @@ const ProductInfo = ({ product, quantity, setQuantity }) => {
         : 0;
 
     return (
-        <Box flex={1}>
+        <Box flex={1} sx={{
+            // backgroundColor: 'red', 
+            justifyContent: 'center',
+            // alignItems: 'center', 
+            display: 'flex', 
+            flexDirection: 'column'
+        }}>
             <Typography variant="h4" fontWeight="bold"
                 sx={{
                     fontSize: {
@@ -36,11 +42,9 @@ const ProductInfo = ({ product, quantity, setQuantity }) => {
                     <Typography variant="h3" fontWeight="bold"
                         sx={{
                             fontSize: {
-                                xs: "24px",   // mobile
-                                sm: "28px",   // small tablets
-                                md: "32px",   // tablets / small laptop
-                                lg: "40px",   // desktop
-                                xl: "48px",   // large screens
+                                xs: "18px",   // mobile
+                                sm: "20px",   // small tablets
+                                md: "24px",   // tablets / small laptop
                             },
                         }}
                         color="primary.main">
@@ -51,11 +55,9 @@ const ProductInfo = ({ product, quantity, setQuantity }) => {
                             <Typography variant="h5" color="text.secondary" sx={{
                                 textDecoration: 'line-through',
                                 fontSize: {
-                                    xs: "20px",   // mobile
-                                    sm: "24px",   // small tablets
-                                    md: "28px",   // tablets / small laptop
-                                    lg: "32px",   // desktop
-                                    xl: "36px",   // large screens
+                                    xs: "18px",   // mobile
+                                    sm: "20px",   // small tablets
+                                    md: "24px",   // tablets / small laptop
                                 },
                             }}>
                                 ${product.basePrice}
