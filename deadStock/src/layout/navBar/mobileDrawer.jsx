@@ -19,7 +19,7 @@ const navItems = [
   { label: "Home", path: "/" },
   { label: "Categories", submenu: categories },
   { label: "Auctions", path: "/auctions" },
-  { label: "Sell Now", path: "/how-to-sell" },
+  { label: "Sell an item", path: "/how-to-sell" },
 ];
 
 const MobileDrawer = ({ open, onClose }) => {

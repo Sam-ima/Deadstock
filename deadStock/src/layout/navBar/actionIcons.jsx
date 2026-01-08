@@ -13,7 +13,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
   const navigate = useNavigate();
 
   return (
-    <Box display="flex" alignItems="center" gap={1.5}>
+    <Box display="flex" alignItems="center" gap={1}>
       {/* Search Bar (Desktop Only) */}
 
       <Paper
@@ -41,7 +41,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
             ml: 1,
             color: "#fff",
             fontSize: "0.9rem",
-            width: { xs: 130, sm: 180, md: 100,lg:200 },
+            width: { xs: 100, sm: 180, md: 100,lg:200 },
           }}
         />
       </Paper>

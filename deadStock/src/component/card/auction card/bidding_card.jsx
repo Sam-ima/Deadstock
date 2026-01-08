@@ -4,17 +4,18 @@ import makeSlug from "../../../utils/slugify";
 // import { products } from "../../component/data/products_data";
 
 const AuctionProductCard = ({ product }) => {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <Card
-    onClick={() =>
-  navigate(`/product/${product.id}/${makeSlug(product.name)}`)
-}
+      onClick={() =>
+        navigate(`/product/${product.id}/${makeSlug(product.name)}`)
+      }
       sx={{
         width: 280,
         borderRadius: 3,
         overflow: "hidden",
         transition: "0.3s ease",
+        cursor:"pointer",
         "&:hover": {
           transform: "translateY(-6px)",
           boxShadow: "0 16px 40px rgba(0,0,0,0.15)",
@@ -71,17 +72,15 @@ const AuctionProductCard = ({ product }) => {
 
           <Typography fontSize="0.8rem" color="text.secondary">
             Highest Bidder:{" "}
-            <span style={{ fontWeight: 600 }}>
-              {product.highestBidder}
-            </span>
+            <span style={{ fontWeight: 600 }}>{product.highestBidder}</span>
           </Typography>
         </Stack>
 
         <Button
-         onClick={(e) => {
-         e.stopPropagation();
-          // bid logic here
-        }}
+          onClick={(e) => {
+            e.stopPropagation();
+            // bid logic here
+          }}
           fullWidth
           sx={{
             mt: 2,
