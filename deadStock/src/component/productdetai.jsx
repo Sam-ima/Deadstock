@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Container,
   Grid,
   Box,
   IconButton,
@@ -11,7 +10,12 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { ArrowBack, Favorite, FavoriteBorder, Share } from "@mui/icons-material";
+import {
+  ArrowBack,
+  Favorite,
+  FavoriteBorder,
+  Share,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 
 // Components
@@ -28,6 +32,9 @@ const ProductDetail = ({ product }) => {
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
+  const primaryColor = "#2E7D32";
+  const lightBg = "#f8fff8";
+
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -42,37 +49,28 @@ const ProductDetail = ({ product }) => {
     }
   };
 
-  const primaryColor = "#2E7D32";
-  const lightBg = "#f8fff8";
-
   return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center", // center content on mobile
-        px: { xs: 1, sm: 2, md: 4 },
-      }}
-    >
-      {/* Navigation Bar */}
+    <Box sx={{ px: { xs: 1, sm: 2, md: 4 }, width: "100%" }}>
+      {/* ================= NAVBAR ================= */}
       <Box
         sx={{
           position: "sticky",
           top: 0,
           zIndex: 1000,
           backgroundColor: "white",
-          borderBottom: "2px solid #f0f0f0",
+          borderBottom: "1px solid #eee",
           py: 1.5,
           px: { xs: 2, md: 4 },
-          boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)",
-          width: "100%",
+          boxShadow: "0 2px 12px rgba(46,125,50,0.08)",
         }}
       >
         <Stack direction="row" alignItems="center" spacing={2}>
           <IconButton
             onClick={() => navigate(-1)}
-            sx={{ backgroundColor: lightBg, "&:hover": { backgroundColor: "#e8f5e8" } }}
+            sx={{
+              backgroundColor: lightBg,
+              "&:hover": { backgroundColor: "#e8f5e8" },
+            }}
           >
             <ArrowBack sx={{ color: primaryColor }} />
           </IconButton>
@@ -86,7 +84,9 @@ const ProductDetail = ({ product }) => {
             >
               Home
             </Link>
-            <Typography color="text.primary">{product.category}</Typography>
+            <Typography color="text.primary">
+              {product.category}
+            </Typography>
           </Breadcrumbs>
 
           <Stack direction="row" spacing={1}>
@@ -104,72 +104,80 @@ const ProductDetail = ({ product }) => {
         </Stack>
       </Box>
 
-      {/* Main Content */}
-<Grid
-  container
-  spacing={{ xs: 2, sm: 3, md: 5 }}
-  justifyContent="center" 
-  sx={{ width: "100%" , border: "5px solid red"}}
->
-  {/* LEFT COLUMN */}
-  <Grid
-    item
-    xs={12}
-    md={7}
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-       alignItems: "center", 
-    }}
-  >
-    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: "100%" }}>
-      
-      {/* Product Info – mobile only */}
-      <Box sx={{ display: { xs: "block", md: "none" } }}>
-        <ProductInfo product={product} />
-      </Box>
+      {/* ================= MAIN CONTENT ================= */}
+      <Grid
+        container
+        spacing={{ xs: 2, sm: 3, md: 4 }}
+        sx={{
+          width: "100%",
+          // maxWidth: "1400px",
+          mx: "auto",
+          mt: 2,
+          border:"5px solid pink"
+        }}
+      >
+        {/* LEFT COLUMN */}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Stack
+            spacing={{ xs: 2, md: 4 }}
+            sx={{
+              width: "100%",
+              maxWidth: { xs: "100%", sm: "600px", md: "100%" },
+            }}
+          >
+            {/* Product Info – Mobile */}
+            <Box sx={{ display: { xs: "block", md: "none" }, border:"7px solid skyblue" }}>
+              <ProductInfo product={product} />
+            </Box>
 
-      <ImageGallery product={product} />
-      <ProductSpecs product={product} />
-    </Stack>
-  </Grid>
+            <ImageGallery product={product} />
+            <ProductSpecs product={product} />
+          </Stack>
+        </Grid>
 
-  {/* RIGHT COLUMN */}
-  <Grid
-    item
-    xs={12}
-    md={5}
-    sx={{
-      display: "flex",
-      flexDirection: "column",
-       alignItems: "center",    
-    }}
-  >
-    <Box
-      sx={{
-        position: { md: "sticky" },
-        top: { md: "100px" },
-        width: {xs:"140%",sm:"100%"  }          // 🔥 EXACT SAME AS LEFT
-        // border: "5px solid blue",
-      }}
-    >
-      <Stack spacing={{ xs: 2, md: 3 }}>
-        
-        {/* Product Info – desktop only */}
-        <Box sx={{ display: { xs: "none", md: "block" } }}>
-          <ProductInfo product={product} />
-        </Box>
+        {/* RIGHT COLUMN */}
+        <Grid
+          item
+          xs={12}
+          md={6}
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+             border:"5px solid gray"
+          }}
+        >
+          <Box
+            sx={{
+              width: "100%",
+               border:"2px solid blue",
+              // maxWidth: { xs: "100%", sm: "600px", md: "100%" },
+              position: { md: "sticky" },
+              top: { md: "100px" },
+            }}
+          >
+            <Stack spacing={{ xs: 2, md: 3 }}>
+              {/* Product Info – Desktop */}
+              <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <ProductInfo product={product} />
+              </Box>
 
-        <AuctionTimer product={product} />
-        <BidSection product={product} />
-        <BidHistory product={product} />
-      </Stack>
-    </Box>
-  </Grid>
-</Grid>
+              <AuctionTimer product={product} />
+              <BidSection product={product} />
+              <BidHistory product={product} />
+            </Stack>
+          </Box>
+        </Grid>
+      </Grid>
 
-
-      {/* Snackbar */}
+      {/* ================= SNACKBAR ================= */}
       <Snackbar
         open={showSnackbar}
         autoHideDuration={3000}
@@ -178,16 +186,21 @@ const ProductDetail = ({ product }) => {
       >
         <Alert
           severity="success"
-          sx={{ width: "100%", backgroundColor: primaryColor, color: "white" }}
+          sx={{
+            width: "100%",
+            backgroundColor: primaryColor,
+            color: "white",
+          }}
         >
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Container>
+    </Box>
   );
 };
 
 export default ProductDetail;
+
 
 
 
