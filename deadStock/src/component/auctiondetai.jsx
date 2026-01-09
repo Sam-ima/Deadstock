@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Box, Container, Typography, Button } from "@mui/material";
 
 // ✅ FIXED PATHS
-import ProductImages from "../pages/categoryPage/productDetail/productImages";
-import ProductInfo from "../pages/categoryPage/productDetail/productInfo";
+import ProductImages from "./categoryPage/productDetail/productImages";
+import ProductInfo from "./categoryPage/productDetail/productInfo";
 
 import AuctionTimer from "./auctionDetail/auctionTimer";
 import BidHistory from "./auctionDetail/bidHistory";
