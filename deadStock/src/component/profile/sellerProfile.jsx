@@ -8,7 +8,7 @@ import SellerProduct from "./sellerProduct";
 import ProfileStats from "./profileStatus";
 
 
-const sellerProfile = () => {
+const SellerProfile = () => {
   return (
     <Container
       maxWidth="lg"
@@ -34,4 +34,4 @@ const sellerProfile = () => {
   );
 };
 
-export default sellerProfile;
+export default SellerProfile;
