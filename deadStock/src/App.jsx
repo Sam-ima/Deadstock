@@ -26,6 +26,8 @@ import AuthPage from "./pages/authPage.jsx";
 import AddToCart from "./pages/cart.page.jsx";
 import Checkout from "./pages/checkout.page.jsx";
 import SellItem from "./pages/sellProduct"
+// import AddToCart from "./pages/cart.page.jsx";
+// import Checkout from "./pages/checkout.page.jsx";
 
 /* ---------- Lazy Loaded Pages ---------- */
 const LandingPage = lazy(() => import("./pages/landingPage"));
@@ -68,6 +70,10 @@ const router = createBrowserRouter(
       <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
       <Route path="/cart" element={<AddToCart />} />
       <Route path="/checkout" element={<Checkout />} />
+       {/* <Route path="/cart" element={<AddToCart />} /> */}
+       {/* <Route path="/checkout" element={<Checkout />} /> */}
+
+      
     </Route>
   )
 );
