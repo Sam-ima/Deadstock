@@ -1,91 +1,119 @@
 // src/pages/product/components/ProductInfo.jsx
-import { Box, Typography, Stack, Button, Chip, Rating } from '@mui/material';
-import { ShoppingCart } from '@mui/icons-material';
-import QuantitySelector from './quantitySelector';
-import ActionButtons from './actionButtons';
+import { Box, Typography, Stack, Chip, Rating } from "@mui/material";
+import QuantitySelector from "./quantitySelector";
+import ActionButtons from "./actionButtons";
 
-const ProductInfo = ({ product, quantity, setQuantity }) => {
-    const discountPercent = product.basePrice > product.price
-        ? Math.round(((product.basePrice - product.price) / product.basePrice) * 100)
-        : 0;
+const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
+  const discountPercent =
+    product.basePrice > product.price
+      ? Math.round(
+          ((product.basePrice - product.price) / product.basePrice) * 100
+        )
+      : 0;
 
-    return (
-        <Box flex={1} sx={{
-            // backgroundColor: 'red', 
-            justifyContent: 'center',
-            // alignItems: 'center', 
-            display: 'flex', 
-            flexDirection: 'column'
-        }}>
-            <Typography variant="h4" fontWeight="bold"
+  return (
+    <Box
+      flex={1}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      }}
+    >
+      <Typography
+        variant="h4"
+        fontWeight="bold"
+        gutterBottom
+        sx={{
+          fontSize: {
+            xs: "24px",
+            sm: "28px",
+            md: "32px",
+            lg: "40px",
+            xl: "48px",
+          },
+        }}
+      >
+        {product.name}
+      </Typography>
+
+      <Stack direction="row" spacing={1} alignItems="center" mb={2}>
+        <Rating value={product.rating} precision={0.5} readOnly />
+        <Typography color="text.secondary">
+          {product.rating} ({product.reviews} reviews)
+        </Typography>
+        <Chip label={`${product.sold} sold`} size="small" variant="outlined" />
+      </Stack>
+
+      <Box mb={3}>
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography
+            variant="h3"
+            fontWeight="bold"
+            color="primary.main"
+            sx={{
+              fontSize: {
+                xs: "18px",
+                sm: "20px",
+                md: "24px",
+              },
+            }}
+          >
+            ${product.price}
+          </Typography>
+
+          {product.basePrice > product.price && (
+            <>
+              <Typography
                 sx={{
-                    fontSize: {
-                        xs: "24px",   // mobile
-                        sm: "28px",   // small tablets
-                        md: "32px",   // tablets / small laptop
-                        lg: "40px",   // desktop
-                        xl: "48px",   // large screens
-                    },
+                  textDecoration: "line-through",
+                  fontSize: {
+                    xs: "18px",
+                    sm: "20px",
+                    md: "24px",
+                  },
                 }}
-                gutterBottom>
-                {product.name}
-            </Typography>
+                color="text.secondary"
+              >
+                ${product.basePrice}
+              </Typography>
+              <Chip
+                label={`Save $${product.basePrice - product.price}`}
+                color="error"
+              />
+            </>
+          )}
+        </Stack>
 
-            <Stack direction="row" spacing={1} alignItems="center" mb={2}>
-                <Rating value={product.rating} precision={0.5} readOnly size="medium" />
-                <Typography color="text.secondary">{product.rating} ({product.reviews} reviews)</Typography>
-                <Chip label={`${product.sold} sold`} size="small" variant="outlined" />
-            </Stack>
+        {discountPercent > 0 && (
+          <Typography variant="body2" color="text.secondary" mt={1}>
+            Depreciation applied: {discountPercent}% off original price
+          </Typography>
+        )}
+      </Box>
 
-            <Box mb={3}>
-                <Stack direction="row" spacing={2} alignItems="center">
-                    <Typography variant="h3" fontWeight="bold"
-                        sx={{
-                            fontSize: {
-                                xs: "18px",   // mobile
-                                sm: "20px",   // small tablets
-                                md: "24px",   // tablets / small laptop
-                            },
-                        }}
-                        color="primary.main">
-                        ${product.price}
-                    </Typography>
-                    {product.basePrice > product.price && (
-                        <>
-                            <Typography variant="h5" color="text.secondary" sx={{
-                                textDecoration: 'line-through',
-                                fontSize: {
-                                    xs: "18px",   // mobile
-                                    sm: "20px",   // small tablets
-                                    md: "24px",   // tablets / small laptop
-                                },
-                            }}>
-                                ${product.basePrice}
-                            </Typography>
-                            <Chip label={`Save $${product.basePrice - product.price}`} color="error" size="medium" />
-                        </>
-                    )}
-                </Stack>
-                {discountPercent > 0 && (
-                    <Typography variant="body2" color="text.secondary" mt={1}>
-                        Depreciation applied: {discountPercent}% off original price
-                    </Typography>
-                )}
-            </Box>
+      <Box mb={3}>
+        <Typography variant="body1">
+          Availability: {product.stock > 0 ? "In Stock" : "Out of Stock"}
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {product.stock} units available • {product.sold} units sold
+        </Typography>
+      </Box>
 
-            <Box mb={3}>
-                <Typography variant="body1" gutterBottom>
-                    Availability: {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    {product.stock} units available • {product.sold} units sold
-                </Typography>
-            </Box>
-
-            <QuantitySelector quantity={quantity} setQuantity={setQuantity} stock={product.stock} />
-            <ActionButtons product={product} quantity={quantity} />
-        </Box>
-    );
+      {/* 🚫 CART UI REMOVED FOR AUCTION */}
+      {!isAuction && (
+        <>
+          <QuantitySelector
+            quantity={quantity}
+            setQuantity={setQuantity}
+            stock={product.stock}
+          />
+          <ActionButtons product={product} quantity={quantity} />
+        </>
+      )}
+    </Box>
+  );
 };
 
 export default ProductInfo;
