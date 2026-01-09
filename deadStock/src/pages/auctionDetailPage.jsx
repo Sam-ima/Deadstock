@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "@mui/material";
-import AuctionDetail from "../component/productdetai";
+import AuctionDetail from "../component/auctiondetai";
 import { useParams } from "react-router-dom";
 import { products } from "../component/data/products_data"; 
 import { Box } from "lucide-react";
