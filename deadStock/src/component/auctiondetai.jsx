@@ -1,15 +1,13 @@
 // src/component/auctiondetai/index.jsx
 import { useState } from "react";
-import { Box, Container, Typography } from "@mui/material";
+import { Box, Container, Typography, Button } from "@mui/material";
 
-// Reused product components
-import ProductImages from "../component/categoryPage/productDetail/productImages";
-import ProductInfo from "../component/categoryPage/productDetail/productInfo";
+// ✅ FIXED PATHS
+import ProductImages from "../pages/categoryPage/productDetail/productImages";
+import ProductInfo from "../pages/categoryPage/productDetail/productInfo";
 
-// Auction-specific components
 import AuctionTimer from "./auctionDetail/auctionTimer";
 import BidHistory from "./auctionDetail/bidHistory";
-import ProductSpecs from "./auctionDetail/ProductSpecs";
 
 const AuctionDetail = ({ product }) => {
   const [selectedImage, setSelectedImage] = useState(0);
@@ -26,17 +24,10 @@ const AuctionDetail = ({ product }) => {
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        pt: { xs: "30px", sm: "35px", md: "40px" },
-      }}
-    >
-      {/* ================= MAIN CONTENT ================= */}
-      <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-        {/* Top section: Images + Info */}
+    <Box sx={{ minHeight: "100vh", pt: { xs: 3, md: 4 } }}>
+      <Container maxWidth="xl">
         <Box display={{ xs: "block", md: "flex" }} gap={4}>
-          {/* Left: Images */}
+          {/* ✅ Images now render correctly */}
           <ProductImages
             product={product}
             selectedImage={selectedImage}
@@ -45,23 +36,27 @@ const AuctionDetail = ({ product }) => {
             setIsFavorite={setIsFavorite}
           />
 
-          {/* Right: Product Info + Auction Timer */}
+          {/* Info */}
           <Box sx={{ width: { xs: "100%", md: "40%" } }}>
-            <ProductInfo product={product} />
+            <ProductInfo product={product} isAuction />
+
             <Box sx={{ mt: 3 }}>
               <AuctionTimer product={product} />
             </Box>
+
+            {/* 🔨 Place Bid Button */}
+            <Button
+              fullWidth
+              size="large"
+              variant="contained"
+              sx={{ mt: 3, py: 1.5 }}
+            >
+              Place Bid
+            </Button>
           </Box>
         </Box>
 
-        {/* Bottom section (like ProductTabs area) */}
-        {/* <Box sx={{ mt: 6 }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
-            Product Details
-          </Typography>
-          <ProductSpecs product={product} />
-        </Box> */}
-
+        {/* Bid History */}
         <Box sx={{ mt: 6 }}>
           <Typography variant="h6" fontWeight={600} mb={2}>
             Bid History
@@ -74,6 +69,7 @@ const AuctionDetail = ({ product }) => {
 };
 
 export default AuctionDetail;
+
 
 
 
