@@ -217,7 +217,9 @@ const Checkout = () => {
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
 
-  const { product, quantity = 1 } = state || {};
+const { items = [] } = state || {};
+const product = items[0];
+const quantity = product?.quantity || 1;
 
   if (!product) {
     return (
