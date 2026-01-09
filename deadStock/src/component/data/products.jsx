@@ -424,7 +424,7 @@ const products = [
     bulkDiscount: 10,
     requiresB2BVerification: true,
     images: [Jacket1, Jacket2],
-    description: 'Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.',
+    description: 'Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.Classic genuine leather jacket with premium finish, perfect for all seasons. Durable, stylish, and timeless fashion piece.',
     specifications: {
       material: '100% Genuine Leather',
       moq: '5 units for wholesale pricing',
