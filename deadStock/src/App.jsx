@@ -14,7 +14,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Import Context Providers
 import { CartProvider } from "./component/categoryPage/productDetail/cartContext.jsx";
-import { AuthProvider } from "./component/categoryPage/productDetail/authContext.jsx";
+import { AuthProvider } from "./context/authContext/authContext.jsx";
 
 import RootLayout from "./root_layout";
 // import AuctionsPage from "./pages/auction.page";
