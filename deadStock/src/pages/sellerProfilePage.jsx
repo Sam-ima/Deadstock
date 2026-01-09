@@ -1,6 +1,9 @@
 // SellerProfilePage.js
 import React, { useState } from 'react';
 import { Container, Box } from '@mui/material';
+// BuyerProfilrPage.js
+import React from 'react';
+import { Box, Container } from '@mui/material';
 import ProfileHeader from '../component/sellerProfile/profileHeader';
 import ProfileStats from '../component/sellerProfile/profileStats';
 import ProductsSection from '../component/sellerProfile/productsSection';
@@ -75,6 +78,13 @@ const SellerProfilePage = () => {
         <MenuList items={menuItemsData} />
         <RecentActivity activity={recentActivityData} />
       </Box>
+  return (
+    <Container maxWidth="sm" sx={{ bgcolor: 'white', minHeight: '100vh', p: 2 }}>
+      <ProfileHeader />
+      <ProfileStats />
+      <ProductsSection />
+      <MenuList />
+      <RecentActivity />
     </Container>
   );
 };
