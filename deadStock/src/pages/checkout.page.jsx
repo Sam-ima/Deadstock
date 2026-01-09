@@ -23,7 +23,7 @@ import {
   Paper,
   Avatar,
   CircularProgress,
-  alpha
+  Collapse
 } from "@mui/material";
 import {
   CreditCard as CreditCardIcon,
@@ -44,47 +44,42 @@ import {
   Close,
   ShoppingBag,
   Tag,
-  Discount
+  Discount,
+  Apple,
+  AccountBalance,
+  RadioButtonChecked
 } from "@mui/icons-material";
+import { FaPaypal } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useTheme } from "@mui/material/styles";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
 // Create a custom theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#2563EB", // Vibrant blue
+      main: "#2563EB",
       light: "#60A5FA",
       dark: "#1D4ED8",
       contrastText: "#FFFFFF"
     },
     secondary: {
-      main: "#7C3AED", // Purple accent
+      main: "#7C3AED",
       light: "#A78BFA",
       dark: "#5B21B6"
     },
     success: {
-      main: "#059669", // Emerald green
+      main: "#059669",
       light: "#10B981",
       dark: "#047857"
     },
-    info: {
-      main: "#0EA5E9", // Sky blue
-      light: "#38BDF8"
-    },
-    warning: {
-      main: "#F59E0B", // Amber
-      light: "#FBBF24"
-    },
     background: {
-      default: "#F8FAFC", // Light slate
+      default: "#F8FAFC",
       paper: "#FFFFFF"
     },
     text: {
-      primary: "#1E293B", // Slate 800
-      secondary: "#64748B", // Slate 500
-      disabled: "#94A3B8" // Slate 400
+      primary: "#1E293B",
+      secondary: "#64748B",
+      disabled: "#94A3B8"
     },
     grey: {
       50: "#F8FAFC",
@@ -113,18 +108,6 @@ const theme = createTheme({
     h6: {
       fontWeight: 600,
       fontSize: { xs: "1.125rem", md: "1.25rem" }
-    },
-    body1: {
-      fontSize: "1rem",
-      lineHeight: 1.6
-    },
-    body2: {
-      fontSize: "0.875rem",
-      lineHeight: 1.5
-    },
-    caption: {
-      fontSize: "0.75rem",
-      lineHeight: 1.4
     }
   },
   shape: {
@@ -138,12 +121,7 @@ const theme = createTheme({
           textTransform: "none",
           fontWeight: 600,
           padding: "10px 24px",
-          fontSize: "0.9375rem",
-          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
-          "&:hover": {
-            transform: "translateY(-1px)",
-            boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)"
-          }
+          transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)"
         },
         containedPrimary: {
           background: "linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)",
@@ -152,42 +130,6 @@ const theme = createTheme({
             background: "linear-gradient(135deg, #1D4ED8 0%, #1E40AF 100%)",
             boxShadow: "0 6px 20px 0 rgba(37, 99, 235, 0.4)"
           }
-        },
-        outlined: {
-          borderColor: "#E2E8F0",
-          "&:hover": {
-            borderColor: "#2563EB",
-            backgroundColor: "rgba(37, 99, 235, 0.04)"
-          }
-        }
-      }
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          "& .MuiOutlinedInput-root": {
-            borderRadius: 8,
-            backgroundColor: "#FFFFFF",
-            transition: "all 0.2s",
-            "&:hover": {
-              backgroundColor: "#F8FAFC"
-            },
-            "&.Mui-focused": {
-              backgroundColor: "#FFFFFF",
-              boxShadow: "0 0 0 3px rgba(37, 99, 235, 0.1)"
-            }
-          },
-          "& .MuiInputLabel-root": {
-            fontSize: "0.875rem",
-            color: "#64748B"
-          }
-        }
-      }
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundImage: "none"
         }
       }
     },
@@ -196,11 +138,7 @@ const theme = createTheme({
         root: {
           borderRadius: 16,
           boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)",
-          border: "1px solid #E2E8F0",
-          transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-          "&:hover": {
-            boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)"
-          }
+          border: "1px solid #E2E8F0"
         }
       }
     }
@@ -216,10 +154,26 @@ const Checkout = () => {
   const [cardNumber, setCardNumber] = useState("");
   const [expiry, setExpiry] = useState("");
   const [cvv, setCvv] = useState("");
-
-const { items = [] } = state || {};
-const product = items[0];
-const quantity = product?.quantity || 1;
+  const [paypalEmail, setPaypalEmail] = useState("");
+  const [applePayVerified, setApplePayVerified] = useState(false);
+  const [bankDetails, setBankDetails] = useState({
+    accountNumber: "",
+    routingNumber: "",
+    accountHolder: ""
+  });
+// Shipping Info State
+  const [shippingInfo, setShippingInfo] = useState({
+    fullName: "",
+    phone: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+    email: ""
+  });
+  const { items = [] } = state || {};
+  const product = items[0];
+  const quantity = product?.quantity || 1;
 
   if (!product) {
     return (
@@ -234,12 +188,12 @@ const quantity = product?.quantity || 1;
     );
   }
 
-  const subtotal = product.price * quantity;
-  const shipping = subtotal > 100 ? 0 : 9.99;
-  const tax = subtotal * 0.08;
-  const total = subtotal + shipping + tax;
-  const discount = subtotal > 200 ? 25 : 0;
-  const finalTotal = total - discount;
+const subtotal = product.price * quantity;
+const shipping = subtotal > 100 ? 0 : 9.99;
+const tax = subtotal * 0.08;
+const discount = subtotal > 200 ? 25 : 0;
+const total = subtotal + shipping + tax - discount;
+const finalTotal = total - discount;
 
   const handlePlaceOrder = () => {
     setLoading(true);
@@ -248,56 +202,206 @@ const quantity = product?.quantity || 1;
       setOrderPlaced(true);
     }, 1500);
   };
+   const handleShippingChange = (field, value) => {
+    setShippingInfo((prev) => ({ ...prev, [field]: value }));
+  };
 
   const steps = ["Cart", "Information", "Payment", "Confirmation"];
 
   const formatCardNumber = (value) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    const matches = v.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || "";
     const parts = [];
-
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
+    for (let i = 0; i < v.length; i += 4) {
+      parts.push(v.substring(i, i + 4));
     }
-
-    if (parts.length) {
-      return parts.join(" ");
-    } else {
-      return value;
-    }
+    return parts.join(" ").substring(0, 19);
   };
+
+  const PaymentMethodCard = ({ method, icon, title, description, children }) => (
+    
+    <Paper
+      elevation={0}
+      sx={{
+        p: 2,
+        border: paymentMethod === method ? "2px solid" : "1px solid",
+        borderColor: paymentMethod === method ? "primary.main" : "grey.200",
+        borderRadius: 2,
+        cursor: "pointer",
+        transition: "all 0.2s",
+        backgroundColor: paymentMethod === method ? "rgba(37, 99, 235, 0.03)" : "transparent",
+        "&:hover": {
+          borderColor: "primary.main",
+          backgroundColor: "rgba(37, 99, 235, 0.02)"
+        }
+      }}
+      onClick={() => setPaymentMethod(method)}
+    >
+      <FormControlLabel
+        value={method}
+        control={
+          <Radio 
+            color="primary" 
+            checkedIcon={<RadioButtonChecked />}
+          />
+        }
+        label={
+          <Stack direction="row" alignItems="center" spacing={2}>
+            {icon}
+            <Box>
+              <Typography fontWeight={600} color="text.primary">
+                {title}
+              </Typography>
+              <Typography variant="caption" color="text.secondary">
+                {description}
+              </Typography>
+            </Box>
+          </Stack>
+        }
+        sx={{ m: 0, width: "100%" }}
+      />
+      <Collapse in={paymentMethod === method}>
+        <Box sx={{ mt: 3, pl: { xs: 3, sm: 4 } }}>
+          {children}
+        </Box>
+      </Collapse>
+    </Paper>
+  );
 
   if (orderPlaced) {
     return (
-      <Container maxWidth="sm" sx={{ py: { xs: 8, md: 10 }, textAlign: "center" }}>
-        <Box sx={{ display: "flex", justifyContent: "center", mb: 4 }}>
-          <Avatar 
-            sx={{ 
-              bgcolor: "success.main", 
-              width: { xs: 60, md: 80 }, 
-              height: { xs: 60, md: 80 },
-              boxShadow: "0 4px 20px rgba(5, 150, 105, 0.3)"
-            }}
+   <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>
+      <Grid container spacing={4}>
+        {/* Left Column: Shipping + Payment */}
+        <Grid item xs={12} lg={8}>
+          {/* Shipping Information */}
+          <Paper elevation={0} sx={{ p: 3.5, borderRadius: 3, mb: 4, border: "1px solid", borderColor: "grey.200" }}>
+            <Typography variant="h6" fontWeight={600} mb={3}>
+              Shipping Information
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  placeholder="John Doe"
+                  size="small"
+                  value={shippingInfo.fullName}
+                  onChange={(e) => handleShippingChange("fullName", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Phone Number"
+                  placeholder="+1 555 123 4567"
+                  size="small"
+                  value={shippingInfo.phone}
+                  onChange={(e) => handleShippingChange("phone", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Street Address"
+                  placeholder="123 Main St"
+                  size="small"
+                  value={shippingInfo.address}
+                  onChange={(e) => handleShippingChange("address", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="City"
+                  placeholder="New York"
+                  size="small"
+                  value={shippingInfo.city}
+                  onChange={(e) => handleShippingChange("city", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  fullWidth
+                  label="State"
+                  placeholder="NY"
+                  size="small"
+                  value={shippingInfo.state}
+                  onChange={(e) => handleShippingChange("state", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3}>
+                <TextField
+                  fullWidth
+                  label="ZIP Code"
+                  placeholder="10001"
+                  size="small"
+                  value={shippingInfo.zip}
+                  onChange={(e) => handleShippingChange("zip", e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  type="email"
+                  placeholder="john@example.com"
+                  size="small"
+                  value={shippingInfo.email}
+                  onChange={(e) => handleShippingChange("email", e.target.value)}
+                />
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* Payment Methods */}
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            Payment Method
+          </Typography>
+          <Stack spacing={2}>
+            <PaymentMethodCard
+              method="card"
+              icon={<CreditCard sx={{ fontSize: 24 }} />}
+              title="Credit / Debit Card"
+              description="Pay with your credit or debit card."
+            >
+              {/* Card input fields */}
+            </PaymentMethodCard>
+
+            <PaymentMethodCard
+              method="paypal"
+              icon={<Paypal sx={{ fontSize: 24 }} />}
+              title="PayPal"
+              description="Pay using your PayPal account."
+            >
+              {/* PayPal input fields */}
+            </PaymentMethodCard>
+
+            <PaymentMethodCard
+              method="applepay"
+              icon={<Apple sx={{ fontSize: 24 }} />}
+              title="Apple Pay"
+              description="Pay using Apple Pay."
+            >
+              {/* Apple Pay input */}
+            </PaymentMethodCard>
+          </Stack>
+
+          <Button
+            variant="contained"
+            sx={{ mt: 4, px: 5 }}
+            onClick={handlePlaceOrder}
+            disabled={loading}
           >
-            <CheckCircle sx={{ fontSize: { xs: 36, md: 48 } }} />
-          </Avatar>
-        </Box>
-        <Typography variant="h4" fontWeight={800} mb={2} color="text.primary">
-          Order Confirmed!
-        </Typography>
-        <Typography color="text.secondary" mb={4} sx={{ maxWidth: 400, mx: "auto" }}>
-          Your order has been successfully placed. You will receive a confirmation email shortly with tracking details.
-        </Typography>
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={2} justifyContent="center">
-          <Button variant="contained" onClick={() => navigate("/")} sx={{ px: 4 }}>
-            Continue Shopping
+            {loading ? "Placing Order..." : `Pay $${total.toFixed(2)}`}
           </Button>
-          <Button variant="outlined" onClick={() => navigate("/orders")}>
-            View Orders
-          </Button>
-        </Stack>
-      </Container>
+        </Grid>
+
+        {/* Right Column: Order Summary */}
+        <Grid item xs={12} lg={4}>
+          {/* Your order summary code here */}
+        </Grid>
+      </Grid>
+    </Container>
     );
   }
 
@@ -345,404 +449,253 @@ const quantity = product?.quantity || 1;
               alternativeLabel 
               sx={{ 
                 display: { xs: "none", md: "flex" },
-                "& .MuiStepLabel-root .Mui-active": {
-                  color: "primary.main"
-                },
-                "& .MuiStepLabel-root .Mui-completed": {
-                  color: "success.main"
-                }
+                "& .MuiStepLabel-root .Mui-active": { color: "primary.main" },
+                "& .MuiStepLabel-root .Mui-completed": { color: "success.main" }
               }}
             >
               {steps.map((label) => (
                 <Step key={label}>
-                  <StepLabel 
-                    sx={{
-                      "& .MuiStepLabel-label": {
-                        fontSize: "0.875rem",
-                        fontWeight: 500
-                      }
-                    }}
-                  >
-                    {label}
-                  </StepLabel>
+                  <StepLabel>{label}</StepLabel>
                 </Step>
               ))}
             </Stepper>
-            
-            {/* Mobile Progress */}
-            <Box sx={{ 
-              display: { xs: "flex", md: "none" }, 
-              alignItems: "center", 
-              justifyContent: "space-between",
-              mb: 3,
-              p: 2,
-              bgcolor: "background.paper",
-              borderRadius: 2,
-              border: "1px solid",
-              borderColor: "grey.200"
-            }}>
-              <Typography variant="body2" fontWeight={600} color="primary.main">
-                Step 2 of 4
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Payment Information
-              </Typography>
-            </Box>
           </Box>
 
           <Grid container spacing={{ xs: 3, md: 4 }}>
-            {/* LEFT COLUMN */}
+            {/* LEFT COLUMN - Payment Methods */}
             <Grid item xs={12} lg={8}>
-              <Stack spacing={{ xs: 3, md: 4 }}>
-                {/* Contact Information */}
-                <Paper elevation={0} sx={{ 
-                  p: { xs: 2.5, md: 3.5 }, 
-                  borderRadius: 3, 
-                  bgcolor: "background.paper",
-                  border: "1px solid",
-                  borderColor: "grey.200"
-                }}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                    <Avatar sx={{ 
-                      bgcolor: "primary.light", 
-                      mr: 2, 
-                      width: { xs: 32, md: 36 }, 
-                      height: { xs: 32, md: 36 }
-                    }}>
-                      <Person sx={{ fontSize: { xs: 18, md: 20 } }} />
-                    </Avatar>
-                    <Typography variant="h6" fontWeight={600} color="text.primary">
-                      Contact Information
-                    </Typography>
-                  </Box>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="First Name"
-                        size="small"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Person fontSize="small" sx={{ color: "grey.500" }} />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Last Name"
-                        size="small"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Person fontSize="small" sx={{ color: "grey.500" }} />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Email"
-                        type="email"
-                        size="small"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Email fontSize="small" sx={{ color: "grey.500" }} />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <TextField
-                        fullWidth
-                        label="Phone Number"
-                        size="small"
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <Phone fontSize="small" sx={{ color: "grey.500" }} />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
-                </Paper>
+              
+              <Paper elevation={0} sx={{ 
+                p: { xs: 2.5, md: 3.5 }, 
+                borderRadius: 3, 
+                bgcolor: "background.paper",
+                border: "1px solid",
+                borderColor: "grey.200"
+              }}>
+                <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                  <Avatar sx={{ 
+                    bgcolor: "secondary.light", 
+                    mr: 2, 
+                    width: { xs: 32, md: 36 }, 
+                    height: { xs: 32, md: 36 }
+                  }}>
+                    <Payment sx={{ fontSize: { xs: 18, md: 20 } }} />
+                  </Avatar>
+                  <Typography variant="h6" fontWeight={600} color="text.primary">
+                    Payment Method
+                  </Typography>
+                </Box>
 
-                {/* Shipping Address */}
-                <Paper elevation={0} sx={{ 
-                  p: { xs: 2.5, md: 3.5 }, 
-                  borderRadius: 3, 
-                  bgcolor: "background.paper",
-                  border: "1px solid",
-                  borderColor: "grey.200"
-                }}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                    <Avatar sx={{ 
-                      bgcolor: "info.light", 
-                      mr: 2, 
-                      width: { xs: 32, md: 36 }, 
-                      height: { xs: 32, md: 36 }
-                    }}>
-                      <LocationOn sx={{ fontSize: { xs: 18, md: 20 } }} />
-                    </Avatar>
-                    <Typography variant="h6" fontWeight={600} color="text.primary">
-                      Shipping Address
-                    </Typography>
-                  </Box>
+                <RadioGroup value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
                   <Stack spacing={2}>
-                    <TextField
-                      fullWidth
-                      label="Street Address"
-                      multiline
-                      rows={2}
-                      size="small"
-                    />
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={4}>
+                    {/* Credit Card */}
+                    <PaymentMethodCard
+                      method="card"
+                      icon={<CreditCardIcon color="primary" />}
+                      title="Credit/Debit Card"
+                      description="Pay with your card securely"
+                    >
+                      <Stack spacing={2}>
                         <TextField
                           fullWidth
-                          label="City"
+                          label="Card Number"
+                          value={formatCardNumber(cardNumber)}
+                          onChange={(e) => setCardNumber(e.target.value)}
+                          placeholder="1234 5678 9012 3456"
                           size="small"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <Verified color="success" />
+                              </InputAdornment>
+                            ),
+                          }}
                         />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
+                        <Grid container spacing={2}>
+                          <Grid item xs={12} sm={6}>
+                            <TextField
+                              fullWidth
+                              label="Expiry Date"
+                              placeholder="MM/YY"
+                              value={expiry}
+                              onChange={(e) => setExpiry(e.target.value)}
+                              size="small"
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <TextField
+                              fullWidth
+                              label="CVV"
+                              placeholder="123"
+                              value={cvv}
+                              onChange={(e) => setCvv(e.target.value)}
+                              size="small"
+                              InputProps={{
+                                endAdornment: (
+                                  <InputAdornment position="end">
+                                    <Lock fontSize="small" sx={{ color: "grey.500" }} />
+                                  </InputAdornment>
+                                ),
+                              }}
+                            />
+                          </Grid>
+                        </Grid>
                         <TextField
                           fullWidth
-                          label="State"
+                          label="Cardholder Name"
+                          placeholder="John Doe"
                           size="small"
                         />
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <TextField
-                          fullWidth
-                          label="ZIP Code"
-                          size="small"
-                        />
-                      </Grid>
-                    </Grid>
-                    <TextField
-                      fullWidth
-                      label="Country"
-                      defaultValue="United States"
-                      size="small"
-                    />
-                  </Stack>
-                </Paper>
+                      </Stack>
+                    </PaymentMethodCard>
 
-                {/* Payment Method */}
-                <Paper elevation={0} sx={{ 
-                  p: { xs: 2.5, md: 3.5 }, 
-                  borderRadius: 3, 
-                  bgcolor: "background.paper",
-                  border: "1px solid",
-                  borderColor: "grey.200"
-                }}>
-                  <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-                    <Avatar sx={{ 
-                      bgcolor: "secondary.light", 
-                      mr: 2, 
-                      width: { xs: 32, md: 36 }, 
-                      height: { xs: 32, md: 36 }
-                    }}>
-                      <Payment sx={{ fontSize: { xs: 18, md: 20 } }} />
-                    </Avatar>
-                    <Typography variant="h6" fontWeight={600} color="text.primary">
-                      Payment Method
-                    </Typography>
-                  </Box>
+            {/* PayPal */}
+<PaymentMethodCard
+  method="paypal"
+  icon={<FaPaypal size={22} color="#003087" />}
+  title="PayPal"
+  description="Pay with your PayPal account"
+>
+  <Stack spacing={2}>
+    <TextField
+      fullWidth
+      label="PayPal Email"
+      type="email"
+      value={paypalEmail}
+      onChange={(e) => setPaypalEmail(e.target.value)}
+      placeholder="email@example.com"
+      size="small"
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <Verified color="success" />
+          </InputAdornment>
+        ),
+      }}
+    />
+    <Alert
+      severity="info"
+      sx={{
+        borderRadius: 2,
+        backgroundColor: "rgba(0, 48, 135, 0.05)",
+      }}
+    >
+      <Typography variant="caption">
+        You will be redirected to PayPal to complete your payment securely.
+      </Typography>
+    </Alert>
+  </Stack>
+</PaymentMethodCard>
 
-                  <RadioGroup value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)}>
-                    <Stack spacing={2}>
-                      {/* Credit Card Option */}
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: 2,
-                          border: paymentMethod === "card" ? "2px solid" : "1px solid",
-                          borderColor: paymentMethod === "card" ? "primary.main" : "grey.200",
-                          borderRadius: 2,
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          backgroundColor: paymentMethod === "card" ? "rgba(37, 99, 235, 0.03)" : "transparent",
-                          "&:hover": {
-                            borderColor: "primary.main",
-                            backgroundColor: "rgba(37, 99, 235, 0.02)"
-                          }
-                        }}
-                        onClick={() => setPaymentMethod("card")}
-                      >
-                        <FormControlLabel
-                          value="card"
-                          control={<Radio color="primary" />}
-                          label={
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <CreditCardIcon color="primary" />
-                              <Box>
-                                <Typography fontWeight={600} color="text.primary">
-                                  Credit/Debit Card
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                  Pay with your card securely
-                                </Typography>
-                              </Box>
-                            </Stack>
-                          }
-                          sx={{ m: 0, width: "100%" }}
-                        />
-                        {paymentMethod === "card" && (
-                          <Box sx={{ mt: 3, pl: { xs: 3, sm: 4 } }}>
-                            <Stack spacing={2}>
-                              <TextField
-                                fullWidth
-                                label="Card Number"
-                                value={formatCardNumber(cardNumber)}
-                                onChange={(e) => setCardNumber(e.target.value)}
-                                placeholder="1234 5678 9012 3456"
-                                size="small"
-                                InputProps={{
-                                  endAdornment: (
-                                    <InputAdornment position="end">
-                                      <Verified color="success" />
-                                    </InputAdornment>
-                                  ),
-                                }}
-                              />
-                              <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
-                                  <TextField
-                                    fullWidth
-                                    label="Expiry Date"
-                                    placeholder="MM/YY"
-                                    value={expiry}
-                                    onChange={(e) => setExpiry(e.target.value)}
-                                    size="small"
-                                  />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                  <TextField
-                                    fullWidth
-                                    label="CVV"
-                                    placeholder="123"
-                                    value={cvv}
-                                    onChange={(e) => setCvv(e.target.value)}
-                                    size="small"
-                                    InputProps={{
-                                      endAdornment: (
-                                        <InputAdornment position="end">
-                                          <Lock fontSize="small" sx={{ color: "grey.500" }} />
-                                        </InputAdornment>
-                                      ),
-                                    }}
-                                  />
-                                </Grid>
-                              </Grid>
-                            </Stack>
-                          </Box>
+
+                    {/* Apple Pay */}
+                    <PaymentMethodCard
+                      method="apple"
+                      icon={<Apple sx={{ color: "#000000" }} />}
+                      title="Apple Pay"
+                      description="Pay with Apple Pay"
+                    >
+                      <Stack spacing={2}>
+                        <Button
+                          variant="outlined"
+                          fullWidth
+                          startIcon={<Apple />}
+                          onClick={() => setApplePayVerified(true)}
+                          sx={{
+                            borderColor: "#000000",
+                            color: "#000000",
+                            "&:hover": {
+                              borderColor: "#000000",
+                              backgroundColor: "rgba(0, 0, 0, 0.04)"
+                            }
+                          }}
+                        >
+                          {applePayVerified ? "Verified with Apple Pay" : "Verify with Apple Pay"}
+                        </Button>
+                        {applePayVerified && (
+                          <Alert 
+                            severity="success" 
+                            icon={<Verified />}
+                            sx={{ borderRadius: 2 }}
+                          >
+                            <Typography variant="caption">
+                              Apple Pay verified successfully. Your payment is ready.
+                            </Typography>
+                          </Alert>
                         )}
-                      </Paper>
+                      </Stack>
+                    </PaymentMethodCard>
 
-                      {/* Other Payment Methods */}
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: 2,
-                          border: paymentMethod === "cod" ? "2px solid" : "1px solid",
-                          borderColor: paymentMethod === "cod" ? "primary.main" : "grey.200",
-                          borderRadius: 2,
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          backgroundColor: paymentMethod === "cod" ? "rgba(37, 99, 235, 0.03)" : "transparent",
-                          "&:hover": {
-                            borderColor: "primary.main",
-                            backgroundColor: "rgba(37, 99, 235, 0.02)"
-                          }
-                        }}
-                        onClick={() => setPaymentMethod("cod")}
-                      >
-                        <FormControlLabel
-                          value="cod"
-                          control={<Radio color="primary" />}
-                          label={
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <MoneyIcon color="warning" />
-                              <Box>
-                                <Typography fontWeight={600} color="text.primary">
-                                  Cash on Delivery
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                  Pay when you receive
-                                </Typography>
-                              </Box>
-                            </Stack>
-                          }
-                          sx={{ m: 0, width: "100%" }}
+                    {/* Bank Transfer */}
+                    <PaymentMethodCard
+                      method="bank"
+                      icon={<AccountBalance color="success" />}
+                      title="Bank Transfer"
+                      description="Direct bank transfer"
+                    >
+                      <Stack spacing={2}>
+                        <TextField
+                          fullWidth
+                          label="Account Holder Name"
+                          value={bankDetails.accountHolder}
+                          onChange={(e) => setBankDetails({...bankDetails, accountHolder: e.target.value})}
+                          placeholder="John Doe"
+                          size="small"
                         />
-                      </Paper>
-
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          p: 2,
-                          border: paymentMethod === "wallet" ? "2px solid" : "1px solid",
-                          borderColor: paymentMethod === "wallet" ? "primary.main" : "grey.200",
-                          borderRadius: 2,
-                          cursor: "pointer",
-                          transition: "all 0.2s",
-                          backgroundColor: paymentMethod === "wallet" ? "rgba(37, 99, 235, 0.03)" : "transparent",
-                          "&:hover": {
-                            borderColor: "primary.main",
-                            backgroundColor: "rgba(37, 99, 235, 0.02)"
-                          }
-                        }}
-                        onClick={() => setPaymentMethod("wallet")}
-                      >
-                        <FormControlLabel
-                          value="wallet"
-                          control={<Radio color="primary" />}
-                          label={
-                            <Stack direction="row" alignItems="center" spacing={2}>
-                              <WalletIcon color="secondary" />
-                              <Box>
-                                <Typography fontWeight={600} color="text.primary">
-                                  Digital Wallet
-                                </Typography>
-                                <Typography variant="caption" color="text.secondary">
-                                  PayPal, Apple Pay, Google Pay
-                                </Typography>
-                              </Box>
-                            </Stack>
-                          }
-                          sx={{ m: 0, width: "100%" }}
+                        <TextField
+                          fullWidth
+                          label="Account Number"
+                          value={bankDetails.accountNumber}
+                          onChange={(e) => setBankDetails({...bankDetails, accountNumber: e.target.value})}
+                          placeholder="000123456789"
+                          size="small"
                         />
-                      </Paper>
-                    </Stack>
-                  </RadioGroup>
+                        <TextField
+                          fullWidth
+                          label="Routing Number"
+                          value={bankDetails.routingNumber}
+                          onChange={(e) => setBankDetails({...bankDetails, routingNumber: e.target.value})}
+                          placeholder="123456789"
+                          size="small"
+                        />
+                      </Stack>
+                    </PaymentMethodCard>
 
-                  <Alert 
-                    severity="info" 
-                    icon={<Security />} 
-                    sx={{ 
-                      mt: 3, 
-                      borderRadius: 2,
-                      backgroundColor: "rgba(14, 165, 233, 0.08)",
-                      border: "1px solid",
-                      borderColor: "info.light"
-                    }}
-                  >
-                    <Typography variant="caption" color="text.secondary">
-                      Your payment information is encrypted and secure. We never store your card details.
-                    </Typography>
-                  </Alert>
-                </Paper>
-              </Stack>
+                    {/* Cash on Delivery */}
+                    <PaymentMethodCard
+                      method="cod"
+                      icon={<MoneyIcon color="warning" />}
+                      title="Cash on Delivery"
+                      description="Pay when you receive"
+                    >
+                      <Alert 
+                        severity="warning" 
+                        sx={{ borderRadius: 2 }}
+                      >
+                        <Typography variant="caption">
+                          An additional $2.00 cash handling fee will be applied. Please have exact change ready.
+                        </Typography>
+                      </Alert>
+                    </PaymentMethodCard>
+                  </Stack>
+                </RadioGroup>
+
+                <Alert 
+                  severity="info" 
+                  icon={<Security />} 
+                  sx={{ 
+                    mt: 3, 
+                    borderRadius: 2,
+                    backgroundColor: "rgba(14, 165, 233, 0.08)",
+                    border: "1px solid",
+                    borderColor: "info.light"
+                  }}
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    Your payment information is encrypted and secure. We never store your card details.
+                  </Typography>
+                </Alert>
+              </Paper>
             </Grid>
 
             {/* RIGHT COLUMN - ORDER SUMMARY */}
@@ -801,20 +754,6 @@ const quantity = product?.quantity || 1;
                       )}
                     </Stack>
                   </Box>
-                  <IconButton 
-                    size="small" 
-                    onClick={() => navigate(-1)}
-                    sx={{ 
-                      alignSelf: "flex-start",
-                      color: "grey.500",
-                      "&:hover": {
-                        color: "error.main",
-                        backgroundColor: "rgba(239, 68, 68, 0.1)"
-                      }
-                    }}
-                  >
-                    <Close fontSize="small" />
-                  </IconButton>
                 </Box>
 
                 {/* Price Breakdown */}
@@ -848,42 +787,24 @@ const quantity = product?.quantity || 1;
                     <Typography fontWeight={500}>${tax.toFixed(2)}</Typography>
                   </Box>
                   
+                  {paymentMethod === "cod" && (
+                    <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                      <Typography color="text.secondary">Cash Handling Fee</Typography>
+                      <Typography fontWeight={500} color="warning.main">
+                        $2.00
+                      </Typography>
+                    </Box>
+                  )}
+                  
                   <Divider sx={{ my: 1 }} />
                   
                   <Box sx={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography fontWeight={700} color="text.primary">Total</Typography>
                     <Typography variant="h6" fontWeight={800} color="text.primary">
-                      ${finalTotal.toFixed(2)}
+                      ${(paymentMethod === "cod" ? finalTotal + 2 : finalTotal).toFixed(2)}
                     </Typography>
                   </Box>
                 </Stack>
-
-                {/* Promo Code */}
-                <Box sx={{ mb: 3 }}>
-                  <TextField
-                    fullWidth
-                    placeholder="Enter promo code"
-                    size="small"
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Tag fontSize="small" sx={{ color: "grey.500" }} />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <Button size="small" sx={{ fontSize: "0.75rem" }}>
-                            Apply
-                          </Button>
-                        </InputAdornment>
-                      )
-                    }}
-                    sx={{ mb: 1 }}
-                  />
-                  <Typography variant="caption" color="text.secondary">
-                    Try code: <strong style={{ color: theme.palette.primary.main }}>SAVE10</strong> for 10% off
-                  </Typography>
-                </Box>
 
                 {/* Trust Badges */}
                 <Stack 
@@ -901,8 +822,7 @@ const quantity = product?.quantity || 1;
                     sx={{ 
                       borderRadius: 1,
                       borderColor: "success.light",
-                      color: "success.dark",
-                      backgroundColor: "rgba(5, 150, 105, 0.08)"
+                      color: "success.dark"
                     }}
                   />
                   <Chip
@@ -913,20 +833,7 @@ const quantity = product?.quantity || 1;
                     sx={{ 
                       borderRadius: 1,
                       borderColor: "info.light",
-                      color: "info.dark",
-                      backgroundColor: "rgba(14, 165, 233, 0.08)"
-                    }}
-                  />
-                  <Chip
-                    icon={<Verified fontSize="small" />}
-                    label="Guaranteed"
-                    size="small"
-                    variant="outlined"
-                    sx={{ 
-                      borderRadius: 1,
-                      borderColor: "warning.light",
-                      color: "warning.dark",
-                      backgroundColor: "rgba(245, 158, 11, 0.08)"
+                      color: "info.dark"
                     }}
                   />
                 </Stack>
@@ -946,19 +853,8 @@ const quantity = product?.quantity || 1;
                     fontSize: "1rem"
                   }}
                 >
-                  {loading ? "Processing..." : `Place Order • $${finalTotal.toFixed(2)}`}
+                  {loading ? "Processing..." : `Place Order • $${(paymentMethod === "cod" ? finalTotal + 2 : finalTotal).toFixed(2)}`}
                 </Button>
-
-                <Typography 
-                  variant="caption" 
-                  color="text.secondary" 
-                  align="center" 
-                  display="block" 
-                  mt={2}
-                  sx={{ lineHeight: 1.4 }}
-                >
-                  By placing your order, you agree to our Terms of Service and Privacy Policy
-                </Typography>
               </Paper>
             </Grid>
           </Grid>
