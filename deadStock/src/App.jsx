@@ -8,31 +8,20 @@ import {
   Route,
 } from "react-router-dom";
 
-import { ThemeProvider, CssBaseline } from "@mui/material";
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Import Context Providers
+// Context Providers
 import { CartProvider } from "./component/categoryPage/productDetail/cartContext.jsx";
-import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./context/authContext/authContext.jsx";
 import { ProductProvider } from "./context/productContext.jsx";
 import { CategoryProvider } from "./context/categoryContext.jsx";
 
 import RootLayout from "./root_layout";
-// import AuctionsPage from "./pages/auction.page";
-// import Profile from "./pages/profilePage";
-// import CategoryPage from "./pages/categoryPage.jsx";
-// import ProductDetailPage from "./pages/productdetail.page";
-
 import AuthPage from "./pages/authPage.jsx";
-// import AddToCart from "./pages/cart.page.jsx";
-// import Checkout from "./pages/checkout.page.jsx";
-import SellItem from "./pages/sellProduct"
-// import AddToCart from "./pages/cart.page.jsx";
-// import Checkout from "./pages/checkout.page.jsx";
+import SellItem from "./pages/sellProduct";
 
-/* ---------- Lazy Loaded Pages ---------- */
+// Lazy pages
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
 const ProfilePage = lazy(() => import("./pages/profilePage"));
@@ -46,69 +35,42 @@ const ResetPassword = lazy(() =>
   import("./component/forms/passwordReset/resetPassword.jsx")
 );
 const HowToSell = lazy(() => import("./pages/howToSellPage.jsx"));
-// const SellItem = lazy(() => import("./pages/sellProduct.jsx"));
 
-/* ---------- Router Configuration ---------- */
+/* ---------- Router ---------- */
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<RootLayout />}>
-      {/* Public Routes */}
       <Route path="/" element={<LandingPage />} />
       <Route path="/auctions" element={<AuctionsPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-
       <Route path="/SellerProfile" element={<SellerProfilePage />} />
-
-      {/* auth */}
-      <Route path="auth" element={<AuthPage />} />
+      <Route path="/auth" element={<AuthPage />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/how-to-sell" element={<HowToSell />} />
-
       <Route path="/sell-item" element={<SellItem />} />
-      {/* Category Routes */}
       <Route path="/category" element={<CategoryPage />} />
       <Route path="/category/:slug" element={<CategoryPage />} />
       <Route path="/product/:slug" element={<ProductDescriptionPage />} />
-      {/* Product Detail */}
       <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
-      {/* <Route path="/cart" element={<AddToCart />} /> */}
-      {/* <Route path="/checkout" element={<Checkout />} /> */}
-      {/* <Route path="/cart" element={<AddToCart />} /> */}
-      {/* <Route path="/checkout" element={<Checkout />} /> */}
-
-
     </Route>
   )
 );
 
 function App() {
   return (
-    // Wrap everything with AuthProvider and CartProvider
-    <BrowserRouter>
-      <AuthProvider>
-        <CategoryProvider>
-          <ProductProvider>
-            <CartProvider>
-              <Suspense fallback={<div className="loading">Loading...</div>}>
-                <RouterProvider router={router} />
-
-                {/* Toast Notifications */}
-                <ToastContainer
-                  position="top-right"
-                  autoClose={5000}
-                  hideProgressBar={false}
-                  closeOnClick
-                  pauseOnHover
-                  draggable
-                  theme="light"
-                  transition={Flip}
-                />
-              </Suspense>
-            </CartProvider>
-          </ProductProvider>
-        </CategoryProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <AuthProvider>
+      <CategoryProvider>
+        <ProductProvider>
+          <CartProvider>
+            <Suspense fallback={<div className="loading">Loading...</div>}>
+              <RouterProvider router={router} />
+              <ToastContainer transition={Flip} />
+            </Suspense>
+          </CartProvider>
+        </ProductProvider>
+      </CategoryProvider>
+    </AuthProvider>
   );
 }
+
 export default App;
