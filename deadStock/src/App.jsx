@@ -14,7 +14,10 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Import Context Providers
 import { CartProvider } from "./component/categoryPage/productDetail/cartContext.jsx";
-import { AuthProvider } from "./context/authContext/authContext.jsx";
+import { BrowserRouter } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import { ProductProvider } from "./context/ProductContext";
+import { CategoryProvider } from "./context/CategoryContext";
 
 import RootLayout from "./root_layout";
 // import AuctionsPage from "./pages/auction.page";
@@ -70,10 +73,10 @@ const router = createBrowserRouter(
       <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
       {/* <Route path="/cart" element={<AddToCart />} /> */}
       {/* <Route path="/checkout" element={<Checkout />} /> */}
-       {/* <Route path="/cart" element={<AddToCart />} /> */}
-       {/* <Route path="/checkout" element={<Checkout />} /> */}
+      {/* <Route path="/cart" element={<AddToCart />} /> */}
+      {/* <Route path="/checkout" element={<Checkout />} /> */}
 
-      
+
     </Route>
   )
 );
@@ -81,25 +84,31 @@ const router = createBrowserRouter(
 function App() {
   return (
     // Wrap everything with AuthProvider and CartProvider
-    <AuthProvider>
-      <CartProvider>
-        <Suspense fallback={<div className="loading">Loading...</div>}>
-          <RouterProvider router={router} />
+    <BrowserRouter>
+      <AuthProvider>
+        <CategoryProvider>
+          <ProductProvider>
+            <CartProvider>
+              <Suspense fallback={<div className="loading">Loading...</div>}>
+                <RouterProvider router={router} />
 
-          {/* Toast Notifications */}
-          <ToastContainer
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            closeOnClick
-            pauseOnHover
-            draggable
-            theme="light"
-            transition={Flip}
-          />
-        </Suspense>
-      </CartProvider>
-    </AuthProvider>
+                {/* Toast Notifications */}
+                <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  closeOnClick
+                  pauseOnHover
+                  draggable
+                  theme="light"
+                  transition={Flip}
+                />
+              </Suspense>
+            </CartProvider>
+          </ProductProvider>
+        </CategoryProvider>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }
 export default App;
