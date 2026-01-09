@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EditIcon from "@mui/icons-material/Edit";
-import SectionCard from "../common/sectionCard";
+// import SectionCard from "../common/sectionCard";
 
 const shippingInfo = () => {
   const [open, setOpen] = useState(false);
@@ -31,14 +31,14 @@ const shippingInfo = () => {
         </IconButton>
       </Typography>
 
-      <SectionCard>
+      
         <List>
           <ListItem>
             <ListItemIcon><LocationOnIcon /></ListItemIcon>
             <ListItemText primary="Primary Address" secondary={address} />
           </ListItem>
         </List>
-      </SectionCard>
+    
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogContent>

@@ -13,7 +13,7 @@ const sellerProduct = () => {
   const handleAddProduct = (newProduct) => {
     setProducts((prev) => [newProduct, ...prev]);
   };
-
+  
   const handleDelete = (id) => {
     setProducts((prev) => prev.filter((p) => p.id !== id));
   };

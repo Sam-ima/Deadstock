@@ -1,79 +1,50 @@
-import { useState } from "react";
-import {
-  Typography,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
-  Dialog,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-} from "@mui/material";
-import EmailIcon from "@mui/icons-material/Email";
-import PhoneIcon from "@mui/icons-material/Phone";
-import EditIcon from "@mui/icons-material/Edit";
-import SectionCard from "../common/sectionCard";
+import React from "react";
+import { Box, Typography, Divider } from "@mui/material";
+import { styled } from "@mui/material/styles";
 
+const SectionContainer = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+}));
 
-const profileInfo = () => {
-  const [open, setOpen] = useState(false);
-  const [info, setInfo] = useState({
-    email: "roshnigiri@gmail.com",
-    phone: "9812345678",
-  });
+const SectionTitle = styled(Typography)(({ theme }) => ({
+  fontWeight: 600,
+  marginBottom: theme.spacing(1.5),
+  color: theme.palette.text.primary,
+}));
 
+const InfoItem = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  padding: theme.spacing(1.5, 0),
+}));
+
+const ProfileInfo = ({ title, items, noDivider }) => {
   return (
-    <>
-      <Typography variant="h6" mb={1}>
-        Personal Info
-        <IconButton size="small" onClick={() => setOpen(true)}>
-          <EditIcon fontSize="small" />
-        </IconButton>
-      </Typography>
-
-      <SectionCard>
-        <List>
-          <ListItem>
-            <ListItemIcon><EmailIcon /></ListItemIcon>
-            <ListItemText primary="Email" secondary={info.email} />
-          </ListItem>
-
-          <ListItem>
-            <ListItemIcon><PhoneIcon /></ListItemIcon>
-            <ListItemText primary="Phone" secondary={info.phone} />
-          </ListItem>
-        </List>
-      </SectionCard>
-
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <DialogContent>
-          <TextField
-            label="Email"
-            fullWidth
-            margin="dense"
-            value={info.email}
-            onChange={(e) => setInfo({ ...info, email: e.target.value })}
-          />
-          <TextField
-            label="Phone"
-            fullWidth
-            margin="dense"
-            value={info.phone}
-            onChange={(e) => setInfo({ ...info, phone: e.target.value })}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} color="orange">Cancel</Button>
-          <Button variant="contained" onClick={() => setOpen(false)} color="success">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <SectionContainer>
+      <SectionTitle variant="subtitle1">{title}</SectionTitle>
+      {items.map((item, index) => (
+        <React.Fragment key={index}>
+          <InfoItem>
+            <Box>
+              <Typography variant="body2" color="text.secondary">
+                {item.label}
+              </Typography>
+              {item.value && (
+                <Typography variant="body1">{item.value}</Typography>
+              )}
+            </Box>
+            {item.icon && (
+              <Typography variant="body2" color="text.secondary">
+                {item.icon}
+              </Typography>
+            )}
+          </InfoItem>
+          {!noDivider && index < items.length - 1 && <Divider />}
+        </React.Fragment>
+      ))}
+    </SectionContainer>
   );
 };
 
-export default profileInfo;
+export default ProfileInfo;
