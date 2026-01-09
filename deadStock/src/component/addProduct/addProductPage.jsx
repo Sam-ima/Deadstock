@@ -1,4 +1,4 @@
-// AddProductPage.jsx
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -6,84 +6,74 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { Save, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import BasicInfoSection from "./basicInformationSection";
 import PricingSection from "./pricingSection";
 import ProductImagesSection from "./imageUpload";
+import { useProducts } from "../../context/productContext";
+import { useAuth } from "../../context/authContext";
 
 const AddProductPage = () => {
+  const { createProduct } = useProducts();
+  const { user } = useAuth();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    categorySlug: "",
+    subcategoryId: "",
+    description: "",
+
+    basePrice: "",
+    floorPrice: "",
+    quantity: 1,
+    moq: 1,
+
+    images: [],
+  });
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handlePublish = async () => {
+    const payload = {
+      ...formData,
+      basePrice: Number(formData.basePrice),
+      currentPrice: Number(formData.basePrice),
+      floorPrice: Number(formData.floorPrice),
+      quantity: Number(formData.quantity),
+      moq: Number(formData.moq),
+
+      sellerId: user.uid,
+      sellerType: user.role, // B2C or B2B
+      sellingType: "DIRECT",
+      status: "ACTIVE",
+    };
+
+    await createProduct(payload);
+  };
+
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-       
-      }}
-    >
-      <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
-        {/* Header */}
-        
-          <Stack
-            direction={{ xs: "column", sm: "row" }}
-            justifyContent="space-between"
-            alignItems={{ sm: "center" }}
-            spacing={2}
+    <Box minHeight="100vh">
+      <Container maxWidth="md" sx={{ py: 6 }}>
+        <Typography fontSize={28} fontWeight={800}>
+          List an Item
+        </Typography>
+
+        <Stack spacing={4} mt={4}>
+          <BasicInfoSection data={formData} onChange={handleChange} />
+          <PricingSection data={formData} onChange={handleChange} />
+          <ProductImagesSection onUpload={(imgs) => handleChange("images", imgs)} />
+
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<Upload size={18} />}
+            onClick={handlePublish}
+            sx={{ bgcolor: "#19683dff" }}
           >
-            <Box>
-              <Typography fontSize={28} fontWeight={800}>
-                List an Item
-              </Typography>
-              <Typography fontSize={14} color="text.secondary">
-                Add details to publish your product on the marketplace
-              </Typography>
-            </Box>
-{/* 
-            <Button
-              variant="outlined"
-              startIcon={<ArrowLeft size={16} />}
-            >
-              Cancel
-            </Button> */}
-          </Stack>
-     
-
-        {/* Form Sections */}
-        <Stack spacing={4}>
-          <BasicInfoSection />
-          <PricingSection />
-          <ProductImagesSection />
-
-          {/* Action Bar */}
-          
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              justifyContent="flex-end"
-              spacing={2}
-            >
-              {/* <Button
-                // variant="outlined"
-                startIcon={<Save size={16} />}
-                fullWidth={{ xs: true, sm: false }}
-                sx={{color:"#fff", bgcolor:"#e6802cff"}}
-              >
-                Save Draft
-              </Button> */}
-
-              <Button
-                variant="contained"
-                size="large"
-                startIcon={<Upload size={18} />}
-                fullWidth={{ xs: true, sm: false }}
-                sx={{
-                  px: 4,
-                  fontWeight: 400,
-                  textTransform:"capitalize",
-                  bgcolor:"#19683dff"
-                }}
-              >
-                Publish Item
-              </Button>
-            </Stack>
-          
+            Publish Item
+          </Button>
         </Stack>
       </Container>
     </Box>
