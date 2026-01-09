@@ -1,6 +1,6 @@
 import { Box, Divider, TextField } from "@mui/material";
 
-const SellerFields = ({ inputStyle }) => {
+const SellerFields = ({ inputStyle, form, onChange }) => {
   return (
     <>
       <Divider sx={{ my: 1 }}>Business Details</Divider>
@@ -12,16 +12,52 @@ const SellerFields = ({ inputStyle }) => {
           gap: 2,
         }}
       >
-        <TextField label="Store / Business Name" sx={inputStyle} />
-        <TextField label="Phone Number" type="tel" sx={inputStyle} />
+        <TextField
+          label="Store / Business Name"
+          name="shopName"
+          value={form.shopName}
+          onChange={onChange}
+          sx={inputStyle}
+        />
+
+        <TextField
+          label="Phone Number"
+          name="phone"
+          type="tel"
+          value={form.phone}
+          onChange={onChange}
+          sx={inputStyle}
+        />
+
         <TextField
           label="Business Address"
+          name="address"
+          value={form.address}
+          onChange={onChange}
           sx={{ gridColumn: "1 / -1", ...inputStyle }}
         />
-        <TextField label="City" sx={inputStyle} />
-        <TextField label="Country" sx={inputStyle} />
+
+        <TextField
+          label="City"
+          name="city"
+          value={form.city}
+          onChange={onChange}
+          sx={inputStyle}
+        />
+
+        <TextField
+          label="Country"
+          name="country"
+          value={form.country}
+          onChange={onChange}
+          sx={inputStyle}
+        />
+
         <TextField
           label="PAN / VAT Number"
+          name="panVat"
+          value={form.panVat}
+          onChange={onChange}
           sx={{ gridColumn: "1 / -1", ...inputStyle }}
         />
       </Box>

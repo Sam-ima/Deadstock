@@ -1,23 +1,31 @@
 import { Button, Typography } from "@mui/material";
 import { Google } from "@mui/icons-material";
 
-const AuthActions = ({ isSignup, setMode, role, accent }) => {
+const AuthActions = ({
+  isSignup,
+  setMode,
+  role,
+  onSubmit,
+  onGoogle,
+  loading,
+}) => {
   return (
     <>
       <Button
         size="large"
+        fullWidth
+        disabled={loading}
+        onClick={onSubmit}   // ✅ FIX
         sx={{
           mt: 1,
           py: 1.4,
           fontWeight: 700,
           borderRadius: 3,
           textTransform: "none",
-          background: accent,
+          background: "#2E7D32",
           color: "#fff",
-          boxShadow: "0 12px 30px rgba(0,0,0,0.25)",
           "&:hover": {
             transform: "translateY(-1px)",
-            boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
           },
           transition: "0.3s",
         }}
@@ -28,6 +36,9 @@ const AuthActions = ({ isSignup, setMode, role, accent }) => {
       <Button
         variant="outlined"
         startIcon={<Google />}
+        fullWidth
+        disabled={loading}
+        onClick={onGoogle}   // ✅ FIX
         sx={{
           py: 1.2,
           borderRadius: 3,
