@@ -1,4 +1,4 @@
-// AddProductPage.jsx
+// src/pages/AddProduct/AddProductPage.jsx
 import {
   Box,
   Button,
@@ -7,262 +7,225 @@ import {
   Typography,
   Alert,
   Snackbar,
-  CircularProgress
+  CircularProgress,
+  Paper,
 } from "@mui/material";
 import { Save, Upload, ArrowLeft } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { useAuth } from "../../context/authContext/authContext";
 import { useProducts } from "../../context/productContext";
+
 import BasicInfoSection from "./basicInformationSection";
 import PricingSection from "./pricingSection";
 import ProductImagesSection from "./imageUpload";
+import DynamicFields from "./dynamicFields";
 
 const AddProductPage = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const { createProduct } = useProducts();
-  
+
+  /* -------------------- CORE STATES -------------------- */
+
   const [formData, setFormData] = useState({
-    name: '',
-    categorySlug: '',
-    subcategoryId: '',
-    description: '',
-    condition: 'New',
+    name: "",
+    categorySlug: "",
+    subcategoryId: "",
+    description: "",
+    condition: "New",
     stock: 1,
     basePrice: 0,
     floorPrice: 0,
-    saleType: 'direct',
-    images: [],
-    sellerId: currentUser?.uid,
-    sellerType: currentUser?.userType || 'B2C',
-    requiresB2BVerification: false,
-    moq: 1,
-    bulkDiscount: 0,
-    status: 'draft'
+    saleType: "direct",
+    status: "draft",
   });
 
+  const [customFields, setCustomFields] = useState([]); // 🔥 dynamic fields
+  const [images, setImages] = useState([]); // image files
+
   const [loading, setLoading] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
-  const [formErrors, setFormErrors] = useState({});
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  /* -------------------- VALIDATION -------------------- */
 
   const validateForm = () => {
-    const errors = {};
-    
-    // Required fields
-    if (!formData.name) errors.name = "Product name is required";
-    if (!formData.categorySlug) errors.categorySlug = "Category is required";
-    if (!formData.description || formData.description.length < 20) 
-      errors.description = "Description must be at least 20 characters";
-    if (!formData.condition) errors.condition = "Condition is required";
-    if (!formData.stock || formData.stock < 1) errors.quantity = "Quantity must be at least 1";
-    if (!formData.basePrice || formData.basePrice <= 0) errors.basePrice = "Price must be greater than 0";
-    
-    // Floor price validation
-    if (formData.floorPrice < 0 || formData.floorPrice > formData.basePrice) {
-      errors.floorPrice = "Floor price must be between 0 and base price";
-    }
-    
-    // MOQ validation for B2B
-    if (currentUser?.userType === 'B2B' && (!formData.moq || formData.moq < 1)) {
-      errors.moq = "MOQ must be at least 1";
-    }
-    
-    setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    if (!formData.name) return "Product name is required";
+    if (!formData.categorySlug) return "Category is required";
+    if (!formData.description || formData.description.length < 20)
+      return "Description must be at least 20 characters";
+    if (formData.basePrice <= 0) return "Base price must be greater than 0";
+    if (formData.stock < 1) return "Stock must be at least 1";
+    return null;
   };
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
+  /* -------------------- SUBMIT HANDLER -------------------- */
+
+  const handleSubmit = async (status = "active") => {
+    const error = validateForm();
+    if (error) {
       setSnackbar({
         open: true,
-        message: 'Please fix all errors before submitting',
-        severity: 'error'
+        message: error,
+        severity: "error",
       });
       return;
     }
 
     setLoading(true);
-    
-    try {
-      // Prepare final product data
-      const productData = {
-        ...formData,
-        sellerId: currentUser.uid,
-        sellerType: currentUser.userType,
-        currentPrice: formData.basePrice, // Initial price
-        createdAt: new Date().toISOString(),
-        depreciationCount: 0,
-        bids: [],
-        sold: 0,
-        rating: 0,
-        reviews: 0
-      };
 
-      // Upload images to Firebase Storage (simplified)
-      // In production, you would:
-      // 1. Upload to Firebase Storage
-      // 2. Get download URLs
-      // 3. Replace formData.images with URLs
-      
-      await createProduct(productData);
-      
-      setSnackbar({
-        open: true,
-        message: 'Product listed successfully!',
-        severity: 'success'
+    try {
+      await createProduct({
+        productData: {
+          ...formData,
+          status,
+          sellerId: currentUser.uid,
+          sellerType: currentUser.userType || "B2C",
+          currentPrice: formData.basePrice,
+        },
+        images,
+        customFields,
+        sellerId: currentUser.uid,
       });
-      
-      // Redirect after delay
-      setTimeout(() => {
-        navigate('/seller/dashboard');
-      }, 2000);
-      
-    } catch (error) {
-      console.error('Error listing product:', error);
+
       setSnackbar({
         open: true,
-        message: `Failed to list product: ${error.message}`,
-        severity: 'error'
+        message:
+          status === "draft"
+            ? "Draft saved successfully"
+            : "Product published successfully",
+        severity: "success",
+      });
+
+      setTimeout(() => {
+        navigate("/seller/dashboard");
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+      setSnackbar({
+        open: true,
+        message: "Failed to save product",
+        severity: "error",
       });
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSaveDraft = () => {
-    // Save as draft logic
-    setFormData(prev => ({ ...prev, status: 'draft' }));
-    setSnackbar({
-      open: true,
-      message: 'Draft saved successfully',
-      severity: 'info'
-    });
-  };
+  /* -------------------- UI -------------------- */
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: '#f9fafb' }}>
-      <Container maxWidth="md" sx={{ py: { xs: 4, md: 6 } }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "#f9fafb" }}>
+      <Container maxWidth="md" sx={{ py: 6 }}>
         {/* Header */}
         <Stack
-          direction={{ xs: "column", sm: "row" }}
+          direction="row"
           justifyContent="space-between"
-          alignItems={{ sm: "center" }}
-          spacing={2}
-          sx={{ mb: 4 }}
+          alignItems="center"
+          mb={4}
         >
           <Box>
-            <Typography fontSize={28} fontWeight={800} color="primary">
-              List an Item
+            <Typography fontSize={28} fontWeight={800}>
+              Add Product
             </Typography>
-            <Typography fontSize={14} color="text.secondary">
-              Add details to publish your product on the marketplace
-            </Typography>
-            <Typography fontSize={12} color="text.secondary" sx={{ mt: 0.5 }}>
-              Seller: {currentUser?.email} ({currentUser?.userType || 'B2C'})
+            <Typography fontSize={13} color="text.secondary">
+              Seller: {currentUser?.email}
             </Typography>
           </Box>
 
           <Button
-            variant="outlined"
             startIcon={<ArrowLeft size={16} />}
             onClick={() => navigate(-1)}
           >
-            Cancel
+            Back
           </Button>
         </Stack>
 
-        {/* Error Summary */}
-        {Object.keys(formErrors).length > 0 && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            Please fix the errors in the form before submitting
-          </Alert>
-        )}
-
         {/* Form Sections */}
         <Stack spacing={4}>
-          <BasicInfoSection 
-            formData={formData} 
+          <BasicInfoSection
+            formData={formData}
             setFormData={setFormData}
           />
-          
-          <PricingSection 
-            formData={formData} 
+
+          <PricingSection
+            formData={formData}
             setFormData={setFormData}
-            isB2BUser={currentUser?.userType === 'B2B'}
+            isB2BUser={currentUser?.userType === "B2B"}
           />
-          
-          <ProductImagesSection 
-            formData={formData} 
-            setFormData={setFormData}
+
+          <ProductImagesSection
+            images={images}
+            setImages={setImages}
           />
+
+          {/* 🔥 Dynamic Fields */}
+          <Paper sx={{ p: 3, borderRadius: 3 }}>
+            <Typography fontWeight={700} mb={2}>
+              Additional Product Details (Dynamic)
+            </Typography>
+            <DynamicFields
+              fields={customFields}
+              setFields={setCustomFields}
+            />
+          </Paper>
 
           {/* Action Bar */}
           <Paper
-            elevation={1}
+            elevation={2}
             sx={{
               p: 3,
               borderRadius: 3,
-              bgcolor: 'white',
-              position: 'sticky',
+              position: "sticky",
               bottom: 0,
-              zIndex: 1000
+              bgcolor: "#fff",
             }}
           >
-            <Stack
-              direction={{ xs: "column", sm: "row" }}
-              justifyContent="space-between"
-              alignItems="center"
-              spacing={2}
-            >
-              <Typography variant="caption" color="text.secondary">
-                All fields marked with * are required
-              </Typography>
-              
-              <Stack direction="row" spacing={2}>
-                <Button
-                  variant="outlined"
-                  onClick={handleSaveDraft}
-                  disabled={loading}
-                  startIcon={<Save size={16} />}
-                >
-                  Save Draft
-                </Button>
+            <Stack direction="row" justifyContent="space-between">
+              <Button
+                variant="outlined"
+                startIcon={<Save size={16} />}
+                disabled={loading}
+                onClick={() => handleSubmit("draft")}
+              >
+                Save Draft
+              </Button>
 
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                  startIcon={loading ? <CircularProgress size={16} /> : <Upload size={18} />}
-                  sx={{
-                    px: 4,
-                    fontWeight: 600,
-                    textTransform: "capitalize",
-                    bgcolor: "#19683d",
-                    '&:hover': { bgcolor: "#14532d" }
-                  }}
-                >
-                  {loading ? 'Publishing...' : 'Publish Item'}
-                </Button>
-              </Stack>
+              <Button
+                variant="contained"
+                startIcon={
+                  loading ? (
+                    <CircularProgress size={16} />
+                  ) : (
+                    <Upload size={18} />
+                  )
+                }
+                disabled={loading}
+                onClick={() => handleSubmit("active")}
+                sx={{
+                  bgcolor: "#19683d",
+                  "&:hover": { bgcolor: "#14532d" },
+                }}
+              >
+                {loading ? "Publishing..." : "Publish Product"}
+              </Button>
             </Stack>
           </Paper>
         </Stack>
       </Container>
 
-      {/* Snackbar for notifications */}
+      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={6000}
+        autoHideDuration={5000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert 
-          onClose={() => setSnackbar({ ...snackbar, open: false })} 
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
+        <Alert severity={snackbar.severity} sx={{ width: "100%" }}>
           {snackbar.message}
         </Alert>
       </Snackbar>
@@ -271,25 +234,3 @@ const AddProductPage = () => {
 };
 
 export default AddProductPage;
-
-const modernInput = {
-  "& .MuiOutlinedInput-root": {
-    borderRadius: 3,
-    backgroundColor: "#fafafa",
-    fontSize: 14.5,
-    transition: "all .25s ease",
-    "& fieldset": {
-      borderColor: "#e5e7eb",
-    },
-    "&:hover fieldset": {
-      borderColor: "#22c55e",
-    },
-    "&.Mui-focused": {
-      backgroundColor: "#fff",
-      boxShadow: "0 0 0 4px rgba(34,197,94,0.15)",
-    },
-    "&.Mui-focused fieldset": {
-      borderColor: "#22c55e",
-    },
-  },
-};
