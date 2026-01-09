@@ -12,26 +12,39 @@ const googleProvider = new GoogleAuthProvider();
 /* ================= EMAIL / PASSWORD ================= */
 
 export const signupWithEmail = async (data) => {
-  const { email, password, fullName, role, shopName } = data;
-
-  const { user } = await createUserWithEmailAndPassword(
-    auth,
+  const {
     email,
-    password
-  );
+    password,
+    fullName,
+    role,
+    shopName,
+    phone,
+    address,
+    city,
+    country,
+    panVat,
+  } = data;
+
+  const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
   await setDoc(doc(db, "users", user.uid), {
     uid: user.uid,
     email,
     fullName,
     role,
-    shopName: role === "seller" ? shopName : null,
+    shopName,
+    phone,
+    address,
+    city,
+    country,
+    panVat,
     provider: "password",
     createdAt: new Date(),
   });
 
   return user;
 };
+
 
 export const loginWithEmail = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);

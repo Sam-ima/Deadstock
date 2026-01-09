@@ -6,43 +6,56 @@ const AuthFields = ({
   showPassword,
   setShowPassword,
   inputStyle,
+  form,
+  onChange,
 }) => {
   return (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "1fr",
-        gap: 2,
-      }}
-    >
-      {isSignup && <TextField label="Full Name" fullWidth sx={inputStyle} />}
+    <>
+      {isSignup && (
+        <TextField
+          label="Full Name"
+          name="fullName"
+          value={form.fullName}
+          onChange={onChange}
+          fullWidth
+          sx={inputStyle}
+        />
+      )}
 
-      <TextField label="Email Address" type="email" fullWidth sx={inputStyle} />
+      <TextField
+        label="Email Address"
+        name="email"
+        value={form.email}
+        onChange={onChange}
+        type="email"
+        fullWidth
+        sx={inputStyle}
+      />
 
       <TextField
         label="Password"
+        name="password"
+        value={form.password}
+        onChange={onChange}
         type={showPassword ? "text" : "password"}
         fullWidth
         sx={inputStyle}
-        InputProps={{
-          endAdornment: (
-            <IconButton onClick={() => setShowPassword((p) => !p)}>
-              {showPassword ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          ),
-        }}
       />
 
       {isSignup && (
         <TextField
           label="Confirm Password"
+          name="confirmPassword"
+          value={form.confirmPassword}
+          onChange={onChange}
           type={showPassword ? "text" : "password"}
           fullWidth
           sx={inputStyle}
         />
       )}
-    </Box>
+    </>
   );
 };
+
 
 export default AuthFields;

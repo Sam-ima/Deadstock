@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { Stack } from "@mui/material";
+import { signupWithEmail, loginWithEmail, loginWithGoogle } from "../../../context/authContext/authServices";
+import { toast } from "react-toastify";
+
 import AuthHeader from "./formHeader";
 import AuthFields from "./authFields";
 import RememberForgot from "./rememberForgot";
@@ -14,9 +17,73 @@ export const AuthForm = ({ mode, setMode, role }) => {
   const [rememberMe, setRememberMe] = useState(true);
   const [buyerType, setBuyerType] = useState("customer");
 
+  const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    shopName: "",
+    phone: "",
+    address: "",
+    city: "",
+    country: "",
+    panVat: "",
+  });
+
   const showBusinessFields =
     isSignup &&
     (role === "seller" || (role === "buyer" && buyerType === "business"));
+
+  const handleChange = (e) => {
+    setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  };
+
+  /* ================= SUBMIT ================= */
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+
+      if (isSignup) {
+        if (form.password !== form.confirmPassword) {
+          toast.error("Passwords do not match");
+          return;
+        }
+
+        await signupWithEmail({
+          email: form.email,
+          password: form.password,
+          fullName: form.fullName,
+          role: role === "buyer" ? buyerType : role,
+          shopName: showBusinessFields ? form.shopName : null,
+          phone: showBusinessFields ? form.phone : null,
+          address: showBusinessFields ? form.address : null,
+          city: showBusinessFields ? form.city : null,
+          country: showBusinessFields ? form.country : null,
+          panVat: showBusinessFields ? form.panVat : null,
+        });
+
+        toast.success("Account created successfully 🎉");
+      } else {
+        await loginWithEmail(form.email, form.password);
+        toast.success("Logged in successfully");
+      }
+    } catch (err) {
+      toast.error(err.message || "Authentication failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogle = async () => {
+    try {
+      await loginWithGoogle(role === "buyer" ? buyerType : role);
+    } catch (err) {
+      toast.error("Google login failed");
+    }
+  };
 
   return (
     <Stack spacing={2}>
@@ -27,9 +94,10 @@ export const AuthForm = ({ mode, setMode, role }) => {
         showPassword={showPassword}
         setShowPassword={setShowPassword}
         inputStyle={inputStyle}
+        form={form}
+        onChange={handleChange}
       />
 
-      {/* Buyer choice */}
       {isSignup && role === "buyer" && (
         <BuyerTypeSelector buyerType={buyerType} setBuyerType={setBuyerType} />
       )}
@@ -38,15 +106,30 @@ export const AuthForm = ({ mode, setMode, role }) => {
         <RememberForgot rememberMe={rememberMe} setRememberMe={setRememberMe} />
       )}
 
-      {/* Seller OR buyer-business */}
-      {showBusinessFields && <SellerFields inputStyle={inputStyle} />}
+      {showBusinessFields && (
+        <SellerFields inputStyle={inputStyle} form={form} onChange={handleChange} />
+      )}
 
       <AuthActions
         isSignup={isSignup}
+        loading={loading}
+        onSubmit={handleSubmit}
+        onGoogle={handleGoogle}
         setMode={setMode}
-        role={role}
-        buyerType={buyerType}
       />
     </Stack>
   );
+};
+
+const inputStyle = {
+  "& .MuiOutlinedInput-root": {
+    borderRadius: 3,
+    backgroundColor: "rgba(255,255,255,0.95)",
+    "& fieldset": { borderColor: "#ddd" },
+    "&:hover fieldset": { borderColor: "#aaa" },
+    "&.Mui-focused fieldset": {
+      borderColor: "#FF9800",
+      boxShadow: "0 0 0 3px rgba(255,152,0,0.2)",
+    },
+  },
 };
