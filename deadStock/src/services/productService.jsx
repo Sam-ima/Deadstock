@@ -14,51 +14,97 @@ import { db } from "../firebase/firebase";
 
 const productsRef = collection(db, "products");
 
-/* CREATE Product with all required fields from project */
-export const addProduct = async (productData) => {
-  // Set initial depreciation values based on category
-  const depreciationData = getInitialDepreciationData(productData);
+export const addProduct = async (productData, userId, userType) => {
+  // Get category-based depreciation settings
+  const depSettings = getDepreciationSettings(productData.categorySlug, productData);
   
   return await addDoc(productsRef, {
     ...productData,
-    ...depreciationData,
-    status: 'active',
-    currentPrice: productData.basePrice, // Start with base price
+    // Depreciation Metadata
+    depreciationType: depSettings.type,
+    depreciationRate: depSettings.rate,
+    depreciationPeriod: depSettings.period, // 'daily', 'weekly', 'monthly'
+    floorPrice: productData.floorPrice || productData.basePrice * 0.3,
+    currentPrice: productData.basePrice, // Initial price same as base
+    nextDepreciationAt: calculateNextDepreciationTime(depSettings.period),
+    lastDepreciatedAt: null,
     depreciationCount: 0,
+    
+    // Product Status
+    status: 'active',
+    isDepreciating: true,
+    
+    // Seller Info
+    sellerId: userId,
+    sellerType: userType,
+    
+    // Timestamps
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     expiresAt: calculateExpiryDate(productData.categorySlug)
   });
 };
 
-/* Helper function for initial depreciation setup */
-const getInitialDepreciationData = (productData) => {
-  const depreciationTypes = {
-    'electronics': 'FAST',
-    'fashion': 'SEASONAL',
-    'antiques': 'SLOW',
-    'bulk': 'ACCELERATED',
-    'seasonal': 'STEP'
+// Helper function for depreciation settings
+const getDepreciationSettings = (categorySlug, productData) => {
+  const settings = {
+    'electronics': {
+      type: 'EXPONENTIAL',
+      rate: 0.02, // 2% daily depreciation
+      period: 'daily',
+      formula: 'fast_exponential'
+    },
+    'fashion': {
+      type: 'LINEAR',
+      rate: 0.015, // 1.5% daily
+      period: 'daily',
+      formula: 'linear_seasonal'
+    },
+    'antiques': {
+      type: 'SLOW_LINEAR',
+      rate: 0.005, // 0.5% daily
+      period: 'weekly',
+      formula: 'slow_linear'
+    },
+    'bulk': {
+      type: 'ACCELERATED_EXPONENTIAL',
+      rate: productData.quantity > 100 ? 0.03 : 0.025,
+      period: 'daily',
+      formula: 'accelerated_bulk'
+    },
+    'seasonal': {
+      type: 'STEP_BASED',
+      rate: 0,
+      period: 'weekly',
+      formula: 'step_seasonal'
+    }
   };
-
-  return {
-    depreciationType: depreciationTypes[productData.categorySlug] || 'LINEAR',
-    floorPrice: productData.floorPrice || productData.basePrice * 0.3,
-    lastDepreciatedAt: serverTimestamp(),
-    depreciationRate: getDepreciationRate(productData.categorySlug, productData.quantity)
+  
+  return settings[categorySlug] || {
+    type: 'LINEAR',
+    rate: 0.01,
+    period: 'daily',
+    formula: 'default_linear'
   };
 };
 
-/* Helper function for depreciation rates */
-const getDepreciationRate = (categorySlug, quantity) => {
-  const rates = {
-    'electronics': 0.15, // 15% per period
-    'fashion': 10, // $10 per period
-    'antiques': 2, // $2 per period
-    'bulk': quantity > 100 ? 0.25 : 0.20, // 20-25% for bulk
-    'seasonal': 0
-  };
-  return rates[categorySlug] || 0.1;
+// Calculate next depreciation time
+const calculateNextDepreciationTime = (period) => {
+  const now = new Date();
+  switch(period) {
+    case 'daily':
+      now.setDate(now.getDate() + 1);
+      break;
+    case 'weekly':
+      now.setDate(now.getDate() + 7);
+      break;
+    case 'monthly':
+      now.setMonth(now.getMonth() + 1);
+      break;
+  }
+  // Set to midnight
+  now.setHours(0, 0, 0, 0);
+  return now;
 };
 
 /* Calculate expiry date based on category */

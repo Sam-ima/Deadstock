@@ -15,9 +15,9 @@ import "react-toastify/dist/ReactToastify.css";
 // Import Context Providers
 import { CartProvider } from "./component/categoryPage/productDetail/cartContext.jsx";
 import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from "./context/AuthContext";
-import { ProductProvider } from "./context/ProductContext";
-import { CategoryProvider } from "./context/CategoryContext";
+import { AuthProvider } from "./context/authContext/authContext.jsx";
+import { ProductProvider } from "./context/productContext.jsx";
+import { CategoryProvider } from "./context/categoryContext.jsx";
 
 import RootLayout from "./root_layout";
 // import AuctionsPage from "./pages/auction.page";

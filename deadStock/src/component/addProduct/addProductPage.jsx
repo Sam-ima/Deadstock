@@ -12,7 +12,7 @@ import {
 import { Save, Upload, ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/authContext";
+import { useAuth } from "../../context/authContext/authContext";
 import { useProducts } from "../../context/productContext";
 import BasicInfoSection from "./basicInformationSection";
 import PricingSection from "./pricingSection";
