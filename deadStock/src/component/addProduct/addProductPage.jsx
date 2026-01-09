@@ -59,14 +59,14 @@ const AddProductPage = () => {
               justifyContent="flex-end"
               spacing={2}
             >
-              <Button
+              {/* <Button
                 // variant="outlined"
                 startIcon={<Save size={16} />}
                 fullWidth={{ xs: true, sm: false }}
                 sx={{color:"#fff", bgcolor:"#e6802cff"}}
               >
                 Save Draft
-              </Button>
+              </Button> */}
 
               <Button
                 variant="contained"
@@ -80,7 +80,7 @@ const AddProductPage = () => {
                   bgcolor:"#19683dff"
                 }}
               >
-                Publish Listing
+                Publish Item
               </Button>
             </Stack>
           
