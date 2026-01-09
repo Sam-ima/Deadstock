@@ -101,7 +101,7 @@ const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
         </Typography>
       </Box>
 
-      {/* 🚫 CART UI REMOVED FOR AUCTION */}
+      {/* CART UI REMOVED FOR AUCTION */}
       {!isAuction && (
         <>
           <QuantitySelector
