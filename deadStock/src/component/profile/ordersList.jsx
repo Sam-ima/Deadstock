@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Box, Typography } from "@mui/material";
 import OrderItem from "./orderItem";
-import buyerData from "../data/buyerData";
+import BuyerData from "../data/buyerData";
 
 const ordersList = () => {
-  const orders = buyerData.orders || [];
+  const orders = BuyerData.orders || [];
   const [showAll, setShowAll] = useState(false);
 
   const visibleOrders = showAll ? orders : orders.slice(0, 3);

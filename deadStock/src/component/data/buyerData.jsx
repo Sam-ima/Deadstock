@@ -1,4 +1,4 @@
-const buyerData = {
+export const buyerData = {
 
   orders: [
     {

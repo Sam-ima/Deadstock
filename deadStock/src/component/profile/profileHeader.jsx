@@ -103,7 +103,30 @@ const profileHeader = () => {
         </DialogActions>
       </Dialog>
     </>
+
+      
+
   );
 };
 
-export default profileHeader;
+     
+        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 3 }}>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" fontWeight="bold">{stats.selling}</Typography>
+            <Typography variant="caption" color="text.secondary">Selling</Typography>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" fontWeight="bold">{stats.sold}</Typography>
+            <Typography variant="caption" color="text.secondary">Sold</Typography>
+          </Box>
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography variant="h6" fontWeight="bold">{stats.rating}</Typography>
+            <Typography variant="caption" color="text.secondary">Rating</Typography>
+          </Box>
+        </Box>
+
+
+
+
+
+export default ProfileHeader;
