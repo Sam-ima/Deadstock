@@ -12,25 +12,21 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Alert
+  Alert,
+  Snackbar
 } from "@mui/material";
-import {
-  Tag,
-  Layers,
-  ClipboardList,
-  Plus,
-  Package,
-  Hash
-} from "lucide-react";
+import { Tag, Layers, ClipboardList, Plus, Package, Hash } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCategories } from "../../context/categoryContext";
+import { modernInput } from "./inputs";
 
 const BasicInfoSection = ({ formData, setFormData }) => {
-  const { categories, subcategories, fetchSubcategories, createCategory } = useCategories();
+  const { categories, subcategories, fetchSubcategories, createCategory, fetchCategories } = useCategories();
   const [newCategoryDialog, setNewCategoryDialog] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategorySlug, setNewCategorySlug] = useState("");
   const [errors, setErrors] = useState({});
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
   useEffect(() => {
     if (formData.categorySlug) {
@@ -39,45 +35,39 @@ const BasicInfoSection = ({ formData, setFormData }) => {
   }, [formData.categorySlug]);
 
   const handleChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-    
-    // Clear error for this field
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: null
-      }));
-    }
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) setErrors(prev => ({ ...prev, [field]: null }));
   };
 
+  // basicInformationSection.jsx (updated)
   const handleAddCategory = async () => {
-    if (!newCategoryName.trim() || !newCategorySlug.trim()) {
-      setErrors({ category: "Category name and slug are required" });
+    if (!newCategoryName.trim()) {
+      setErrors({ category: "Category name is required" });
       return;
     }
+
+    // Auto-generate slug
+    const slug = newCategoryName.trim().toLowerCase().replace(/\s+/g, "-");
 
     try {
       const categoryData = {
         name: newCategoryName,
-        slug: newCategorySlug.toLowerCase().replace(/\s+/g, '-'),
+        slug,
         description: `Category for ${newCategoryName}`,
-        depreciationType: 'LINEAR', // Default
-        color: '#6B7280', // Default gray
-        icon: '📦' // Default icon
+        color: "#6B7280",
+        icon: "📦",
       };
 
-      await createCategory(categoryData);
+      await createCategory(categoryData); // updates context & dropdown
       setNewCategoryDialog(false);
       setNewCategoryName("");
-      setNewCategorySlug("");
       setErrors({});
-    } catch (error) {
+    } catch (err) {
+      console.error(err);
       setErrors({ category: "Failed to create category" });
     }
   };
+
 
   const validateField = (field, value) => {
     const rules = {
@@ -87,45 +77,20 @@ const BasicInfoSection = ({ formData, setFormData }) => {
       condition: value ? null : "Condition is required",
       quantity: value > 0 ? null : "Quantity must be greater than 0"
     };
-    
     return rules[field] || null;
   };
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        position: "relative",
-        overflow: "hidden",
-        borderRadius: 4,
-        p: { xs: 3, md: 4 },
-        background: `
-          linear-gradient(#fff, #fff) padding-box,
-          linear-gradient(135deg, #22c55e, #f97316) border-box
-        `,
-        border: "1px solid transparent",
-      }}
-    >
-      {/* Header */}
-      <Box display="flex" alignItems="center" gap={2} mb={4} flexDirection="column">
-        <Box>
-          <Typography fontSize={20} fontWeight={800}>
-            Product Details
-          </Typography>
-          <Typography fontSize={13} color="text.secondary">
-            Help buyers understand your item better
-          </Typography>
-        </Box>
+    <Paper elevation={0} sx={{ p: { xs: 3, md: 4 }, borderRadius: 3, bgcolor: "#fff", border: "1px solid #e5e7eb" }}>
+      <Box display="flex" flexDirection="column" alignItems="center" gap={1} mb={4}>
+        <Typography fontSize={20} fontWeight={800}>Product Details</Typography>
+        <Typography fontSize={13} color="text.secondary">Help buyers understand your item better</Typography>
       </Box>
 
-      {errors.category && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {errors.category}
-        </Alert>
-      )}
+      {errors.category && <Alert severity="error" sx={{ mb: 2 }}>{errors.category}</Alert>}
 
       <Grid container spacing={3}>
-        {/* Category Selection with Add Option */}
+        {/* Category */}
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', gap: 1 }}>
             <TextField
@@ -133,36 +98,25 @@ const BasicInfoSection = ({ formData, setFormData }) => {
               label="Category"
               fullWidth
               required
-              value={formData.categorySlug || ''}
-              onChange={(e) => handleChange('categorySlug', e.target.value)}
+              value={formData.categorySlug || ""}
+              onChange={(e) => handleChange("categorySlug", e.target.value)}
               error={!!errors.categorySlug}
               helperText={errors.categorySlug}
-              sx={modernInput}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Layers size={16} />
-                  </InputAdornment>
-                ),
-              }}
             >
-              {categories.map((category) => (
-                <MenuItem key={category.id} value={category.slug}>
-                  {category.name}
+              {categories.map((cat) => (
+                <MenuItem key={cat.id} value={cat.slug}>
+                  {cat.name}
                 </MenuItem>
               ))}
             </TextField>
-            <Button
-              variant="outlined"
-              onClick={() => setNewCategoryDialog(true)}
-              sx={{ minWidth: 'auto' }}
-            >
+
+            <Button variant="contained" color="success" onClick={() => setNewCategoryDialog(true)} sx={{ minWidth: 'auto' }}>
               <Plus size={20} />
             </Button>
           </Box>
         </Grid>
 
-        {/* Subcategory Selection */}
+        {/* Subcategory */}
         {formData.categorySlug && (
           <Grid item xs={12} md={6}>
             <TextField
@@ -181,10 +135,8 @@ const BasicInfoSection = ({ formData, setFormData }) => {
               }}
             >
               <MenuItem value="">Select Subcategory (Optional)</MenuItem>
-              {subcategories[formData.categorySlug]?.map((subcat) => (
-                <MenuItem key={subcat.id} value={subcat.id}>
-                  {subcat.name}
-                </MenuItem>
+              {subcategories[formData.categorySlug]?.map(sub => (
+                <MenuItem key={sub.id} value={sub.id}>{sub.name}</MenuItem>
               ))}
             </TextField>
           </Grid>
@@ -199,20 +151,11 @@ const BasicInfoSection = ({ formData, setFormData }) => {
             required
             value={formData.name || ''}
             onChange={(e) => handleChange('name', e.target.value)}
-            onBlur={(e) => {
-              const error = validateField('name', e.target.value);
-              setErrors(prev => ({ ...prev, name: error }));
-            }}
+            onBlur={(e) => setErrors(prev => ({ ...prev, name: validateField('name', e.target.value) }))}
             error={!!errors.name}
             helperText={errors.name}
             sx={modernInput}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Tag size={16} />
-                </InputAdornment>
-              ),
-            }}
+            InputProps={{ startAdornment: <InputAdornment position="start"><Tag size={16} /></InputAdornment> }}
           />
         </Grid>
 
@@ -225,19 +168,12 @@ const BasicInfoSection = ({ formData, setFormData }) => {
             required
             value={formData.condition || ''}
             onChange={(e) => handleChange('condition', e.target.value)}
-            onBlur={(e) => {
-              const error = validateField('condition', e.target.value);
-              setErrors(prev => ({ ...prev, condition: error }));
-            }}
+            onBlur={(e) => setErrors(prev => ({ ...prev, condition: validateField('condition', e.target.value) }))}
             error={!!errors.condition}
             helperText={errors.condition}
             sx={modernInput}
           >
-            {['New', 'Like New', 'Used - Good', 'Used - Fair', 'Used - Poor'].map((cond) => (
-              <MenuItem key={cond} value={cond}>
-                {cond}
-              </MenuItem>
-            ))}
+            {['New', 'Like New', 'Used - Good', 'Used - Fair', 'Used - Poor'].map(c => <MenuItem key={c} value={c}>{c}</MenuItem>)}
           </TextField>
         </Grid>
 
@@ -250,19 +186,12 @@ const BasicInfoSection = ({ formData, setFormData }) => {
             required
             value={formData.stock || ''}
             onChange={(e) => handleChange('stock', parseInt(e.target.value) || 1)}
-            onBlur={(e) => {
-              const error = validateField('quantity', e.target.value);
-              setErrors(prev => ({ ...prev, quantity: error }));
-            }}
+            onBlur={(e) => setErrors(prev => ({ ...prev, quantity: validateField('quantity', e.target.value) }))}
             error={!!errors.quantity}
             helperText={errors.quantity}
             sx={modernInput}
             InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Hash size={16} />
-                </InputAdornment>
-              ),
+              startAdornment: <InputAdornment position="start"><Hash size={16} /></InputAdornment>,
               inputProps: { min: 1 }
             }}
           />
@@ -274,34 +203,22 @@ const BasicInfoSection = ({ formData, setFormData }) => {
             label="Description"
             multiline
             rows={4}
-            placeholder="Describe features, condition, flaws, and story behind this item..."
+            placeholder="Describe features, condition, flaws..."
             fullWidth
             required
             value={formData.description || ''}
             onChange={(e) => handleChange('description', e.target.value)}
-            onBlur={(e) => {
-              const error = validateField('description', e.target.value);
-              setErrors(prev => ({ ...prev, description: error }));
-            }}
+            onBlur={(e) => setErrors(prev => ({ ...prev, description: validateField('description', e.target.value) }))}
             error={!!errors.description}
             helperText={errors.description}
-            sx={{
-              ...modernInput,
-              "& textarea": { lineHeight: 1.7 },
-            }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}>
-                  <ClipboardList size={16} />
-                </InputAdornment>
-              ),
-            }}
+            sx={{ ...modernInput, "& textarea": { lineHeight: 1.7 } }}
+            InputProps={{ startAdornment: <InputAdornment position="start" sx={{ alignSelf: 'flex-start', mt: 1 }}><ClipboardList size={16} /></InputAdornment> }}
           />
         </Grid>
       </Grid>
 
       {/* Add Category Dialog */}
-      <Dialog open={newCategoryDialog} onClose={() => setNewCategoryDialog(false)}>
+      <Dialog open={newCategoryDialog} onClose={() => setNewCategoryDialog(false)} PaperProps={{ sx: { p: 3, borderRadius: 3 } }}>
         <DialogTitle>Add New Category</DialogTitle>
         <DialogContent>
           <TextField
@@ -322,13 +239,15 @@ const BasicInfoSection = ({ formData, setFormData }) => {
             placeholder="e.g., electronics, fashion"
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ pt: 2 }}>
           <Button onClick={() => setNewCategoryDialog(false)}>Cancel</Button>
-          <Button onClick={handleAddCategory} variant="contained">
-            Add Category
-          </Button>
+          <Button variant="contained" onClick={handleAddCategory}>Add Category</Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar open={snackbar.open} autoHideDuration={4000} onClose={() => setSnackbar({ ...snackbar, open: false })}>
+        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>{snackbar.message}</Alert>
+      </Snackbar>
     </Paper>
   );
 };

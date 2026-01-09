@@ -40,7 +40,9 @@ const AddProductPage = () => {
     floorPrice: 0,
     saleType: "direct",
     status: "draft",
+    images: [], // initialize images here
   });
+
 
   const [customFields, setCustomFields] = useState([]); // 🔥 dynamic fields
   const [images, setImages] = useState([]); // image files
@@ -160,9 +162,10 @@ const AddProductPage = () => {
           />
 
           <ProductImagesSection
-            images={images}
-            setImages={setImages}
+            formData={formData}
+            setFormData={setFormData}
           />
+
 
           {/* 🔥 Dynamic Fields */}
           <Paper sx={{ p: 3, borderRadius: 3 }}>

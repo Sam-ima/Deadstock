@@ -1,36 +1,33 @@
-// src/context/CategoryContext.jsx
-import { createContext, useContext, useEffect, useState } from "react";
-import { 
-  getCategories, 
-  addCategory, 
-  getSubcategoriesByCategory 
-} from "../services/categoryService";
+// context/categoryContext.jsx
+import { createContext, useContext, useState, useEffect } from "react";
+import { db } from "../firebase/firebase"; // Firestore
+import { collection, addDoc, getDocs } from "firebase/firestore";
 
 const CategoryContext = createContext();
+
+export const useCategories = () => useContext(CategoryContext);
 
 export const CategoryProvider = ({ children }) => {
   const [categories, setCategories] = useState([]);
   const [subcategories, setSubcategories] = useState({});
 
   const fetchCategories = async () => {
-    const data = await getCategories();
+    const snap = await getDocs(collection(db, "categories"));
+    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     setCategories(data);
-    return data;
-  };
-
-  const createCategory = async (categoryData) => {
-    const newCategory = await addCategory(categoryData);
-    await fetchCategories();
-    return newCategory;
   };
 
   const fetchSubcategories = async (categorySlug) => {
-    const data = await getSubcategoriesByCategory(categorySlug);
-    setSubcategories(prev => ({
-      ...prev,
-      [categorySlug]: data
-    }));
-    return data;
+    const snap = await getDocs(collection(db, `categories/${categorySlug}/subcategories`));
+    const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setSubcategories(prev => ({ ...prev, [categorySlug]: data }));
+  };
+
+  const createCategory = async (categoryData) => {
+    const docRef = await addDoc(collection(db, "categories"), categoryData);
+    // After adding, fetch all categories again to update state
+    await fetchCategories();
+    return { id: docRef.id, ...categoryData };
   };
 
   useEffect(() => {
@@ -38,16 +35,14 @@ export const CategoryProvider = ({ children }) => {
   }, []);
 
   return (
-    <CategoryContext.Provider value={{ 
-      categories, 
+    <CategoryContext.Provider value={{
+      categories,
       subcategories,
       fetchCategories,
-      createCategory,
-      fetchSubcategories 
+      fetchSubcategories,
+      createCategory
     }}>
       {children}
     </CategoryContext.Provider>
   );
 };
-
-export const useCategories = () => useContext(CategoryContext);

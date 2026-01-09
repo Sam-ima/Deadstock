@@ -7,7 +7,7 @@ import {
   IconButton,
   Alert
 } from "@mui/material";
-import { UploadCloud, X, Eye } from "lucide-react";
+import { UploadCloud, X } from "lucide-react";
 import { useState, useRef } from "react";
 
 const ProductImagesSection = ({ formData, setFormData }) => {
@@ -15,54 +15,44 @@ const ProductImagesSection = ({ formData, setFormData }) => {
   const [error, setError] = useState(null);
   const fileInputRef = useRef(null);
 
+  const images = formData.images || [];
+
   const handleImageUpload = async (files) => {
-    const imageFiles = Array.from(files).slice(0, 8 - (formData.images?.length || 0));
-    
+    const imageFiles = Array.from(files).slice(0, 8 - images.length);
     if (imageFiles.length === 0) return;
 
     setUploading(true);
     setError(null);
 
-    const uploadedImages = [...(formData.images || [])];
-    
+    const uploadedImages = [...images];
+
     for (const file of imageFiles) {
-      // Validate file
-      if (!file.type.startsWith('image/')) {
-        setError('Only image files are allowed');
+      if (!file.type.startsWith("image/")) {
+        setError("Only image files are allowed");
         continue;
       }
-      
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        setError('Image size must be less than 5MB');
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Image size must be less than 5MB");
         continue;
       }
 
-      // In a real app, you would upload to Firebase Storage here
-      // For now, we'll create a local URL
       const imageUrl = URL.createObjectURL(file);
       uploadedImages.push({
         url: imageUrl,
-        file: file,
+        file,
         name: file.name,
         size: file.size
       });
     }
 
-    setFormData(prev => ({
-      ...prev,
-      images: uploadedImages
-    }));
-    
+    setFormData((prev) => ({ ...prev, images: uploadedImages }));
     setUploading(false);
   };
 
   const handleRemoveImage = (index) => {
-    const newImages = [...(formData.images || [])];
+    const newImages = [...images];
     newImages.splice(index, 1);
-    setFormData(prev => ({
-      ...prev,
-      images: newImages
-    }));
+    setFormData((prev) => ({ ...prev, images: newImages }));
   };
 
   const handleDrop = (e) => {
@@ -100,11 +90,7 @@ const ProductImagesSection = ({ formData, setFormData }) => {
         </Box>
       </Box>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       <input
         type="file"
@@ -112,10 +98,9 @@ const ProductImagesSection = ({ formData, setFormData }) => {
         multiple
         accept="image/*"
         onChange={(e) => handleImageUpload(e.target.files)}
-        style={{ display: 'none' }}
+        style={{ display: "none" }}
       />
 
-      {/* Upload Area */}
       <Box
         onDrop={handleDrop}
         onDragOver={handleDragOver}
@@ -143,17 +128,16 @@ const ProductImagesSection = ({ formData, setFormData }) => {
         <Typography variant="caption" color="text.secondary">
           PNG, JPG, GIF · Max 5MB per image
         </Typography>
-        <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-          {formData.images?.length || 0} of 8 images uploaded
+        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 0.5 }}>
+          {images.length} of 8 images uploaded
         </Typography>
       </Box>
 
-      {/* Image Previews */}
-      {(formData.images?.length > 0) && (
+      {images.length > 0 && (
         <Grid container spacing={2} mt={3}>
-          {formData.images.map((img, index) => (
+          {images.map((img, index) => (
             <Grid item xs={6} sm={4} md={3} key={index}>
-              <Box sx={{ position: 'relative' }}>
+              <Box sx={{ position: "relative" }}>
                 <Box
                   sx={{
                     width: "100%",
@@ -162,21 +146,21 @@ const ProductImagesSection = ({ formData, setFormData }) => {
                     borderRadius: 3,
                     border: "1px solid #e5e7eb",
                     backgroundImage: `url(${img.url})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    overflow: 'hidden'
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    overflow: "hidden",
                   }}
                 />
                 <IconButton
                   size="small"
                   onClick={() => handleRemoveImage(index)}
                   sx={{
-                    position: 'absolute',
+                    position: "absolute",
                     top: 4,
                     right: 4,
-                    bgcolor: 'rgba(0,0,0,0.5)',
-                    color: 'white',
-                    '&:hover': { bgcolor: 'rgba(0,0,0,0.7)' }
+                    bgcolor: "rgba(0,0,0,0.5)",
+                    color: "white",
+                    "&:hover": { bgcolor: "rgba(0,0,0,0.7)" },
                   }}
                 >
                   <X size={16} />
@@ -184,16 +168,16 @@ const ProductImagesSection = ({ formData, setFormData }) => {
                 {index === 0 && (
                   <Box
                     sx={{
-                      position: 'absolute',
+                      position: "absolute",
                       top: 4,
                       left: 4,
-                      bgcolor: '#22c55e',
-                      color: 'white',
+                      bgcolor: "#22c55e",
+                      color: "white",
                       px: 1,
                       py: 0.5,
                       borderRadius: 1,
-                      fontSize: '0.7rem',
-                      fontWeight: 600
+                      fontSize: "0.7rem",
+                      fontWeight: 600,
                     }}
                   >
                     Main

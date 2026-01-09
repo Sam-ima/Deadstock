@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { DollarSign, Package, TrendingDown, Shield } from "lucide-react";
 import { useState } from "react";
+import { modernInput } from "./inputs";
 
 const PricingSection = ({ formData, setFormData, isB2BUser }) => {
   const [errors, setErrors] = useState({});
