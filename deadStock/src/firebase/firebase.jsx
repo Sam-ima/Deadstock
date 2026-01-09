@@ -1,13 +1,9 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-<<<<<<< HEAD
 
-import {getFirestore} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
-=======
 import { getFirestore } from "firebase/firestore";
->>>>>>> refs/remotes/origin/master
 import { getAuth } from "firebase/auth";
 
 import {
@@ -33,12 +29,8 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-<<<<<<< HEAD
-const analytics = getAnalytics(app);
 
-=======
 export const analytics = getAnalytics(app);
->>>>>>> refs/remotes/origin/master
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
