@@ -1,181 +1,83 @@
-import React, { useState } from "react";
-import {
-  Container,
-  Grid,
-  Box,
-  IconButton,
-  Stack,
-  Breadcrumbs,
-  Link,
-  Typography,
-  Snackbar,
-  Alert,
-} from "@mui/material";
-import { ArrowBack, Favorite, FavoriteBorder, Share } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
+// src/component/auctiondetai/index.jsx
+import { useState } from "react";
+import { Box, Container, Typography } from "@mui/material";
 
-// Components
-import ImageGallery from "../component/auctionDetail/ImageGallery";
-import ProductInfo from "../component/auctionDetail/productInfo";
-import AuctionTimer from "../component/auctionDetail/auctionTimer";
-import BidSection from "../component/auctionDetail/bidSection";
-import BidHistory from "../component/auctionDetail/bidHistory";
-import ProductSpecs from "../component/auctionDetail/ProductSpecs";
+// Reused product components
+import ProductImages from "../component/categoryPage/productDetail/productImages";
+import ProductInfo from "../component/categoryPage/productDetail/productInfo";
+
+// Auction-specific components
+import AuctionTimer from "./auctionDetail/auctionTimer";
+import BidHistory from "./auctionDetail/bidHistory";
+import ProductSpecs from "./auctionDetail/ProductSpecs";
 
 const AuctionDetail = ({ product }) => {
-  const navigate = useNavigate();
-  const [isWishlisted, setIsWishlisted] = useState(false);
-  const [showSnackbar, setShowSnackbar] = useState(false);
-  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [isFavorite, setIsFavorite] = useState(false);
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: `Check out ${product.name} on our auction site!`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      setSnackbarMessage("Link copied to clipboard!");
-      setShowSnackbar(true);
-    }
-  };
-
-  const primaryColor = "#2E7D32";
-  const lightBg = "#f8fff8";
+  if (!product) {
+    return (
+      <Container>
+        <Typography variant="h4" align="center" sx={{ mt: 4 }}>
+          Auction product not found
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Box
       sx={{
-        // display: "flex",
-        // flexDirection: "column",
-      
-        px: { xs: 1, sm: 2, md: 4 },
+        minHeight: "100vh",
+        pt: { xs: "30px", sm: "35px", md: "40px" },
       }}
     >
-      {/* Navigation Bar */}
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 1000,
-          backgroundColor: "white",
-          borderBottom: "2px solid #f0f0f0",
-          py: 1.5,
-          px: { xs: 2, md: 4 },
-          boxShadow: "0 2px 12px rgba(46, 125, 50, 0.08)",
-          width: "100%",
-        }}
-      >
-        <Stack direction="row" alignItems="center" spacing={2}>
-          <IconButton
-            onClick={() => navigate(-1)}
-            sx={{ backgroundColor: lightBg, "&:hover": { backgroundColor: "#e8f5e8" } }}
-          >
-            <ArrowBack sx={{ color: primaryColor }} />
-          </IconButton>
+      {/* ================= MAIN CONTENT ================= */}
+      <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
+        {/* Top section: Images + Info */}
+        <Box display={{ xs: "block", md: "flex" }} gap={4}>
+          {/* Left: Images */}
+          <ProductImages
+            product={product}
+            selectedImage={selectedImage}
+            setSelectedImage={setSelectedImage}
+            isFavorite={isFavorite}
+            setIsFavorite={setIsFavorite}
+          />
 
-          <Breadcrumbs sx={{ flexGrow: 1 }}>
-            <Link
-              underline="hover"
-              color="inherit"
-              onClick={() => navigate("/")}
-              sx={{ cursor: "pointer" }}
-            >
-              Home
-            </Link>
-            <Typography color="text.primary">{product.category}</Typography>
-          </Breadcrumbs>
-
-          <Stack direction="row" spacing={1}>
-            <IconButton onClick={() => setIsWishlisted(!isWishlisted)}>
-              {isWishlisted ? (
-                <Favorite sx={{ color: "#e53935" }} />
-              ) : (
-                <FavoriteBorder sx={{ color: primaryColor }} />
-              )}
-            </IconButton>
-            <IconButton onClick={handleShare}>
-              <Share sx={{ color: primaryColor }} />
-            </IconButton>
-          </Stack>
-        </Stack>
-      </Box>
-
-      {/* Main Content */}
-<Grid
-  container
-  spacing={{ xs: 2, sm: 3, md: 5 }}
-  sx={{ width: "100%" }}
->
-  {/* LEFT COLUMN */}
-  <Grid
-    item
-    xs={12}
-    md={7}
-    order={{ xs: 1, md: 1 }}
-  >
-    <Stack spacing={{ xs: 2, md: 4 }} sx={{ width: "100%" }}>
-      {/* Product Info – mobile only */}
-      <Box sx={{ display: { xs: "block", md: "none" } }}>
-        <ProductInfo product={product} />
-      </Box>
-
-      <ImageGallery product={product} />
-      <ProductSpecs product={product} />
-    </Stack>
-  </Grid>
-
-  {/* RIGHT COLUMN */}
-  <Grid
-    item
-    xs={12}
-    md={5}
-    order={{ xs: 2, md: 2 }}
-  >
-    <Box
-      sx={{
-        position: { md: "sticky" },
-        top: { md: "100px" },
-        width: "100%",
-      }}
-    >
-      <Stack spacing={{ xs: 2, md: 3 }}>
-        {/* Product Info – desktop only */}
-        <Box sx={{ display: { xs: "none", md: "block" } }}>
-          <ProductInfo product={product} />
+          {/* Right: Product Info + Auction Timer */}
+          <Box sx={{ width: { xs: "100%", md: "40%" } }}>
+            <ProductInfo product={product} />
+            <Box sx={{ mt: 3 }}>
+              <AuctionTimer product={product} />
+            </Box>
+          </Box>
         </Box>
 
-        <AuctionTimer product={product} />
-        <BidSection product={product} />
-        <BidHistory product={product} />
-      </Stack>
-    </Box>
-  </Grid>
-</Grid>
+        {/* Bottom section (like ProductTabs area) */}
+        {/* <Box sx={{ mt: 6 }}>
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            Product Details
+          </Typography>
+          <ProductSpecs product={product} />
+        </Box> */}
 
-
-
-      {/* Snackbar */}
-      <Snackbar
-        open={showSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setShowSnackbar(false)}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert
-          severity="success"
-          sx={{ width: "100%", backgroundColor: primaryColor, color: "white" }}
-        >
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h6" fontWeight={600} mb={2}>
+            Bid History
+          </Typography>
+          <BidHistory product={product} />
+        </Box>
+      </Container>
     </Box>
   );
 };
 
 export default AuctionDetail;
+
+
+
+
 
 
 
