@@ -1,7 +1,6 @@
 import { Container } from "@mui/material";
 import ProfileHeader from "./profileHeader";
 import ProfileInfoCard from "./profileInfo";
-import { authUser } from "../data/authUser"; 
 import OrdersList from "./ordersList";
 import ShippingInfo from "./shippingInfo";
 
@@ -13,15 +12,14 @@ const buyerProfile = () => {
       sx={{ bgcolor: "#fff", minHeight: "100vh", py: 3 }}
     >
       {/* Pass authUser to ProfileHeader */}
-      <ProfileHeader user={authUser} />
+      <ProfileHeader />
 
 
-      <ProfileInfoCard user={authUser} />
+      <ProfileInfoCard />
 
-      <ShippingInfo user={authUser} />
+      <ShippingInfo />
 
-      <OrdersList user={authUser} />
-      
+      <OrdersList />
     
 
     </Container>
