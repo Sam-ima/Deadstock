@@ -1,9 +1,4 @@
-import {
-  Box,
-  Container,
-  Button,
-} from "@mui/material";
-
+import { Box, Container, Button } from "@mui/material";
 
 import ProfileHeader from "../component/sellerProfile/sellerHeader";
 import ListingsTabs from "../component/sellerProfile/listingsTabs";
@@ -13,12 +8,13 @@ import RecentActivity from "../component/sellerProfile/recentActivity";
 const SellerProfilePage = () => {
   return (
     <Box bgcolor="#fff" minHeight="100vh">
-
-
-      <Container maxWidth="lg"    sx={{
-        paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
-        paddingBottom: "0px",
-      }}>
+      <Container
+        maxWidth="lg"
+        sx={{
+          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+          paddingBottom: "2px",
+        }}
+      >
         <ProfileHeader />
         <ListingsTabs />
         <SettingsList />
@@ -34,7 +30,7 @@ const SellerProfilePage = () => {
             borderRadius: 3,
           }}
         >
-       settings
+          settings
         </Button>
         <Button
           fullWidth

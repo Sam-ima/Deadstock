@@ -23,6 +23,7 @@ const ListingsTabs = () => {
   >
     <ToggleButton value="selling">Selling</ToggleButton>
     <ToggleButton value="sold">Sold</ToggleButton>
+    <ToggleButton value="">Add Product</ToggleButton>
   </ToggleButtonGroup>
 </Box>
 

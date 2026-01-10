@@ -1,75 +1,135 @@
-// src/component/auctiondetai/index.jsx
-import { useState } from "react";
 import { Box, Container, Typography, Button } from "@mui/material";
-
-// ✅ FIXED PATHS
+import { useDispatch, useSelector } from "react-redux";
 import ProductImages from "./categoryPage/productDetail/productImages";
 import ProductInfo from "./categoryPage/productDetail/productInfo";
-
 import AuctionTimer from "./auctionDetail/auctionTimer";
 import BidHistory from "./auctionDetail/bidHistory";
+import { setSelectedImage, toggleWishlist } from "../store/slice/auctionSlice";
 
 const AuctionDetail = ({ product }) => {
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const dispatch = useDispatch();
 
-  if (!product) {
-    return (
-      <Container>
-        <Typography variant="h4" align="center" sx={{ mt: 4 }}>
-          Auction product not found
-        </Typography>
-      </Container>
-    );
-  }
+  // Selected image index from Redux
+  const selectedImage = useSelector(
+    (state) => state.auction.selectedImages[product.id] ?? 0
+  );
+
+  // Favorite state from Redux
+  const isFavorite = useSelector((state) =>
+    state.auction.wishlist.includes(product.id)
+  );
+
+  // Transform product data to match what ProductInfo expects
+  const transformedProduct = {
+    ...product,
+    price: product.highestBid || product.currentBid,
+    images: product.galleryImages || [product.img],
+  };
 
   return (
-    <Box sx={{ minHeight: "100vh", pt: { xs: 3, md: 4 } }}>
+    <Box sx={{ minHeight: "100vh", pt: { xs: 2, md: 4 } }}>
       <Container maxWidth="xl">
-        <Box display={{ xs: "block", md: "flex" }} gap={4}>
-          {/* ✅ Images now render correctly */}
-          <ProductImages
-            product={product}
-            selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
-            isFavorite={isFavorite}
-            setIsFavorite={setIsFavorite}
+        {/* Mobile Layout Stack */}
+        <Box sx={{ 
+          display: { xs: 'flex', md: 'none' }, 
+          flexDirection: 'column', 
+          gap: 3 
+        }}>
+          {/* Product Info - Top */}
+          <ProductInfo 
+            product={transformedProduct} 
+            isAuction 
+            showPrice={true}
           />
+          
+          {/* Images - Middle */}
+          <ProductImages
+            product={transformedProduct}
+            selectedImage={selectedImage}
+            setSelectedImage={(index) =>
+              dispatch(setSelectedImage({ productId: product.id, index }))
+            }
+            isFavorite={isFavorite}
+            setIsFavorite={() => dispatch(toggleWishlist(product.id))}
+          />
+          
+          {/* Timer - Bottom */}
+          <AuctionTimer product={product} />
+          
+          <Button 
+            fullWidth 
+            size="large" 
+            variant="contained" 
+            sx={{ 
+              mt: 2, 
+              py: 1.5,
+              background: "#194638",
+              "&:hover": { background: "#163b30" }
+            }}
+          >
+            Place Bid (Current: ${product.highestBid || product.currentBid})
+          </Button>
+        </Box>
 
-          {/* Info */}
-          <Box sx={{ width: { xs: "100%", md: "40%" } }}>
-            <ProductInfo product={product} isAuction />
-
+        {/* Desktop Layout */}
+        <Box sx={{ 
+          display: { xs: 'none', md: 'flex' }, 
+          gap: 4 
+        }}>
+          {/* Left Column - Images */}
+          <Box sx={{ flex: 1 }}>
+            <ProductImages
+              product={transformedProduct}
+              selectedImage={selectedImage}
+              setSelectedImage={(index) =>
+                dispatch(setSelectedImage({ productId: product.id, index }))
+              }
+              isFavorite={isFavorite}
+              setIsFavorite={() => dispatch(toggleWishlist(product.id))}
+            />
+          </Box>
+          
+          {/* Right Column - Info & Timer */}
+          <Box sx={{ width: "40%" }}>
+            <ProductInfo 
+              product={transformedProduct} 
+              isAuction 
+              showPrice={true}
+            />
+            
             <Box sx={{ mt: 3 }}>
               <AuctionTimer product={product} />
             </Box>
-
-            {/* 🔨 Place Bid Button */}
-            <Button
-              fullWidth
-              size="large"
-              variant="contained"
-              sx={{ mt: 3, py: 1.5 }}
+            
+            {/* <Button 
+              fullWidth 
+              size="large" 
+              variant="contained" 
+              sx={{ 
+                mt: 3, 
+                py: 1.5,
+                background: "#194638",
+                "&:hover": { background: "#163b30" }
+              }}
             >
-              Place Bid
-            </Button>
+              Place Bid (Current: ${product.highestBid || product.currentBid})
+            </Button> */}
           </Box>
         </Box>
 
         {/* Bid History */}
-        <Box sx={{ mt: 6 }}>
+        {/* <Box sx={{ mt: { xs: 4, md: 6 } }}>
           <Typography variant="h6" fontWeight={600} mb={2}>
             Bid History
           </Typography>
           <BidHistory product={product} />
-        </Box>
+        </Box> */}
       </Container>
     </Box>
   );
 };
 
 export default AuctionDetail;
-
 
 
 

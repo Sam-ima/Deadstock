@@ -1,132 +1,41 @@
-import { useState } from "react";
-import {
-  Avatar,
-  Box,
-  IconButton,
-  Typography,
-  Chip,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Fade,
-} from "@mui/material";
+import { Avatar, Box, Typography, Chip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import { color } from "framer-motion";
 
-const profileHeader = () => {
-  const [open, setOpen] = useState(false);
-  const [profile, setProfile] = useState({
-    name: "Roshni Giri",
-    username: "rowsnee",
-    avatar: "/avatar.png",
-  });
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setProfile({
-        ...profile,
-        avatar: URL.createObjectURL(file),
-      });
-    }
-  };
-
+const BuyerHeader = () => {
   return (
-    <>
-      <Fade in>
-        <Box textAlign="center" mb={4}>
-          <Box position="relative" display="inline-block">
-            <Avatar src={profile.avatar} sx={{ width: 120, height: 120 }} />
-            <IconButton
-              onClick={() => setOpen(true)}
-              sx={{
-                position: "absolute",
-                bottom: 0,
-                right: 0,
-                backgroundColor: "primary.main",
-              }}
-            >
-              <EditIcon />
-            </IconButton>
-          </Box>
+    <Box textAlign="center" mt={2}>
+      <Box position="relative" display="inline-block">
+        <Avatar
+          src="/avatar.png"
+          sx={{ width: 120, height: 120 }}
+        />
 
-          <Typography variant="h5" mt={2}>
-            {profile.name}
-          </Typography>
-          <Typography color="text.secondary">
-            {profile.username}
-          </Typography>
+        <IconButton
+          sx={{
+            position: "absolute",
+            bottom: 6,
+            right: 6,
+            bgcolor: "#22C55E",
+            color: "white",
+            "&:hover": { bgcolor: "#16A34A" },
+          }}
+        >
+          <EditIcon fontSize="small" />
+        </IconButton>
+      </Box>
 
-          <Chip label="VERIFIED" color="success" sx={{ mt: 1 }} />
-        </Box>
-      </Fade>
+      <Typography variant="h5" fontWeight={700} mt={2}>
+        Jordan Smith
+      </Typography>
+      <Typography color="text.secondary">@jordankicks</Typography>
 
-      {/* Edit Modal */}
-      <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
-        <DialogTitle>Edit Profile</DialogTitle>
-        <DialogContent>
-          <Box textAlign="center" mb={2}>
-            <Avatar src={profile.avatar} sx={{ width: 80, height: 80, mx: "auto" }} />
-            <Button component="label" size="small">
-              Change Photo
-              <input hidden type="file" onChange={handleAvatarChange} />
-            </Button>
-          </Box>
-
-          <TextField
-            label="Name"
-            fullWidth
-            margin="dense"
-            value={profile.name}
-            onChange={(e) =>
-              setProfile({ ...profile, name: e.target.value })
-            }
-          />
-          <TextField
-            label="Username"
-            fullWidth
-            margin="dense"
-            value={profile.username}
-            onChange={(e) =>
-              setProfile({ ...profile, username: e.target.value })
-            }
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} color="orange">Cancel</Button>
-          <Button variant="contained" onClick={() => setOpen(false)} color="success">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
-
-      
-
+      <Chip
+        label="VERIFIED BUYER"
+        color="success"
+        sx={{ mt: 2, px: 2 }}
+      />
+    </Box>
   );
 };
 
-     
-        <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 3 }}>
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" fontWeight="bold">{stats.selling}</Typography>
-            <Typography variant="caption" color="text.secondary">Selling</Typography>
-          </Box>
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" fontWeight="bold">{stats.sold}</Typography>
-            <Typography variant="caption" color="text.secondary">Sold</Typography>
-          </Box>
-          <Box sx={{ textAlign: 'center' }}>
-            <Typography variant="h6" fontWeight="bold">{stats.rating}</Typography>
-            <Typography variant="caption" color="text.secondary">Rating</Typography>
-          </Box>
-        </Box>
-
-
-
-
-
-export default ProfileHeader;
+export default BuyerHeader;

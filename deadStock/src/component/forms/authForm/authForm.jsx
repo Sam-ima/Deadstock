@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Stack } from "@mui/material";
-import { signupWithEmail, loginWithEmail, loginWithGoogle } from "../../../context/authContext/authServices";
+import {
+  signupWithEmail,
+  loginWithEmail,
+  loginWithGoogle,
+} from "../../../context/authContext/authServices";
 import { toast } from "react-toastify";
 
 import AuthHeader from "./formHeader";
@@ -14,6 +18,7 @@ export const AuthForm = ({ mode, setMode, role }) => {
   const isSignup = mode === "signup";
 
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [buyerType, setBuyerType] = useState("customer");
 
@@ -38,6 +43,25 @@ export const AuthForm = ({ mode, setMode, role }) => {
 
   const handleChange = (e) => {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
+  };
+
+  const resetForm = () => {
+    setForm({
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      shopName: "",
+      phone: "",
+      address: "",
+      city: "",
+      country: "",
+      panVat: "",
+    });
+
+    setShowPassword(false);
+    setShowConfirmPassword(false);
+    setBuyerType("customer");
   };
 
   /* ================= SUBMIT ================= */
@@ -66,12 +90,19 @@ export const AuthForm = ({ mode, setMode, role }) => {
         });
 
         toast.success("Account created successfully 🎉");
+        resetForm(); // ✅ reset form
+        setMode("login"); // ✅ show login form
       } else {
         await loginWithEmail(form.email, form.password);
         toast.success("Logged in successfully");
       }
     } catch (err) {
-      toast.error(err.message || "Authentication failed");
+      // Check Firebase error codes
+      if (err.code === "auth/email-already-in-use") {
+        toast.error("This email is already in use. Please try another.");
+      } else {
+        toast.error("Authentication failed"); // generic fallback
+      }
     } finally {
       setLoading(false);
     }
@@ -93,6 +124,8 @@ export const AuthForm = ({ mode, setMode, role }) => {
         isSignup={isSignup}
         showPassword={showPassword}
         setShowPassword={setShowPassword}
+        showConfirmPassword={showConfirmPassword}
+        setShowConfirmPassword={setShowConfirmPassword}
         inputStyle={inputStyle}
         form={form}
         onChange={handleChange}
@@ -107,7 +140,11 @@ export const AuthForm = ({ mode, setMode, role }) => {
       )}
 
       {showBusinessFields && (
-        <SellerFields inputStyle={inputStyle} form={form} onChange={handleChange} />
+        <SellerFields
+          inputStyle={inputStyle}
+          form={form}
+          onChange={handleChange}
+        />
       )}
 
       <AuthActions

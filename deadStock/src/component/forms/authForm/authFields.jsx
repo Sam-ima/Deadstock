@@ -1,10 +1,12 @@
-import { Box, TextField, IconButton } from "@mui/material";
+import { TextField, IconButton, InputAdornment } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const AuthFields = ({
   isSignup,
   showPassword,
   setShowPassword,
+  showConfirmPassword,
+  setShowConfirmPassword,
   inputStyle,
   form,
   onChange,
@@ -32,6 +34,7 @@ const AuthFields = ({
         sx={inputStyle}
       />
 
+      {/* PASSWORD */}
       <TextField
         label="Password"
         name="password"
@@ -40,22 +43,52 @@ const AuthFields = ({
         type={showPassword ? "text" : "password"}
         fullWidth
         sx={inputStyle}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={() => setShowPassword((prev) => !prev)}
+                edge="end"
+              >
+                {showPassword ? <VisibilityOff /> : <Visibility />}
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
       />
 
+      {/* CONFIRM PASSWORD */}
       {isSignup && (
         <TextField
           label="Confirm Password"
           name="confirmPassword"
           value={form.confirmPassword}
           onChange={onChange}
-          type={showPassword ? "text" : "password"}
+          type={showConfirmPassword ? "text" : "password"}
           fullWidth
           sx={inputStyle}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={() =>
+                    setShowConfirmPassword((prev) => !prev)
+                  }
+                  edge="end"
+                >
+                  {showConfirmPassword ? (
+                    <VisibilityOff />
+                  ) : (
+                    <Visibility />
+                  )}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
       )}
     </>
   );
 };
-
 
 export default AuthFields;
