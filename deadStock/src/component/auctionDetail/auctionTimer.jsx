@@ -24,7 +24,7 @@ const AuctionTimer = ({ product, onPlaceBid }) => {
         width: "100%",
         p: { xs: 2, sm: 3, md: 4 },
         borderRadius: { xs: 2, md: 3 },
-        backgroundColor: "#1B5E20",
+        background: "linear-gradient(135deg, #0b3d2e 0%, #145a43 100%)",
         color: "white",
       }}
     >

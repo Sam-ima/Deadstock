@@ -10,23 +10,21 @@ const AuctionDetail = ({ product }) => {
   const dispatch = useDispatch();
 
   // Selected image index from Redux
-  const selectedImage =
-    useSelector((state) => state.auction.selectedImages[product.id]) ?? 0;
+  const selectedImage = useSelector(
+    (state) => state.auction.selectedImages[product.id] ?? 0
+  );
 
   // Favorite state from Redux
   const isFavorite = useSelector((state) =>
     state.auction.wishlist.includes(product.id)
   );
 
-  if (!product) {
-    return (
-      <Container>
-        <Typography variant="h4" align="center" sx={{ mt: 4 }}>
-          Auction product not found
-        </Typography>
-      </Container>
-    );
-  }
+  // Transform product data to match what ProductInfo expects
+  const transformedProduct = {
+    ...product,
+    price: product.highestBid || product.currentBid, // Use highestBid as price
+    images: product.galleryImages || [product.img], // Ensure images array exists
+  };
 
   return (
     <Box sx={{ minHeight: "100vh", pt: { xs: 3, md: 4 } }}>
@@ -34,7 +32,7 @@ const AuctionDetail = ({ product }) => {
         <Box display={{ xs: "block", md: "flex" }} gap={4}>
           {/* Product Images */}
           <ProductImages
-            product={product}
+            product={transformedProduct}
             selectedImage={selectedImage}
             setSelectedImage={(index) =>
               dispatch(setSelectedImage({ productId: product.id, index }))
@@ -45,14 +43,24 @@ const AuctionDetail = ({ product }) => {
 
           {/* Product Info */}
           <Box sx={{ width: { xs: "100%", md: "40%" } }}>
-            <ProductInfo product={product} isAuction />
+            <ProductInfo 
+              product={transformedProduct} 
+              isAuction 
+              // Add price display prop if needed
+              showPrice={true}
+            />
 
             <Box sx={{ mt: 3 }}>
               <AuctionTimer product={product} />
             </Box>
-
-            {/* <Button fullWidth size="large" variant="contained" sx={{ mt: 3, py: 1.5 }}>
-              Place Bid
+{/* 
+            <Button 
+              fullWidth 
+              size="large" 
+              variant="contained" 
+              sx={{ mt: 3, py: 1.5 }}
+            >
+              Place Bid (Current: ${product.highestBid || product.currentBid})
             </Button> */}
           </Box>
         </Box>
@@ -70,7 +78,6 @@ const AuctionDetail = ({ product }) => {
 };
 
 export default AuctionDetail;
-
 
 
 
