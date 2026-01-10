@@ -14,8 +14,12 @@ import { AuthContext } from "./authContext";
 import { useNavigate } from "react-router-dom";
 
 const ActionButtons = ({ product, quantity }) => {
-  const { addToCart } = useContext(CartContext);
-  const { user } = useContext(AuthContext);
+  const cartCtx = useContext(CartContext);
+  const authCtx = useContext(AuthContext);
+
+  const addToCart = cartCtx?.addToCart;
+  const user = authCtx?.user;
+
   const navigate = useNavigate();
 
   const [showSellerPrompt, setShowSellerPrompt] = useState(false);

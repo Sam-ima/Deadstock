@@ -5,6 +5,7 @@ import {
   getDocs,
   updateDoc,
   deleteDoc,
+  getDoc,
   doc,
   serverTimestamp,
   query,
@@ -289,7 +290,7 @@ export const deleteProduct = async (id) => {
 export const getProductById = async (productId) => {
   try {
     const productRef = doc(db, "products", productId);
-    const productDoc = await getDocs(productRef);
+    const productDoc = await getDoc(productRef);
     
     if (!productDoc.exists()) {
       throw new Error("Product not found");
@@ -303,6 +304,34 @@ export const getProductById = async (productId) => {
     };
   } catch (error) {
     console.error("Error getting product:", error);
+    throw error;
+  }
+};
+
+/* GET Single Product by Slug */
+export const getProductBySlug = async (slug) => {
+  try {
+    const q = query(productsRef, where("slug", "==", slug));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      return null;
+    }
+
+    const docSnap = snapshot.docs[0];
+
+    return {
+      id: docSnap.id,
+      ...docSnap.data(),
+      createdAt:
+        docSnap.data().createdAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
+      updatedAt:
+        docSnap.data().updatedAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
+    };
+  } catch (error) {
+    console.error("Error getting product by slug:", error);
     throw error;
   }
 };

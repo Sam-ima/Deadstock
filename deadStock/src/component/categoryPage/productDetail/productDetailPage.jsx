@@ -1,24 +1,43 @@
-// src/pages/product/ProductDetailPage.jsx
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Box, Container, Breadcrumbs, Link, Typography } from '@mui/material';
-import products from '../../data/products';
-import categories from '../../data/categories';
-import { subcategories } from '../../data/subcategories';
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { Box, Container, Typography, CircularProgress } from "@mui/material";
+import { getProductBySlug } from "../../../services/productService";
 
-import ProductImages from './productImages';
-import ProductInfo from './productInfo';
-import ProductTabs from './productTabs';
+import ProductImages from "./productImages";
+import ProductInfo from "./productInfo";
+import ProductTabs from "./productTabs";
 
 const ProductDetailPage = () => {
   const { slug } = useParams();
-  const navigate = useNavigate();
+
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
-  const product = products.find(p => p.slug === slug);
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const data = await getProductBySlug(slug);
+        setProduct(data || null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <Container sx={{ py: 8, textAlign: "center" }}>
+        <CircularProgress />
+      </Container>
+    );
+  }
 
   if (!product) {
     return (
@@ -30,62 +49,18 @@ const ProductDetailPage = () => {
     );
   }
 
-  const category = categories.find(c => c.slug === product.categorySlug);
-  const subcategory = subcategories.find(s => s.id === product.subcategoryId);
-
   return (
-    <Box sx={{ 
-        minHeight: '100vh', 
-        pt: { xs: '30px', sm: '35px', md: '40px' }, 
-        // bgcolor: 'background.default',
-        // backgroundColor:"red"
-         }}>
-      {/* Breadcrumbs */}
-      {/* <Container maxWidth="xl" sx={{ py: 2 }}>
-        <Link
-          underline="hover"
-          color="inherit"
-          onClick={() => navigate('/')}
-          sx={{ cursor: 'pointer', mr: 1 }}
-        >
-          Home
-        </Link>
-        <Link
-          underline="hover"
-          color="inherit"
-          onClick={() => navigate(`/category/${category?.slug}`)}
-          sx={{ cursor: 'pointer', mr: 1 }}
-        >
-          {category?.name}
-        </Link>
-        {subcategory && (
-          <Link
-            underline="hover"
-            color="inherit"
-            onClick={() => navigate(`/category/${category?.slug}`)}
-            sx={{ cursor: 'pointer', mr: 1 }}
-          >
-            {subcategory.name}
-          </Link>
-        )}
-        <Typography color="text.primary" sx={{ display: 'inline' }}>
-          {product.name}
-        </Typography>
-      </Container> */}
-
-      {/* Main Content */}
+    <Box sx={{ minHeight: "100vh", pt: { xs: "30px", sm: "35px", md: "40px" } }}>
       <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-        <Box display={{ xs: 'block', md: 'flex' }} gap={4}>
-          {/* Left: Images */}
+        <Box display={{ xs: "block", md: "flex" }} gap={4}>
           <ProductImages
             product={product}
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
             isFavorite={isFavorite}
-            setIsFavorite={setIsFavorite}
+            setIsFavorite={() => setIsFavorite(v => !v)}
           />
 
-          {/* Right: Info */}
           <ProductInfo
             product={product}
             quantity={quantity}
@@ -93,7 +68,6 @@ const ProductDetailPage = () => {
           />
         </Box>
 
-        {/* Tabs */}
         <ProductTabs
           product={product}
           tabValue={tabValue}

@@ -1,86 +1,40 @@
-// src/pages/product/components/ProductInfo.jsx
 import { Box, Typography, Stack, Chip, Rating } from "@mui/material";
 import QuantitySelector from "./quantitySelector";
 import ActionButtons from "./actionButtons";
 
 const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
+  const base = product.basePrice ?? product.currentPrice;
+  const current = product.currentPrice ?? base;
+
   const discountPercent =
-    product.basePrice > product.price
-      ? Math.round(
-          ((product.basePrice - product.price) / product.basePrice) * 100
-        )
-      : 0;
+    base > current ? Math.round(((base - current) / base) * 100) : 0;
 
   return (
-    <Box
-      flex={1}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      }}
-    >
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        gutterBottom
-        sx={{
-          fontSize: {
-            xs: "24px",
-            sm: "28px",
-            md: "32px",
-            lg: "40px",
-            xl: "48px",
-          },
-        }}
-      >
+    <Box flex={1} sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
         {product.name}
       </Typography>
 
       <Stack direction="row" spacing={1} alignItems="center" mb={2}>
-        <Rating value={product.rating} precision={0.5} readOnly />
+        <Rating value={product.rating || 0} precision={0.5} readOnly />
         <Typography color="text.secondary">
-          {product.rating} ({product.reviews} reviews)
+          {product.rating || 0} ({product.reviews || 0} reviews)
         </Typography>
-        <Chip label={`${product.sold} sold`} size="small" variant="outlined" />
+        <Chip label={`${product.sold || 0} sold`} size="small" variant="outlined" />
       </Stack>
 
       <Box mb={3}>
         <Stack direction="row" spacing={2} alignItems="center">
-          <Typography
-            variant="h3"
-            fontWeight="bold"
-            color="primary.main"
-            sx={{
-              fontSize: {
-                xs: "18px",
-                sm: "20px",
-                md: "24px",
-              },
-            }}
-          >
-            ${product.price}
+          <Typography variant="h5" fontWeight="bold" color="primary.main">
+            ${current}
           </Typography>
 
-          {product.basePrice > product.price && (
+          {base > current && (
             <>
-              <Typography
-                sx={{
-                  textDecoration: "line-through",
-                  fontSize: {
-                    xs: "18px",
-                    sm: "20px",
-                    md: "24px",
-                  },
-                }}
-                color="text.secondary"
-              >
-                ${product.basePrice}
+              <Typography sx={{ textDecoration: "line-through" }} color="text.secondary">
+                ${base}
               </Typography>
-              <Chip
-                label={`Save $${product.basePrice - product.price}`}
-                color="error"
-              />
+              <Chip label={`Save $${base - current}`} color="error" />
             </>
           )}
         </Stack>
@@ -101,7 +55,6 @@ const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
         </Typography>
       </Box>
 
-      {/* CART UI REMOVED FOR AUCTION */}
       {!isAuction && (
         <>
           <QuantitySelector

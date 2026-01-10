@@ -14,7 +14,8 @@ const ReviewsTab = ({ product, openReviewDialog, setOpenReviewDialog }) => (
 
     <Divider sx={{ mb: 3 }} />
 
-    <ReviewList />
+    {/* Pass product.id to ReviewList */}
+    <ReviewList productId={product?.id} />
 
     <ReviewDialog
       open={openReviewDialog}
