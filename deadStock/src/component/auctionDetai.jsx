@@ -82,7 +82,7 @@ const AuctionDetail = ({ product }) => {
           <Box sx={{ width: "40%" }}>
             <ProductInfo product={transformedProduct} isAuction showPrice />
 
-            <Box sx={{ mt: 3 }}>
+            <Box >
               <AuctionTimer
                 product={product}
                 onPlaceBid={() => setOpenBidDialog(true)}
