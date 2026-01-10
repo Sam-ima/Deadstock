@@ -50,7 +50,7 @@ const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            label="Base Price ($) *"
+            label="Base Price (Rs.) *"
             type="number"
             value={formData.basePrice}
             onChange={(e) => handleChange("basePrice", e.target.value)}
@@ -70,7 +70,7 @@ const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            label="Minimum Price ($)"
+            label="Minimum Price (Rs.)"
             type="number"
             value={formData.floorPrice}
             onChange={(e) => handleChange("floorPrice", e.target.value)}
