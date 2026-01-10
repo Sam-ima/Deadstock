@@ -1,19 +1,46 @@
-import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
-import { useState } from "react";
-import ListingCard from "./ListingCard";
-import SellerData from "../data/sellerData";
+import {
+  Box,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+// import ListingCard from "./ListingCard";
+import { useNavigate } from "react-router-dom";
+import { getProductsBySeller } from "../../services/productService";
+import ProductCard from "../categoryPage/product/productCard/productCard";
 
-const ListingsTabs = () => {
+const ListingsTabs = ({ sellerId }) => {
+  // console.log("seller id ", sellerId);
+  const navigate = useNavigate();
   const [tab, setTab] = useState("selling");
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!sellerId || tab === "add") return;
+
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const status = tab === "selling" ? "active" : "sold";
+        const data = await getProductsBySeller(sellerId, status);
+        console.log("Fetched products:", data);
+        setProducts(data);
+      } catch (error) {
+        console.error("Failed to load products", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [sellerId, tab]);
 
   return (
     <>
       {/* TABS */}
-      <Box
-        mt={4}
-        display="flex"
-        justifyContent="center"
-      >
+      <Box mt={4} display="flex" justifyContent="center">
         <ToggleButtonGroup
           value={tab}
           exclusive
@@ -23,7 +50,6 @@ const ListingsTabs = () => {
             p: 0.7,
             borderRadius: "999px",
             gap: 1,
-            // boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
 
             "& .MuiToggleButton-root": {
               border: "none",
@@ -32,32 +58,17 @@ const ListingsTabs = () => {
               borderRadius: "999px !important",
               fontWeight: 600,
               textTransform: "none",
-              color: "#555",
-              transition: "all 0.3s ease",
             },
 
             "& .Mui-selected": {
               color: "#fff !important",
-              background:
-                "linear-gradient(135deg, #2e7d32, #ff8f00)",
-              boxShadow: "0 6px 16px rgba(0,0,0,0.2)",
-              transform: "scale(1.05)",
-            },
-
-            "& .MuiToggleButton-root:hover": {
-              bgcolor: "#E8F5E9",
+              background: "linear-gradient(135deg, #2e7d32, #ff8f00)",
             },
           }}
         >
-          <ToggleButton value="selling">
-            🟢 Selling
-          </ToggleButton>
-
-          <ToggleButton value="sold">
-            🟠 Sold
-          </ToggleButton>
-
-          <ToggleButton value="add">
+          <ToggleButton value="selling">🟢 Selling</ToggleButton>
+          <ToggleButton value="sold">🟠 Sold</ToggleButton>
+          <ToggleButton value="add" onClick={() => navigate("/sell-item")}>
             ➕ Add Product
           </ToggleButton>
         </ToggleButtonGroup>
@@ -69,48 +80,23 @@ const ListingsTabs = () => {
         display="grid"
         gridTemplateColumns={{
           xs: "1fr",
-          sm: "2fr 1fr",
-          md: "3fr 3fr 3fr",
+          sm: "1fr 1fr",
+          md: "1fr 1fr 1fr",
         }}
         gap={3}
-        sx={{
-          animation: "fadeSlide 0.5s ease",
-        }}
       >
-        {SellerData[tab]?.map((item) => (
-          <Box
-            key={item.id}
-            sx={{
-              transition: "transform 0.3s ease",
-              "&:hover": {
-                transform: "translateY(-6px)",
-              },
-            }}
-          >
-            <ListingCard
-              title={item.title}
-              price={item.price}
-              img={item.img}
-            />
-          </Box>
+        {loading && (
+          <Typography textAlign="center">Loading products...</Typography>
+        )}
+
+        {!loading && products.length === 0 && (
+          <Typography textAlign="center">No products found.</Typography>
+        )}
+
+        {products.map((item) => (
+          <ProductCard key={item.id} product={item} />
         ))}
       </Box>
-
-      {/* SIMPLE KEYFRAME */}
-      <style>
-        {`
-          @keyframes fadeSlide {
-            from {
-              opacity: 0;
-              transform: translateY(10px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}
-      </style>
     </>
   );
 };
