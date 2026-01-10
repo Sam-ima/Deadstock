@@ -1,29 +1,22 @@
-import {
-  Box,
-  Container,
-  Button,
-} from "@mui/material";
-
+import { Box, Container, Button } from "@mui/material";
 
 import ProfileHeader from "../component/profile/profileHeader";
-// import ShippingInfo from "../component/profile/shippingInfo";
 import OrdersList from "../component/profile/ordersList";
 import ProfileInfo from "../component/profile/profileInfo";
 
 const ProfiePage = () => {
   return (
     <Box bgcolor="#fff" minHeight="100vh">
-
-
-      <Container maxWidth="lg"    sx={{
-        paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
-        paddingBottom: "0px",
-      }}>
+      <Container
+        maxWidth="lg"
+        sx={{
+          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+          paddingBottom: "2px",
+        }}
+      >
         <ProfileHeader />
-          <ProfileInfo />
-        {/* <ShippingInfo /> */}
+        <ProfileInfo />
         <OrdersList />
-      
 
         <Button
           fullWidth
@@ -35,7 +28,7 @@ const ProfiePage = () => {
             borderRadius: 3,
           }}
         >
-       settings
+          settings
         </Button>
         <Button
           fullWidth
@@ -45,6 +38,7 @@ const ProfiePage = () => {
             color: "Black",
             py: 1.5,
             borderRadius: 3,
+        
           }}
         >
           Log Out
