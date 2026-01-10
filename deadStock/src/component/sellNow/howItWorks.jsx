@@ -23,7 +23,8 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <Box py={8} textAlign="center">
+    <Box  sx={{py:{ xs:4 , sm:5 , md:6}}}
+    textAlign="center">
       <Typography variant="h5" fontWeight={700} mb={5}>
         How it works
       </Typography>
