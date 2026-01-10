@@ -38,6 +38,7 @@ const ProductDetailPage = () => {
       {/* Image */}
       <Box
         component="img"
+        loading="lazy"
         src={product.image}
         alt={product.name}
         sx={{

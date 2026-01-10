@@ -28,6 +28,7 @@ const ProductImageCarousel = ({ images = [], fallbackImage }) => {
     >
       <Box
         component="img"
+        loading="lazy"
         src={images[currentIndex] || fallbackImage}
         alt="product"
         sx={{
