@@ -1,170 +1,210 @@
-// components/AddProduct/pricingSection.jsx
+// src/pages/AddProduct/components/PricingStep.jsx
+import React from "react";
 import {
   Box,
   Grid,
   TextField,
   Typography,
-  Paper,
   InputAdornment,
-  FormControlLabel,
   Switch,
-  Alert
+  FormControlLabel,
+  Alert,
+  Paper
 } from "@mui/material";
-import { DollarSign, Package, TrendingDown, Shield } from "lucide-react";
-import { useState } from "react";
-import { modernInput } from "./inputs";
+import {
+  DollarSign,
+  TrendingDown,
+  Package,
+  Percent,
+  Shield
+} from "lucide-react";
 
-const PricingSection = ({ formData, setFormData, isB2BUser }) => {
-  const [errors, setErrors] = useState({});
-
+const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser }) => {
   const handleChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
-    
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: null }));
-    }
+    setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const validatePricing = (field, value) => {
-    const rules = {
-      basePrice: value > 0 ? null : "Price must be greater than 0",
-      floorPrice: value >= 0 && value <= formData.basePrice 
-        ? null 
-        : "Floor price must be between 0 and base price",
-      moq: value >= 1 ? null : "MOQ must be at least 1"
-    };
-    
-    return rules[field] || null;
+  const handleB2BChange = (field, value) => {
+    setB2bFields(prev => ({ ...prev, [field]: value }));
   };
+
+  // Auto-calculate floor price
+  React.useEffect(() => {
+    if (formData.basePrice && !formData.floorPrice) {
+      const calculatedFloor = Number(formData.basePrice) * 0.3;
+      setFormData(prev => ({ ...prev, floorPrice: calculatedFloor.toFixed(2) }));
+    }
+  }, [formData.basePrice]);
 
   return (
-    <Paper
-      elevation={0}
-      sx={{
-        position: "relative",
-        overflow: "hidden",
-        borderRadius: 4,
-        p: { xs: 3, md: 4 },
-        background: `
-          linear-gradient(#fff, #fff) padding-box,
-          linear-gradient(135deg, #22c55e, #f97316) border-box
-        `,
-        border: "1px solid transparent",
-      }}
-    >
-      <Box display="flex" alignItems="center" gap={2} mb={4} flexDirection="column">
-        <Box>
-          <Typography fontSize={20} fontWeight={800}>
-            Pricing & Inventory
-          </Typography>
-          <Typography fontSize={13} color="text.secondary">
-            Set price and available quantity
-          </Typography>
-        </Box>
-      </Box>
+    <Box>
+      <Typography variant="h5" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        <DollarSign size={24} /> Pricing & Inventory
+      </Typography>
+      <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
+        Set your pricing strategy and inventory details
+      </Typography>
 
       <Grid container spacing={3}>
         {/* Base Price */}
         <Grid item xs={12} md={6}>
           <TextField
-            label="Base Price ($)"
-            type="number"
-            required
             fullWidth
-            value={formData.basePrice || ''}
-            onChange={(e) => handleChange('basePrice', parseFloat(e.target.value) || 0)}
-            onBlur={(e) => {
-              const error = validatePricing('basePrice', e.target.value);
-              setErrors(prev => ({ ...prev, basePrice: error }));
-            }}
-            error={!!errors.basePrice}
-            helperText={errors.basePrice}
-            sx={modernInput}
+            label="Base Price ($) *"
+            type="number"
+            value={formData.basePrice}
+            onChange={(e) => handleChange("basePrice", e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <DollarSign size={16} />
+                  <DollarSign size={18} />
                 </InputAdornment>
               ),
               inputProps: { min: 0.01, step: 0.01 }
             }}
+            helperText="Starting price of your product"
           />
         </Grid>
 
         {/* Floor Price */}
         <Grid item xs={12} md={6}>
           <TextField
-            label="Minimum Floor Price ($)"
-            type="number"
             fullWidth
-            value={formData.floorPrice || ''}
-            onChange={(e) => handleChange('floorPrice', parseFloat(e.target.value) || 0)}
-            onBlur={(e) => {
-              const error = validatePricing('floorPrice', e.target.value);
-              setErrors(prev => ({ ...prev, floorPrice: error }));
-            }}
-            error={!!errors.floorPrice}
-            helperText={errors.floorPrice || "Lowest price before depreciation stops"}
-            sx={modernInput}
+            label="Minimum Price ($)"
+            type="number"
+            value={formData.floorPrice}
+            onChange={(e) => handleChange("floorPrice", e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <TrendingDown size={16} />
+                  <TrendingDown size={18} />
                 </InputAdornment>
               ),
               inputProps: { min: 0, step: 0.01 }
             }}
+            helperText="Lowest price before automatic depreciation stops"
           />
         </Grid>
 
-        {/* B2B Features */}
+        {/* Sale Type Selection */}
+        <Grid item xs={12}>
+          <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+            Sale Type
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={6}>
+              <Paper
+                elevation={formData.saleType === "direct" ? 2 : 0}
+                onClick={() => handleChange("saleType", "direct")}
+                sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  border: `2px solid ${formData.saleType === "direct" ? "#22c55e" : "#e5e7eb"}`,
+                  bgcolor: formData.saleType === "direct" ? "#f0fdf4" : "transparent",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    borderColor: "#22c55e",
+                    bgcolor: "#f0fdf4"
+                  }
+                }}
+              >
+                <Typography fontWeight={600}>Direct Purchase</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Buyers purchase immediately at current price
+                </Typography>
+              </Paper>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <Paper
+                elevation={formData.saleType === "bidding" ? 2 : 0}
+                onClick={() => handleChange("saleType", "bidding")}
+                sx={{
+                  p: 3,
+                  borderRadius: 2,
+                  border: `2px solid ${formData.saleType === "bidding" ? "#22c55e" : "#e5e7eb"}`,
+                  bgcolor: formData.saleType === "bidding" ? "#f0fdf4" : "transparent",
+                  cursor: "pointer",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    borderColor: "#22c55e",
+                    bgcolor: "#f0fdf4"
+                  }
+                }}
+              >
+                <Typography fontWeight={600}>Auction / Bidding</Typography>
+                <Typography variant="body2" color="text.secondary">
+                  Buyers bid and highest bidder wins
+                </Typography>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {/* B2B Section */}
         {isB2BUser && (
           <>
+            <Grid item xs={12}>
+              <Alert severity="info" sx={{ mb: 2 }}>
+                B2B sellers can set bulk pricing and minimum order quantities
+              </Alert>
+            </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
+                fullWidth
                 label="Minimum Order Quantity (MOQ)"
                 type="number"
-                fullWidth
-                value={formData.moq || 1}
-                onChange={(e) => handleChange('moq', parseInt(e.target.value) || 1)}
-                onBlur={(e) => {
-                  const error = validatePricing('moq', e.target.value);
-                  setErrors(prev => ({ ...prev, moq: error }));
-                }}
-                error={!!errors.moq}
-                helperText={errors.moq || "Minimum units for bulk orders"}
-                sx={modernInput}
+                value={b2bFields.moq}
+                onChange={(e) => handleB2BChange("moq", e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <Package size={16} />
+                      <Package size={18} />
                     </InputAdornment>
                   ),
                   inputProps: { min: 1 }
                 }}
+                helperText="Minimum units required for bulk orders"
               />
             </Grid>
 
             <Grid item xs={12} md={6}>
               <TextField
+                fullWidth
                 label="Bulk Discount (%)"
                 type="number"
-                fullWidth
-                value={formData.bulkDiscount || 0}
-                onChange={(e) => handleChange('bulkDiscount', parseFloat(e.target.value) || 0)}
-                sx={modernInput}
+                value={b2bFields.bulkDiscount}
+                onChange={(e) => handleB2BChange("bulkDiscount", e.target.value)}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
-                      <DollarSign size={16} />
+                      <Percent size={18} />
                     </InputAdornment>
                   ),
                   endAdornment: <InputAdornment position="end">%</InputAdornment>,
                   inputProps: { min: 0, max: 100, step: 1 }
                 }}
+                helperText="Discount applied for bulk orders"
+              />
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Bulk Price ($)"
+                type="number"
+                value={b2bFields.bulkPrice}
+                onChange={(e) => handleB2BChange("bulkPrice", e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <DollarSign size={18} />
+                    </InputAdornment>
+                  ),
+                  inputProps: { min: 0, step: 0.01 }
+                }}
+                helperText="Special price for bulk orders (optional)"
               />
             </Grid>
 
@@ -172,70 +212,23 @@ const PricingSection = ({ formData, setFormData, isB2BUser }) => {
               <FormControlLabel
                 control={
                   <Switch
-                    checked={formData.requiresB2BVerification || false}
-                    onChange={(e) => handleChange('requiresB2BVerification', e.target.checked)}
+                    checked={b2bFields.requiresB2BVerification}
+                    onChange={(e) => handleB2BChange("requiresB2BVerification", e.target.checked)}
                   />
                 }
                 label={
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Shield size={16} />
-                    <span>Require B2B Verification for bulk purchases</span>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Shield size={18} />
+                    <span>Require B2B verification for bulk purchases</span>
                   </Box>
                 }
               />
             </Grid>
           </>
         )}
-
-        {/* Sale Type Selection */}
-        <Grid item xs={12}>
-          <Typography variant="subtitle2" sx={{ mb: 1, fontWeight: 600 }}>
-            Sale Type
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <Box
-                onClick={() => handleChange('saleType', 'direct')}
-                sx={{
-                  p: 2,
-                  border: 2,
-                  borderRadius: 2,
-                  borderColor: formData.saleType === 'direct' ? '#22c55e' : '#e5e7eb',
-                  bgcolor: formData.saleType === 'direct' ? '#f0fdf4' : 'transparent',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <Typography fontWeight={600}>Direct Purchase</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Buyers purchase immediately at current price
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Box
-                onClick={() => handleChange('saleType', 'bidding')}
-                sx={{
-                  p: 2,
-                  border: 2,
-                  borderRadius: 2,
-                  borderColor: formData.saleType === 'bidding' ? '#22c55e' : '#e5e7eb',
-                  bgcolor: formData.saleType === 'bidding' ? '#f0fdf4' : 'transparent',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}
-              >
-                <Typography fontWeight={600}>Auction/Bidding</Typography>
-                <Typography variant="caption" color="text.secondary">
-                  Buyers bid and highest bidder wins
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
-        </Grid>
       </Grid>
-    </Paper>
+    </Box>
   );
 };
 
-export default PricingSection;
+export default PricingStep;

@@ -1,8 +1,19 @@
 import { Box, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/authContext/authContext";
+import {toast} from "react-toastify";
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // from AuthContext
+
+  const handleSellNow = () => {
+    if (user) {
+      navigate("/sell-item");
+    } else {
+      toast.error("Please register or log in to add items for sale.");
+    }
+  };
 
   return (
     <Box
@@ -28,9 +39,7 @@ const HeroSection = () => {
       </Typography>
 
       <Button
-        onClick={() => {
-          navigate("/sell-item");
-        }}
+        onClick={handleSellNow}
         size="large"
         sx={{
           mt: 4,
