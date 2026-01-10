@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  sendPasswordResetEmail, // ✅ added
+  sendPasswordResetEmail, 
 } from "firebase/auth";
 import {
   doc,
