@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   Avatar,
   Box,
@@ -6,64 +7,97 @@ import {
   IconButton,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import { uploadProfileImage } from "../../context/authContext/authServices";
 
-const ProfileHeader = () => {
+const ProfileHeader = ({ seller }) => {
+  const [avatar, setAvatar] = useState(seller.photoURL || "");
+  const [loading, setLoading] = useState(false);
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // 🔥 instant preview
+    const previewUrl = URL.createObjectURL(file);
+    setAvatar(previewUrl);
+
+    try {
+      setLoading(true);
+      const url = await uploadProfileImage(file, seller.uid);
+      setAvatar(url); // final firebase URL
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <Box textAlign="center" mt={2}>
-      <Box position="relative" display="inline-block">
+    <Box
+      textAlign="center"
+      mt={2}
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        flexDirection: "column",
+      }}
+    >
+      <Box position="relative">
         <Avatar
-          src="/avatar.png"
+          src={avatar}
           sx={{
             width: 120,
             height: 120,
             border: "4px solid #22C55E",
           }}
         />
+
         <IconButton
+          component="label"
+          disabled={loading}
           sx={{
             position: "absolute",
-            bottom: 4,
-            right: 4,
+            bottom: 5,
+            right: 5,
             bgcolor: "#FF7A00",
-            color: "white",
+            color: "#fff",
             "&:hover": { bgcolor: "#e66a00" },
           }}
         >
           <EditIcon fontSize="small" />
+          <input
+            hidden
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
         </IconButton>
       </Box>
 
       <Typography variant="h5" fontWeight={700} mt={2}>
-        Jordan Smith
+        {seller.fullName}
       </Typography>
-      <Typography color="text.secondary">@jordankicks</Typography>
 
-      <Chip
-        label="VERIFIED SELLER"
-        color="success"
-        sx={{ mt: 1, px: 2 }}
-      />
+      <Typography color="text.secondary">
+        {seller.shopName || seller.email}
+      </Typography>
 
-      {/* Stats */}
-      <Box
-        display="flex"
-        justifyContent="space-around"
-        mt={3}
-      >
-        {[
-          { label: "Selling", value: 24 },
-          { label: "Sold", value: 158 },
-          { label: "Rating", value: 4.9 },
-        ].map((item) => (
-          <Box key={item.label} textAlign="center">
-            <Typography fontWeight={700}>
-              {item.value}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              {item.label}
-            </Typography>
-          </Box>
-        ))}
+      <Chip label="VERIFIED SELLER" color="success" sx={{ mt: 1, px: 2 }} />
+
+      <Box display="flex" justifyContent="space-around" mt={3} width="100%">
+        <Box textAlign="center">
+          <Typography fontWeight={700}>0</Typography>
+          <Typography variant="caption">Selling</Typography>
+        </Box>
+        <Box textAlign="center">
+          <Typography fontWeight={700}>0</Typography>
+          <Typography variant="caption">Sold</Typography>
+        </Box>
+        <Box textAlign="center">
+          <Typography fontWeight={700}>5.0</Typography>
+          <Typography variant="caption">Rating</Typography>
+        </Box>
       </Box>
     </Box>
   );

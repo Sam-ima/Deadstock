@@ -6,6 +6,9 @@ import {
   loginWithGoogle,
 } from "../../../context/authContext/authServices";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../../../firebase/firebase";
 
 import AuthHeader from "./formHeader";
 import AuthFields from "./authFields";
@@ -16,6 +19,7 @@ import BuyerTypeSelector from "./buyerTypeSelect";
 
 export const AuthForm = ({ mode, setMode, role }) => {
   const isSignup = mode === "signup";
+  const navigate = useNavigate();
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -93,8 +97,27 @@ export const AuthForm = ({ mode, setMode, role }) => {
         resetForm(); // ✅ reset form
         setMode("login"); // ✅ show login form
       } else {
-        await loginWithEmail(form.email, form.password);
+        const cred = await loginWithEmail(form.email, form.password);
+
+        // 🔥 fetch user data
+        const userRef = doc(db, "users", cred.user.uid);
+        const snap = await getDoc(userRef);
+
+        if (!snap.exists()) {
+          toast.error("User data not found");
+          return;
+        }
+
+        const userData = snap.data();
+
         toast.success("Logged in successfully");
+
+        // 🔀 role based navigation
+        if (userData.role === "seller") {
+          navigate("/sellerProfile");
+        } else {
+          navigate("/profile"); // buyer home
+        }
       }
     } catch (err) {
       // Check Firebase error codes
