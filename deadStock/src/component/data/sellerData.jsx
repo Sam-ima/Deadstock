@@ -13,13 +13,13 @@ const SellerData = {
       id: 2,
       img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=60",
 
-      title: "Streetwear Tee",
+      title: "Shoes",
       price: "$120",
       status: "selling",
     },
     {
       id: 3,
-      title: "Vintage Denim Jacket",
+      title: "Camera",
       price: "$320",
       img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd",
 
@@ -32,7 +32,7 @@ const SellerData = {
       id: 4,
       img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd",
 
-      title: "Running Shoes Pro",
+      title: "Camera",
       price: "$180",
       status: "sold",
       soldDate: "2025-01-02",
@@ -41,7 +41,7 @@ const SellerData = {
       id: 5,
       img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=60",
 
-      title: "Oversized Hoodie",
+      title: "shoes",
       price: "$150",
       status: "sold",
       soldDate: "2025-01-05",
