@@ -1,11 +1,13 @@
 import { Box, Container, Button } from "@mui/material";
-import ProfileHeader from "../component/sellerProfile/sellerHeader";
+// import ProfileHeader from "../component/sellerProfile/sellerHeader";
 import ListingsTabs from "../component/sellerProfile/listingsTabs";
-import SettingsList from "../component/sellerProfile/settingsList";
+// import SettingsList from "../component/sellerProfile/settingsList";
 import RecentActivity from "../component/sellerProfile/recentActivity";
 import { useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
+import ProfileInfo from "../component/profile/profileInfo";
+import ProfileHeader from "../component/profile/profileHeader";
 
 const SellerProfilePage = () => {
   const [seller, setSeller] = useState(null);
@@ -34,9 +36,10 @@ const SellerProfilePage = () => {
           paddingBottom: "2px",
         }}
       >
-        <ProfileHeader seller={seller} />
+        <ProfileHeader buyer={seller} />
         <ListingsTabs sellerId={seller.uid} />
-        <SettingsList seller={seller} />
+        {/* <SettingsList seller={seller} /> */}
+        <ProfileInfo buyer={seller}/>
         <RecentActivity />
 
      
