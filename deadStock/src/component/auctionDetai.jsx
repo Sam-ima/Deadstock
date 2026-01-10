@@ -1,25 +1,28 @@
-import { Box, Container, Typography, Button } from "@mui/material";
+import { Box, Container, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+
 import ProductImages from "./categoryPage/productDetail/productImages";
 import ProductInfo from "./categoryPage/productDetail/productInfo";
 import AuctionTimer from "./auctionDetail/auctionTimer";
-import BidHistory from "./auctionDetail/bidHistory";
+import BidDialog from "./card/auction card/placeBidDialog";
+
 import { setSelectedImage, toggleWishlist } from "../store/slice/auctionSlice";
 
 const AuctionDetail = ({ product }) => {
   const dispatch = useDispatch();
 
-  // Selected image index from Redux
+  // ✅ FIX: dialog state
+  const [openBidDialog, setOpenBidDialog] = useState(false);
+
   const selectedImage = useSelector(
     (state) => state.auction.selectedImages[product.id] ?? 0
   );
 
-  // Favorite state from Redux
   const isFavorite = useSelector((state) =>
     state.auction.wishlist.includes(product.id)
   );
 
-  // Transform product data to match what ProductInfo expects
   const transformedProduct = {
     ...product,
     price: product.highestBid || product.currentBid,
@@ -29,20 +32,17 @@ const AuctionDetail = ({ product }) => {
   return (
     <Box sx={{ minHeight: "100vh", pt: { xs: 2, md: 4 } }}>
       <Container maxWidth="xl">
-        {/* Mobile Layout Stack */}
-        <Box sx={{ 
-          display: { xs: 'flex', md: 'none' }, 
-          flexDirection: 'column', 
-          gap: 3 
-        }}>
-          {/* Product Info - Top */}
-          <ProductInfo 
-            product={transformedProduct} 
-            isAuction 
-            showPrice={true}
-          />
-          
-          {/* Images - Middle */}
+
+        {/* MOBILE */}
+        <Box
+          sx={{
+            display: { xs: "flex", md: "none" },
+            flexDirection: "column",
+            gap: 3,
+          }}
+        >
+          <ProductInfo product={transformedProduct} isAuction showPrice />
+
           <ProductImages
             product={transformedProduct}
             selectedImage={selectedImage}
@@ -52,31 +52,20 @@ const AuctionDetail = ({ product }) => {
             isFavorite={isFavorite}
             setIsFavorite={() => dispatch(toggleWishlist(product.id))}
           />
-          
-          {/* Timer - Bottom */}
-          <AuctionTimer product={product} />
-          
-          <Button 
-            fullWidth 
-            size="large" 
-            variant="contained" 
-            sx={{ 
-              mt: 2, 
-              py: 1.5,
-              background: "#194638",
-              "&:hover": { background: "#163b30" }
-            }}
-          >
-            Place Bid (Current: ${product.highestBid || product.currentBid})
-          </Button>
+
+          <AuctionTimer
+            product={product}
+            onPlaceBid={() => setOpenBidDialog(true)}
+          />
         </Box>
 
-        {/* Desktop Layout */}
-        <Box sx={{ 
-          display: { xs: 'none', md: 'flex' }, 
-          gap: 4 
-        }}>
-          {/* Left Column - Images */}
+        {/* DESKTOP */}
+        <Box
+          sx={{
+            display: { xs: "none", md: "flex" },
+            gap: 4,
+          }}
+        >
           <Box sx={{ flex: 1 }}>
             <ProductImages
               product={transformedProduct}
@@ -88,48 +77,32 @@ const AuctionDetail = ({ product }) => {
               setIsFavorite={() => dispatch(toggleWishlist(product.id))}
             />
           </Box>
-          
-          {/* Right Column - Info & Timer */}
+
           <Box sx={{ width: "40%" }}>
-            <ProductInfo 
-              product={transformedProduct} 
-              isAuction 
-              showPrice={true}
-            />
-            
+            <ProductInfo product={transformedProduct} isAuction showPrice />
+
             <Box sx={{ mt: 3 }}>
-              <AuctionTimer product={product} />
+              <AuctionTimer
+                product={product}
+                onPlaceBid={() => setOpenBidDialog(true)}
+              />
             </Box>
-            
-            {/* <Button 
-              fullWidth 
-              size="large" 
-              variant="contained" 
-              sx={{ 
-                mt: 3, 
-                py: 1.5,
-                background: "#194638",
-                "&:hover": { background: "#163b30" }
-              }}
-            >
-              Place Bid (Current: ${product.highestBid || product.currentBid})
-            </Button> */}
           </Box>
         </Box>
-
-        {/* Bid History */}
-        {/* <Box sx={{ mt: { xs: 4, md: 6 } }}>
-          <Typography variant="h6" fontWeight={600} mb={2}>
-            Bid History
-          </Typography>
-          <BidHistory product={product} />
-        </Box> */}
       </Container>
+
+      {/* ✅ Dialog */}
+      <BidDialog
+        open={openBidDialog}
+        onClose={() => setOpenBidDialog(false)}
+        product={product}
+      />
     </Box>
   );
 };
 
 export default AuctionDetail;
+
 
 
 
