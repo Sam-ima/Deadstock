@@ -3,7 +3,7 @@ import AuthPage from "../component/forms/authForm/authPage";
 
 const AuthPageMain = () => {
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="lg" sx={{minHeight:"100vh"}}>
       <AuthPage />
     </Container>
   );
