@@ -25,7 +25,8 @@ const AuctionDetail = ({ product }) => {
 
   const transformedProduct = {
     ...product,
-    price: product.highestBid || product.currentBid,
+   basePrice: product.currentBid,          
+  currentPrice: product.highestBid,
     images: product.galleryImages || [product.img],
   };
 
