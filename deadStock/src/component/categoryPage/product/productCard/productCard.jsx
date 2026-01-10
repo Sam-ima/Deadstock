@@ -6,18 +6,27 @@ import StarHalfIcon from '@mui/icons-material/StarHalf';
 import ProductImageCarousel from './productImageCarousel';
 import ProductPrice from './productPrice';
 import ProductStock from './productStock';
+import { resolveProductImages } from "./utils/productImages";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
 
-  const discountPercent = product.basePrice > product.price
-    ? Math.round(((product.basePrice - product.price) / product.basePrice) * 100)
-    : 0;
+  const images = product.images?.length
+    ? product.images
+    : resolveProductImages(product);
+
+  const price = product.currentPrice ?? product.basePrice ?? 0;
+  const basePrice = product.basePrice ?? price;
+
+  const discountPercent =
+    basePrice > price
+      ? Math.round(((basePrice - price) / basePrice) * 100)
+      : 0;
 
   const renderRatingStars = () => {
     const stars = [];
-    const fullStars = Math.floor(product.rating);
-    const hasHalfStar = product.rating % 1 >= 0.5;
+    const fullStars = Math.floor(product.rating || 0);
+    const hasHalfStar = (product.rating || 0) % 1 >= 0.5;
 
     for (let i = 0; i < fullStars; i++) {
       stars.push(<StarIcon key={`star-${i}`} sx={{ fontSize: 14, color: '#FFC107' }} />);
@@ -51,11 +60,9 @@ const ProductCard = ({ product }) => {
         },
       }}
     >
-      {/* Image Carousel */}
       <Box sx={{ position: "relative" }}>
-        <ProductImageCarousel images={product.images} fallbackImage={product.image} />
-        
-        {/* Discount Badge */}
+        <ProductImageCarousel images={images} />
+
         {discountPercent > 0 && (
           <Chip
             label={`${discountPercent}% OFF`}
@@ -76,9 +83,7 @@ const ProductCard = ({ product }) => {
         )}
       </Box>
 
-      {/* Content Section */}
       <Box p={2}>
-        {/* Product Name */}
         <Typography
           fontWeight={600}
           sx={{
@@ -94,21 +99,17 @@ const ProductCard = ({ product }) => {
           {product.name}
         </Typography>
 
-        {/* Rating */}
         <Stack direction="row" alignItems="center" spacing={0.5} mb={1}>
           {renderRatingStars()}
           <Typography fontSize="0.75rem" color="text.secondary" ml={0.5}>
-            ({product.rating})
+            ({product.rating || 0})
           </Typography>
           <Typography fontSize="0.7rem" color="text.secondary" ml={0.5}>
-            • {product.reviews} reviews
+            • {product.reviews || 0} reviews
           </Typography>
         </Stack>
 
-        {/* Price */}
-        <ProductPrice price={product.price} basePrice={product.basePrice} />
-
-        {/* Stock */}
+        <ProductPrice price={price} basePrice={basePrice} />
         <ProductStock stock={product.stock} sold={product.sold} />
       </Box>
     </Box>
