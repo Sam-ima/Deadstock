@@ -6,8 +6,8 @@ const BiddingSection = () => {
   return (
     <Box
       sx={{
-        py: 6,
-        backgroundColor: "#fafafa",
+        py: { xs: 3, sm: 4, md: 5 },
+        backgroundColor: "#ffffff",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",

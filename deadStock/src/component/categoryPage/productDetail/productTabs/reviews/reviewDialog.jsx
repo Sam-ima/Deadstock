@@ -20,10 +20,18 @@ const ReviewDialog = ({ open, onClose, product }) => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleSubmit = async () => {
-    if (!rating || !comment || !user) return;
+    if (!rating || !comment || !user || !product?.id) return;
 
     setSubmitting(true);
+
     try {
+      console.log("Submitting review:", {
+        productId: product.id,
+        userId: user.uid,
+        rating,
+        comment
+      });
+
       await addDoc(collection(db, "reviews"), {
         productId: product.id,
         userId: user.uid,
@@ -37,7 +45,8 @@ const ReviewDialog = ({ open, onClose, product }) => {
       setComment("");
       onClose();
     } catch (err) {
-      console.error("Error submitting review:", err);
+      console.error("Error submitting review:", err.message);
+      alert("Failed to submit review. Make sure Firestore is initialized and user is logged in.");
     } finally {
       setSubmitting(false);
     }

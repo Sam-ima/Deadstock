@@ -79,7 +79,7 @@ const BrowseByCategory = () => {
   if (loading) return null;
 
   return (
-    <Box sx={{ py: { xs: 3, sm: 3.5, md: 4 }, backgroundColor: "#f3f5f7ff" }}>
+    <Box sx={{ py: { xs: 3, sm: 4, md: 5 }, backgroundColor: "#f3f5f7ff" }}>
       <Container maxWidth="lg">
         <BrowseHeader />
 

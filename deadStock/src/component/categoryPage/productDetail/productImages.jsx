@@ -35,6 +35,7 @@ const ProductImages = ({
       >
         <Box
           component="img"
+          loading="lazy"
           src={images[selectedImage]}
           alt={product.name}
           sx={{
@@ -94,6 +95,7 @@ const ProductImages = ({
               <Box
                 component="img"
                 src={img}
+                loading="lazy"
                 sx={{
                   width: "100%",
                   height: "100%",
