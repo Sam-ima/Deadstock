@@ -1,14 +1,11 @@
 import { Box, Button } from "@mui/material";
 
-const ITEM_HEIGHT =35;
+const ITEM_HEIGHT = 35;
 const MAX_ITEMS = 5;
 
-const DesktopMenu = ({ items = [] }) => {
-  // console.log("items",items)
+const DesktopMenu = ({ items = [], onItemClick }) => {
   // Safety guard
-  if (!Array.isArray(items) || items.length === 0) {
-    return null;
-  }
+  if (!Array.isArray(items) || items.length === 0) return null;
 
   return (
     <Box
@@ -24,7 +21,6 @@ const DesktopMenu = ({ items = [] }) => {
         maxHeight: ITEM_HEIGHT * MAX_ITEMS,
         overflowY: "auto",
         py: 0.1,
-
         "&::-webkit-scrollbar": { width: "6px" },
         "&::-webkit-scrollbar-thumb": {
           backgroundColor: "#d1d1d1",
@@ -35,10 +31,11 @@ const DesktopMenu = ({ items = [] }) => {
         },
       }}
     >
-      {items.map((item, index) => (
+      {items.map((item) => (
         <Button
-          key={index}
+          key={item.slug}  // ✅ Use slug as key
           fullWidth
+          onClick={() => onItemClick && onItemClick(item.slug)} // ✅ handle click
           sx={{
             justifyContent: "flex-start",
             px: 2,
@@ -50,7 +47,7 @@ const DesktopMenu = ({ items = [] }) => {
             "&:hover": { backgroundColor: "#f5f5f5" },
           }}
         >
-          {item}
+          {item.name} {/* ✅ Render only the name */}
         </Button>
       ))}
     </Box>
