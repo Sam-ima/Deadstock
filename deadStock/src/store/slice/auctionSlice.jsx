@@ -4,7 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   wishlist: [],
   bids: {}, // { [productId]: bidAmount }
-  selectedImages: {}, // { [productId]: selectedImageUrl }
+  selectedImages: {}, // { [productId]: selectedImageIndex }
 };
 
 const auctionSlice = createSlice({
@@ -24,8 +24,8 @@ const auctionSlice = createSlice({
       state.bids[productId] = amount;
     },
     setSelectedImage: (state, action) => {
-      const { productId, imageUrl } = action.payload;
-      state.selectedImages[productId] = imageUrl;
+      const { productId, index } = action.payload;
+      state.selectedImages[productId] = index;
     },
   },
 });

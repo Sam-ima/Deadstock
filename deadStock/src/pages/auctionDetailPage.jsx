@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Container } from "@mui/material";
-import AuctionDetail from "../component/auctiondetai";
+import { Container, Box } from "@mui/material";
 import { useParams } from "react-router-dom";
 import { products } from "../component/data/products_data"; 
-import { Box } from "lucide-react";
+import AuctionDetail from "../component/auctionDetai";
 
 const AuctionDetailPage = () => {
   const { id } = useParams();
@@ -11,14 +10,9 @@ const AuctionDetailPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate API call
-    const fetchProduct = () => {
-      const foundProduct = products.find(p => p.id === parseInt(id));
-      setProduct(foundProduct);
-      setLoading(false);
-    };
-
-    fetchProduct();
+    const foundProduct = products.find((p) => p.id === parseInt(id));
+    setProduct(foundProduct);
+    setLoading(false);
   }, [id]);
 
   if (loading) {
@@ -27,13 +21,12 @@ const AuctionDetailPage = () => {
         maxWidth
         disableGutters
         sx={{
-          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+          paddingTop: "50px",
           paddingBottom: "0px",
           minHeight: "100vh",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          
         }}
       >
         <Box>Loading...</Box>
@@ -47,7 +40,7 @@ const AuctionDetailPage = () => {
         maxWidth
         disableGutters
         sx={{
-          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+          paddingTop: "50px",
           paddingBottom: "0px",
           minHeight: "100vh",
           display: "flex",
@@ -65,10 +58,9 @@ const AuctionDetailPage = () => {
       maxWidth
       disableGutters
       sx={{
-        paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
+        paddingTop: "50px",
         paddingBottom: "0px",
         minHeight: "100vh",
-         
       }}
     >
       <AuctionDetail product={product} />

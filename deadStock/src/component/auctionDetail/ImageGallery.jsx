@@ -6,17 +6,24 @@ import { setSelectedImage } from "../../store/slice/auctionSlice";
 const ImageGallery = ({ product }) => {
   const dispatch = useDispatch();
 
-  const selectedImage = useSelector(
-    (state) => state.auction.selectedImages[product.id] || product.img
+  // selected image index from Redux (default = 0)
+  const selectedIndex = useSelector(
+    (state) => state.auction.selectedImages[product.id] ?? 0
   );
 
-  const galleryImages =
-    product.galleryImages || [
-      product.img,
-      "https://images.unsplash.com/photo-1544006659-f0b21f04cb1d?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1000&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1508685096489-7aac29bca228?q=80&w=1000&auto=format&fit=crop",
-    ];
+  // Safely get images array
+  const galleryImages = React.useMemo(() => {
+    if (product.galleryImages && product.galleryImages.length > 0) {
+      return product.galleryImages;
+    } else if (product.images && product.images.length > 0) {
+      return product.images;
+    } else if (product.img) {
+      return [product.img];
+    } else {
+      // Fallback to a placeholder image
+      return ["https://via.placeholder.com/400x300?text=No+Image"];
+    }
+  }, [product]);
 
   return (
     <>
@@ -30,8 +37,8 @@ const ImageGallery = ({ product }) => {
       >
         <Box
           component="img"
-          src={selectedImage}
-          alt={product.name}
+          src={galleryImages[selectedIndex]}
+          alt={product.name || "Product image"}
           sx={{
             width: "100%",
             maxWidth: { xs: 220, sm: 280, md: 350, lg: 400 },
@@ -40,60 +47,73 @@ const ImageGallery = ({ product }) => {
             objectFit: "cover",
             backgroundColor: "#f8fff8",
           }}
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = "https://via.placeholder.com/400x300?text=Image+Error";
+          }}
         />
       </Box>
 
       {/* Thumbnails */}
-      <Stack
-        direction="row"
-        spacing={{ xs: 0.8, sm: 1, md: 1.5 }}
-        sx={{
-          overflowX: "auto",
-          pb: 1,
-          px: { xs: 0.5, sm: 0 },
-          scrollbarWidth: "none",
-          "&::-webkit-scrollbar": { display: "none" },
-        }}
-      >
-        {galleryImages.map((img, index) => (
-          <Box
-            key={index}
-            onClick={() =>
-              dispatch(
-                setSelectedImage({ productId: product.id, imageUrl: img })
-              )
-            }
-            sx={{
-              width: { xs: 48, sm: 60, md: 72 },
-              height: { xs: 48, sm: 60, md: 72 },
-              borderRadius: 2,
-              overflow: "hidden",
-              cursor: "pointer",
-              flexShrink: 0,
-              border:
-                selectedImage === img
-                  ? "2px solid #2E7D32"
-                  : "1.5px solid #e0e0e0",
-              transition: "all 0.2s ease",
-              "&:hover": {
-                borderColor: "#d8a855",
-                transform: "translateY(-1px)",
-              },
-            }}
-          >
+      {galleryImages.length > 1 && (
+        <Stack
+          direction="row"
+          spacing={{ xs: 0.8, sm: 1, md: 1.5 }}
+          sx={{
+            overflowX: "auto",
+            pb: 1,
+            px: { xs: 0.5, sm: 0 },
+            scrollbarWidth: "none",
+            "&::-webkit-scrollbar": { display: "none" },
+          }}
+        >
+          {galleryImages.map((img, index) => (
             <Box
-              component="img"
-              src={img}
-              alt={`${product.name} ${index + 1}`}
+              key={index}
+              onClick={() =>
+                dispatch(
+                  setSelectedImage({
+                    productId: product.id,
+                    index,
+                  })
+                )
+              }
               sx={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
+                width: { xs: 48, sm: 60, md: 72 },
+                height: { xs: 48, sm: 60, md: 72 },
+                borderRadius: 2,
+                overflow: "hidden",
+                cursor: "pointer",
+                flexShrink: 0,
+                border:
+                  selectedIndex === index
+                    ? "2px solid #2E7D32"
+                    : "1.5px solid #e0e0e0",
+                transition: "all 0.2s ease",
+                "&:hover": {
+                  borderColor: "#d8a855",
+                  transform: "translateY(-1px)",
+                },
               }}
-            />
-          </Box>
-        ))}
-      </Stack>
+            >
+              <Box
+                component="img"
+                src={img}
+                alt={`${product.name || "Product"} ${index + 1}`}
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "https://via.placeholder.com/72x72?text=Image";
+                }}
+              />
+            </Box>
+          ))}
+        </Stack>
+      )}
     </>
   );
 };
