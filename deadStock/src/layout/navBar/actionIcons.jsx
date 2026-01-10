@@ -262,7 +262,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
         !isMobile && (
           <Button
             startIcon={<User size={15} />}
-            onClick={() => navigate("/auth")}
+            onClick={() => navigate("/login")}
             sx={{
               ml: 0,
               px: 1,

@@ -84,7 +84,16 @@ export const AuthForm = ({ mode, setMode, role }) => {
           email: form.email,
           password: form.password,
           fullName: form.fullName,
-          role: role === "buyer" ? buyerType : role,
+
+          // ✅ role NEVER changes for buyer
+          role: role,
+
+          // ✅ buyerType only for buyer
+          buyerType: role === "buyer" ? buyerType : null,
+
+          // ✅ business fields allowed for:
+          // 1. seller
+          // 2. buyer + business
           shopName: showBusinessFields ? form.shopName : null,
           phone: showBusinessFields ? form.phone : null,
           address: showBusinessFields ? form.address : null,

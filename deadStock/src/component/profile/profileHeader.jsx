@@ -1,12 +1,14 @@
 import { Avatar, Box, Typography, Chip, IconButton } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 
-const BuyerHeader = () => {
+const BuyerHeader = ({ buyer }) => {
+  if (!buyer) return null;
+
   return (
     <Box textAlign="center" mt={2}>
       <Box position="relative" display="inline-block">
         <Avatar
-          src="/avatar.png"
+          src={buyer.photoURL || "/avatar.png"}
           sx={{ width: 120, height: 120 }}
         />
 
@@ -25,15 +27,27 @@ const BuyerHeader = () => {
       </Box>
 
       <Typography variant="h5" fontWeight={700} mt={2}>
-        Jordan Smith
+        {buyer.fullName || "No Name"}
       </Typography>
-      <Typography color="text.secondary">@jordankicks</Typography>
+      <Typography color="text.secondary">
+        @{buyer.email?.split("@")[0] || "username"}
+      </Typography>
 
-      <Chip
-        label="VERIFIED BUYER"
-        color="success"
-        sx={{ mt: 2, px: 2 }}
-      />
+      {buyer.role === "buyer" && (
+        <Chip
+          label={buyer.buyerType === "business" ? "BUSINESS BUYER" : "PERSONAL BUYER"}
+          color="success"
+          sx={{ mt: 2, px: 2 }}
+        />
+      )}
+
+      {buyer.role === "seller" && (
+        <Chip
+          label="SELLER"
+          color="primary"
+          sx={{ mt: 2, px: 2 }}
+        />
+      )}
     </Box>
   );
 };
