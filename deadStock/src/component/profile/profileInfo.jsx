@@ -1,49 +1,63 @@
-import React from "react";
-import { Box, Typography, Divider } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import {
+  Box,
+  Typography,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
 
-const SectionContainer = styled(Box)(({ theme }) => ({
-  marginBottom: theme.spacing(3),
-}));
+import EmailIcon from "@mui/icons-material/Email";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
-const SectionTitle = styled(Typography)(({ theme }) => ({
-  fontWeight: 600,
-  marginBottom: theme.spacing(1.5),
-  color: theme.palette.text.primary,
-}));
-
-const InfoItem = styled(Box)(({ theme }) => ({
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  padding: theme.spacing(1.5, 0),
-}));
-
-const ProfileInfo = ({ title, items, noDivider }) => {
+const ProfileInfo = () => {
   return (
-    <SectionContainer>
-      <SectionTitle variant="subtitle1">{title}</SectionTitle>
-      {items.map((item, index) => (
-        <React.Fragment key={index}>
-          <InfoItem>
-            <Box>
-              <Typography variant="body2" color="text.secondary">
-                {item.label}
-              </Typography>
-              {item.value && (
-                <Typography variant="body1">{item.value}</Typography>
-              )}
-            </Box>
-            {item.icon && (
-              <Typography variant="body2" color="text.secondary">
-                {item.icon}
-              </Typography>
-            )}
-          </InfoItem>
-          {!noDivider && index < items.length - 1 && <Divider />}
-        </React.Fragment>
-      ))}
-    </SectionContainer>
+    <>
+      {/* Personal Info */}
+      <Typography variant="caption" color="text.secondary" mt={4}>
+        PERSONAL INFO
+      </Typography>
+
+      <List sx={{ bgcolor: "#F9FAFB", borderRadius: 3, mt: 1 }}>
+        <ListItem button>
+          <ListItemIcon>
+            <EmailIcon color="warning" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Email"
+            secondary="j.smith@example.com"
+          />
+        </ListItem>
+
+        <ListItem button>
+          <ListItemIcon>
+            <PhoneIcon color="warning" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Phone"
+            secondary="+1 (555) 000-0000"
+          />
+        </ListItem>
+      </List>
+
+      {/* Shipping */}
+      <Typography variant="caption" color="text.secondary" mt={3}>
+        SHIPPING
+      </Typography>
+
+      <List sx={{ bgcolor: "#F9FAFB", borderRadius: 3, mt: 1 }}>
+        <ListItem button>
+          <ListItemIcon>
+            <LocationOnIcon color="warning" />
+          </ListItemIcon>
+          <ListItemText
+            primary="Primary Address"
+            secondary="123 Sneaker St, Apt 4B, New York"
+          />
+        </ListItem>
+      </List>
+    </>
   );
 };
 

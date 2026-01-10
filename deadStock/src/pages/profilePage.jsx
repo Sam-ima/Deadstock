@@ -1,86 +1,57 @@
-import React, { useState } from "react";
 import {
-  CssBaseline,
   Box,
-  AppBar,              
-  Toolbar,
-  Typography,
   Container,
-  ToggleButton,
-  ToggleButtonGroup,
-  Paper,
+  Button,
 } from "@mui/material";
 
-import BuyerProfile from "../component/profile/buyerProfile";
-import SellerProfile from "../component/profile/sellerProfile";
-import { buyerData } from "../component/data/buyerData";
-import { sellerData } from "../component/data/sellerData";
-import { ROLES } from "../component/constants/roles";
 
-function ProfilePage() {
-  const [role, setRole] = useState(ROLES.BUYER);
+import ProfileHeader from "../component/profile/profileHeader";
+// import ShippingInfo from "../component/profile/shippingInfo";
+import OrdersList from "../component/profile/ordersList";
+import ProfileInfo from "../component/profile/profileInfo";
 
-  const handleRoleChange = (event, newRole) => {
-    if (newRole !== null) {
-      setRole(newRole);
-    }
-  };
-
+const ProfiePage = () => {
   return (
-    <>
-      <CssBaseline />
-      <Box
-   sx={{
+    <Box bgcolor="#fff" minHeight="100vh">
+
+
+      <Container maxWidth="lg"    sx={{
         paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
         paddingBottom: "0px",
-      }}
-      >
-        <AppBar
-          position="static"
-          elevation={0}
+      }}>
+        <ProfileHeader />
+          <ProfileInfo />
+        {/* <ShippingInfo /> */}
+        <OrdersList />
+      
+
+        <Button
+          fullWidth
           sx={{
-            bgcolor: "white",
-            borderBottom: "1px solid",
-            borderColor: "divider",
+            mt: 3,
+            bgcolor: "#377e37",
+            color: "black",
+            py: 1.5,
+            borderRadius: 3,
           }}
         >
-          <Toolbar>
-  
-            <Paper
-              elevation={0}
-              sx={{
-                borderRadius: 2,
-                border: "1px solid",
-                borderColor: "divider",
-              }}
-            >
-              {/* <ToggleButtonGroup
-                value={role}
-                exclusive
-                onChange={handleRoleChange}
-                size="small"
-              >
-                <ToggleButton value={ROLES.BUYER} sx={{ px: 3 }}>
-                  Buyer Profile
-                </ToggleButton>
-                <ToggleButton value={ROLES.SELLER} sx={{ px: 3 }}>
-                  Seller Profile
-                </ToggleButton>
-              </ToggleButtonGroup> */}
-            </Paper>
-          </Toolbar>
-        </AppBar>
-
-        <Container maxWidth="lg" sx={{ mt: 4 }}>
-          {role === ROLES.BUYER ? (
-            <BuyerProfile data={buyerData} />
-          ) : (
-            <SellerProfile data={sellerData} />
-          )}
-        </Container>
-      </Box>
-    </>
+       settings
+        </Button>
+        <Button
+          fullWidth
+          sx={{
+            mt: 3,
+            bgcolor: "#e3550e",
+            color: "Black",
+            py: 1.5,
+            borderRadius: 3,
+          }}
+        >
+          Log Out
+        </Button>
+      </Container>
+    </Box>
   );
-}
+};
 
-export default ProfilePage;
+export default ProfiePage;
