@@ -3,8 +3,9 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail, // ✅ added
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db, storage } from "../../firebase/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -59,7 +60,6 @@ export const loginWithGoogle = async (role = "buyer") => {
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
 
-  // Create user document only first time
   if (!snap.exists()) {
     await setDoc(userRef, {
       uid: user.uid,
@@ -75,16 +75,19 @@ export const loginWithGoogle = async (role = "buyer") => {
   return user;
 };
 
+/* ================= PASSWORD RESET ================= */
+
+export const resetPasswordWithEmail = async (email) => {
+  await sendPasswordResetEmail(auth, email);
+};
+
+/* ================= PROFILE IMAGE ================= */
+
 export const uploadProfileImage = async (file, uid) => {
   const imageRef = ref(storage, `users/${uid}.jpg`);
-
-  // upload image
   await uploadBytes(imageRef, file);
-
-  // get URL
   const url = await getDownloadURL(imageRef);
 
-  // save to firestore
   await updateDoc(doc(db, "users", uid), {
     photoURL: url,
   });
