@@ -1,6 +1,6 @@
 import { Box, Typography, Checkbox, FormControlLabel } from "@mui/material";
 
-const RememberForgot = ({ rememberMe, setRememberMe }) => {
+const RememberForgot = ({ rememberMe, setRememberMe, onForgotPassword }) => {
   return (
     <Box sx={{ display: "flex", justifyContent: "space-between" }}>
       <FormControlLabel
@@ -21,6 +21,7 @@ const RememberForgot = ({ rememberMe, setRememberMe }) => {
           fontWeight: 600,
           "&:hover": { textDecoration: "underline" },
         }}
+        onClick={onForgotPassword} // ✅ reset link sent
       >
         Forgot password?
       </Typography>
