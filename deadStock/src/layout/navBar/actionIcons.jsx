@@ -162,10 +162,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
             sx={{
               display: { xs: "none", sm: "none", md: "block" },
               p: 0.5,
-              // border: "2px solid rgba(255,255,255,0.3)",
-              "&:hover": {
-                border: "2px solid rgba(255,255,255,0.6)",
-              },
+              
             }}
           >
             {userData?.photoURL ? (
@@ -191,6 +188,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
             onClose={handleUserMenuClose}
+             disableScrollLock   // ✅ FIX
             anchorOrigin={{
               vertical: "bottom",
               horizontal: "right",
