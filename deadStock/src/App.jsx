@@ -43,7 +43,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<LandingPage />} />
       <Route path="/auctions" element={<AuctionsPage />} />
       <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/SellerProfile" element={<SellerProfilePage />} />
+      <Route path="/sellerProfile" element={<SellerProfilePage />} />
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/how-to-sell" element={<HowToSell />} />
