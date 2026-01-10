@@ -1,5 +1,4 @@
-// src/components/BrowseByCategory/BrowseByCategory.jsx
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Box,
   Button,
@@ -11,39 +10,73 @@ import {
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import { useNavigate } from "react-router-dom";
 
-import categories from "../../data/categories";
+import { useCategories } from "../../../context/categoryContext";
 import BrowseHeader from "./browseHeader";
 import BrowseList from "./browseList";
 import CategoryCard from "../categoryCard";
 
+// Icons
+import DevicesIcon from "@mui/icons-material/Devices";
+import CheckroomIcon from "@mui/icons-material/Checkroom";
+import CollectionsIcon from "@mui/icons-material/Collections";
+import WarehouseIcon from "@mui/icons-material/Warehouse";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
+import HomeIcon from "@mui/icons-material/Home";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import MusicNoteIcon from "@mui/icons-material/MusicNote";
+import BookIcon from "@mui/icons-material/Book";
+
+const iconMap = {
+  "electronics": <DevicesIcon fontSize="small" />,
+  "fashion": <CheckroomIcon fontSize="small" />,
+  "art": <CollectionsIcon fontSize="small" />,
+  "wholesale-stock": <WarehouseIcon fontSize="small" />,
+  "vehicles": <DirectionsCarIcon fontSize="small" />,
+  "home": <HomeIcon fontSize="small" />,
+  "food": <RestaurantIcon fontSize="small" />,
+  "fitness": <FitnessCenterIcon fontSize="small" />,
+  "music": <MusicNoteIcon fontSize="small" />,
+  "books": <BookIcon fontSize="small" />,
+};
+
 const BrowseByCategory = () => {
   const navigate = useNavigate();
+  const { categories, loading } = useCategories();
   const [showAll, setShowAll] = useState(false);
 
   const theme = useTheme();
 
-  // 🔹 screen breakpoints
   const isXs = useMediaQuery(theme.breakpoints.only("xs"));
   const isSm = useMediaQuery(theme.breakpoints.only("sm"));
   const isMd = useMediaQuery(theme.breakpoints.only("md"));
   const isLg = useMediaQuery(theme.breakpoints.only("lg"));
 
-  // 🔹 responsive visible count
   const getVisibleCount = () => {
     if (isXs) return 2;
     if (isSm) return 4;
     if (isMd) return 6;
     if (isLg) return 9;
-    return 10; // xl
+    return 10;
   };
 
   const visibleCount = getVisibleCount();
 
-  const visibleCategories = showAll
-    ? categories
-    : categories.slice(0, visibleCount);
+  // 🔹 Attach icons to firebase categories
+  const enrichedCategories = useMemo(() => {
+    return categories.map((cat) => ({
+      ...cat,
+      icon: iconMap[cat.slug] || <WarehouseIcon fontSize="small" />,
+    }));
+  }, [categories]);
 
-  const showToggle = categories.length > visibleCount;
+  const visibleCategories = showAll
+    ? enrichedCategories
+    : enrichedCategories.slice(0, visibleCount);
+
+  const showToggle = enrichedCategories.length > visibleCount;
+
+  if (loading) return null;
 
   return (
     <Box sx={{ py: { xs: 3, sm: 3.5, md: 4 }, backgroundColor: "#f3f5f7ff" }}>
@@ -54,21 +87,14 @@ const BrowseByCategory = () => {
         {!showAll && (
           <BrowseList
             categories={visibleCategories}
-            onCategoryClick={(slug) =>
-              navigate(`/category/${slug}`)
-            }
+            onCategoryClick={(slug) => navigate(`/category/${slug}`)}
           />
         )}
 
         {/* 🔹 GRID VIEW */}
         {showAll && (
-          <Grid
-            container
-            spacing={3}
-            mt={2}
-            justifyContent="center"
-          >
-            {categories.map((category) => (
+          <Grid container spacing={3} mt={2} justifyContent="center">
+            {enrichedCategories.map((category) => (
               <Grid
                 item
                 xs={12}
@@ -81,9 +107,7 @@ const BrowseByCategory = () => {
               >
                 <CategoryCard
                   category={category}
-                  onClick={() =>
-                    navigate(`/category/${category.slug}`)
-                  }
+                  onClick={() => navigate(`/category/${category.slug}`)}
                 />
               </Grid>
             ))}

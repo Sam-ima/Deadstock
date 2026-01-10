@@ -1,4 +1,3 @@
-// src/components/BrowseByCategory/BrowseList.jsx
 import { Box } from "@mui/material";
 import CategoryCard from "../categoryCard";
 
@@ -9,7 +8,7 @@ const BrowseList = ({ categories, onCategoryClick }) => {
         display: "flex",
         justifyContent: "center",
         gap: 2,
-        flexWrap: "nowrap",   // ✅ always single line
+        flexWrap: "nowrap",
         overflow: "hidden",
         width: "100%",
       }}
