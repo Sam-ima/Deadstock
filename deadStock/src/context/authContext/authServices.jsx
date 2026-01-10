@@ -3,6 +3,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail, // ✅ added
 } from "firebase/auth";
 import {
   doc,
@@ -79,7 +80,7 @@ export const loginWithGoogle = async (role = "buyer") => {
   const userRef = doc(db, "users", user.uid);
   const snap = await getDoc(userRef);
 
-  // Create document only first time
+  // Create user document only first time
   if (!snap.exists()) {
     await setDoc(userRef, {
       uid: user.uid,
@@ -95,11 +96,14 @@ export const loginWithGoogle = async (role = "buyer") => {
   return user;
 };
 
-/* ================= PROFILE IMAGE UPLOAD ================= */
+export const resetPasswordWithEmail = async (email) => {
+  await sendPasswordResetEmail(auth, email);
+};
 
 export const uploadProfileImage = async (file, uid) => {
-  const imageRef = ref(storage, `users/${uid}`);
+  const imageRef = ref(storage, `users/${uid}.jpg`);
 
+  // upload image
   await uploadBytes(imageRef, file);
   const url = await getDownloadURL(imageRef);
 

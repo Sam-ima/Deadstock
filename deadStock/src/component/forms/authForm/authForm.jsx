@@ -4,11 +4,12 @@ import {
   signupWithEmail,
   loginWithEmail,
   loginWithGoogle,
+  resetPasswordWithEmail, 
 } from "../../../context/authContext/authServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../../../firebase/firebase";
+import { db } from "../../../firebase/firebase";
 
 import AuthHeader from "./formHeader";
 import AuthFields from "./authFields";
@@ -25,7 +26,6 @@ export const AuthForm = ({ mode, setMode, role }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
   const [buyerType, setBuyerType] = useState("customer");
-
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -49,23 +49,28 @@ export const AuthForm = ({ mode, setMode, role }) => {
     setForm((p) => ({ ...p, [e.target.name]: e.target.value }));
   };
 
-  const resetForm = () => {
-    setForm({
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      shopName: "",
-      phone: "",
-      address: "",
-      city: "",
-      country: "",
-      panVat: "",
-    });
+  /* ================= PASSWORD RESET ================= */
 
-    setShowPassword(false);
-    setShowConfirmPassword(false);
-    setBuyerType("customer");
+  const handleForgotPassword = async () => {
+    if (!form.email) {
+      toast.error("Please enter your email first");
+      return;
+    }
+
+    try {
+      await resetPasswordWithEmail(form.email);
+      toast.success(
+        "Password reset link sent to your email 📧 (check spam too)"
+      );
+    } catch (err) {
+      if (err.code === "auth/user-not-found") {
+        toast.error("No account found with this email");
+      } else if (err.code === "auth/invalid-email") {
+        toast.error("Invalid email address");
+      } else {
+        toast.error("Failed to send reset email");
+      }
+    }
   };
 
   /* ================= SUBMIT ================= */
@@ -103,14 +108,11 @@ export const AuthForm = ({ mode, setMode, role }) => {
         });
 
         toast.success("Account created successfully 🎉");
-        resetForm(); // ✅ reset form
-        setMode("login"); // ✅ show login form
+        setMode("login");
       } else {
         const cred = await loginWithEmail(form.email, form.password);
 
-        // 🔥 fetch user data
-        const userRef = doc(db, "users", cred.user.uid);
-        const snap = await getDoc(userRef);
+        const snap = await getDoc(doc(db, "users", cred.user.uid));
 
         if (!snap.exists()) {
           toast.error("User data not found");
@@ -121,19 +123,17 @@ export const AuthForm = ({ mode, setMode, role }) => {
 
         toast.success("Logged in successfully");
 
-        // 🔀 role based navigation
         if (userData.role === "seller") {
           navigate("/sellerProfile");
         } else {
-          navigate("/profile"); // buyer home
+          navigate("/profile");
         }
       }
     } catch (err) {
-      // Check Firebase error codes
       if (err.code === "auth/email-already-in-use") {
-        toast.error("This email is already in use. Please try another.");
+        toast.error("Email already in use");
       } else {
-        toast.error("Authentication failed"); // generic fallback
+        toast.error("Authentication failed");
       }
     } finally {
       setLoading(false);
@@ -143,7 +143,7 @@ export const AuthForm = ({ mode, setMode, role }) => {
   const handleGoogle = async () => {
     try {
       await loginWithGoogle(role === "buyer" ? buyerType : role);
-    } catch (err) {
+    } catch {
       toast.error("Google login failed");
     }
   };
@@ -168,15 +168,15 @@ export const AuthForm = ({ mode, setMode, role }) => {
       )}
 
       {!isSignup && (
-        <RememberForgot rememberMe={rememberMe} setRememberMe={setRememberMe} />
+        <RememberForgot
+          rememberMe={rememberMe}
+          setRememberMe={setRememberMe}
+          onForgotPassword={handleForgotPassword} // ✅ added
+        />
       )}
 
       {showBusinessFields && (
-        <SellerFields
-          inputStyle={inputStyle}
-          form={form}
-          onChange={handleChange}
-        />
+        <SellerFields inputStyle={inputStyle} form={form} onChange={handleChange} />
       )}
 
       <AuthActions
