@@ -1,21 +1,31 @@
 import React from "react";
-import { Paper, Stack, Typography, Grid, Box, Divider } from "@mui/material";
-import { Timer, MonetizationOn, Person, Star } from "@mui/icons-material";
+import {
+  Paper,
+  Stack,
+  Typography,
+  Grid,
+  Box,
+  Divider,
+  Button,
+} from "@mui/material";
+import {
+  Timer,
+  MonetizationOn,
+  Person,
+  Star,
+  Gavel,
+} from "@mui/icons-material";
 
-const AuctionTimer = ({ product }) => {
+const AuctionTimer = ({ product, onPlaceBid }) => {
   return (
     <Paper
       elevation={0}
       sx={{
-        width: "100%",              // 🔥 full width always
-        maxWidth: "100%",           // 🔥 prevent shrink
-        mx: 0,                      // 🔥 remove auto margins
+        width: "100%",
         p: { xs: 2, sm: 3, md: 4 },
         borderRadius: { xs: 2, md: 3 },
         backgroundColor: "#1B5E20",
         color: "white",
-        boxSizing: "border-box",
-        display: "block",           // 🔥 avoid inline sizing
       }}
     >
       <Stack spacing={{ xs: 2, sm: 3 }}>
@@ -26,7 +36,7 @@ const AuctionTimer = ({ product }) => {
           <Box>
             <Typography
               variant="body2"
-              sx={{ opacity: 0.9, fontSize: { xs: 12, sm: 14, md: 16 } }}
+              sx={{ opacity: 0.9, fontSize: { xs: 12, sm: 14 } }}
             >
               Auction Ends In
             </Typography>
@@ -52,7 +62,11 @@ const AuctionTimer = ({ product }) => {
                 Current Bid
               </Typography>
 
-              <Typography variant="h6" fontWeight={800} sx={{ color: "#d8a855" }}>
+              <Typography
+                variant="h6"
+                fontWeight={800}
+                sx={{ color: "#d8a855" }}
+              >
                 ${product.currentBid.toLocaleString()}
               </Typography>
             </Stack>
@@ -78,7 +92,6 @@ const AuctionTimer = ({ product }) => {
             backgroundColor: "rgba(255,255,255,0.1)",
             p: { xs: 1, sm: 2 },
             borderRadius: 2,
-            width: "100%",
           }}
         >
           <Typography variant="body2">
@@ -86,6 +99,29 @@ const AuctionTimer = ({ product }) => {
             Highest Bidder: <b>{product.highestBidder}</b>
           </Typography>
         </Box>
+
+        {/* 🔥 Place Bid Button */}
+        <Button
+          fullWidth
+          size="large"
+          startIcon={<Gavel />}
+          onClick={onPlaceBid}
+          sx={{
+            mt: 1,
+            py: 1.5,
+            fontWeight: 700,
+            textTransform: "none",
+            color: "#1B5E20",
+            background:
+              "linear-gradient(135deg, #FFD54F 0%, #FFB300 100%)",
+            "&:hover": {
+              background:
+                "linear-gradient(135deg, #FFB300 0%, #FFA000 100%)",
+            },
+          }}
+        >
+          Place Bid
+        </Button>
       </Stack>
     </Paper>
   );

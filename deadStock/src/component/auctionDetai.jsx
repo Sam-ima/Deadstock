@@ -1,17 +1,22 @@
-// src/component/auctiondetai/index.jsx
-import { useState } from "react";
 import { Box, Container, Typography, Button } from "@mui/material";
-
-// ✅ FIXED PATHS
+import { useDispatch, useSelector } from "react-redux";
 import ProductImages from "./categoryPage/productDetail/productImages";
 import ProductInfo from "./categoryPage/productDetail/productInfo";
-
 import AuctionTimer from "./auctionDetail/auctionTimer";
 import BidHistory from "./auctionDetail/bidHistory";
+import { setSelectedImage, toggleWishlist } from "../store/slice/auctionSlice";
 
 const AuctionDetail = ({ product }) => {
-  const [selectedImage, setSelectedImage] = useState(0);
-  const [isFavorite, setIsFavorite] = useState(false);
+  const dispatch = useDispatch();
+
+  // Selected image index from Redux
+  const selectedImage =
+    useSelector((state) => state.auction.selectedImages[product.id]) ?? 0;
+
+  // Favorite state from Redux
+  const isFavorite = useSelector((state) =>
+    state.auction.wishlist.includes(product.id)
+  );
 
   if (!product) {
     return (
@@ -27,16 +32,18 @@ const AuctionDetail = ({ product }) => {
     <Box sx={{ minHeight: "100vh", pt: { xs: 3, md: 4 } }}>
       <Container maxWidth="xl">
         <Box display={{ xs: "block", md: "flex" }} gap={4}>
-          {/* ✅ Images now render correctly */}
+          {/* Product Images */}
           <ProductImages
             product={product}
             selectedImage={selectedImage}
-            setSelectedImage={setSelectedImage}
+            setSelectedImage={(index) =>
+              dispatch(setSelectedImage({ productId: product.id, index }))
+            }
             isFavorite={isFavorite}
-            setIsFavorite={setIsFavorite}
+            setIsFavorite={() => dispatch(toggleWishlist(product.id))}
           />
 
-          {/* Info */}
+          {/* Product Info */}
           <Box sx={{ width: { xs: "100%", md: "40%" } }}>
             <ProductInfo product={product} isAuction />
 
@@ -44,15 +51,9 @@ const AuctionDetail = ({ product }) => {
               <AuctionTimer product={product} />
             </Box>
 
-            {/* 🔨 Place Bid Button */}
-            <Button
-              fullWidth
-              size="large"
-              variant="contained"
-              sx={{ mt: 3, py: 1.5 }}
-            >
+            {/* <Button fullWidth size="large" variant="contained" sx={{ mt: 3, py: 1.5 }}>
               Place Bid
-            </Button>
+            </Button> */}
           </Box>
         </Box>
 
@@ -69,6 +70,7 @@ const AuctionDetail = ({ product }) => {
 };
 
 export default AuctionDetail;
+
 
 
 
