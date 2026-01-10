@@ -17,25 +17,29 @@ const ListingsTabs = ({ sellerId }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (!sellerId || tab === "add") return;
+ useEffect(() => {
+  if (!sellerId || tab === "add") return;
 
-    const fetchProducts = async () => {
-      setLoading(true);
-      try {
-        const status = tab === "selling" ? "active" : "sold";
-        const data = await getProductsBySeller(sellerId, status);
-        console.log("Fetched products:", data);
-        setProducts(data);
-      } catch (error) {
-        console.error("Failed to load products", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  // Clear previous products immediately
+  setProducts([]);
+  setLoading(true);
 
-    fetchProducts();
-  }, [sellerId, tab]);
+  const fetchProducts = async () => {
+    try {
+      const status = tab === "selling" ? "active" : "sold";
+      const data = await getProductsBySeller(sellerId, status);
+      console.log("Fetched products:", data);
+      setProducts(data);
+    } catch (error) {
+      console.error("Failed to load products", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchProducts();
+}, [sellerId, tab]);
+
 
   return (
     <>
