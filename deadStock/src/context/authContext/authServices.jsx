@@ -3,14 +3,20 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  sendPasswordResetEmail, 
 } from "firebase/auth";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { auth, db, storage } from "../../firebase/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const googleProvider = new GoogleAuthProvider();
 
-/* ================= EMAIL / PASSWORD ================= */
+/* ================= EMAIL / PASSWORD SIGNUP ================= */
 
 export const signupWithEmail = async (data) => {
   const {
@@ -18,6 +24,7 @@ export const signupWithEmail = async (data) => {
     password,
     fullName,
     role,
+    buyerType,
     shopName,
     phone,
     address,
@@ -28,29 +35,43 @@ export const signupWithEmail = async (data) => {
 
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
-  await setDoc(doc(db, "users", user.uid), {
+  const userData = {
     uid: user.uid,
     email,
     fullName,
     role,
-    shopName,
-    phone,
-    address,
-    city,
-    country,
-    panVat,
-    photoURL: "",
+    buyerType: role === "buyer" ? buyerType : null, // track buyer type
     provider: "password",
+    photoURL: "",
     createdAt: new Date(),
-  });
+  };
+
+  // Add business info if:
+  // 1. Seller
+  // 2. Buyer with business type
+  if (role === "seller" || (role === "buyer" && buyerType === "business")) {
+    userData.business = {
+      shopName,
+      phone,
+      address,
+      city,
+      country,
+      panVat,
+    };
+  }
+
+  await setDoc(doc(db, "users", user.uid), userData);
 
   return user;
 };
 
+
+/* ================= EMAIL LOGIN ================= */
+
 export const loginWithEmail = (email, password) =>
   signInWithEmailAndPassword(auth, email, password);
 
-/* ================= GOOGLE AUTH ================= */
+/* ================= GOOGLE LOGIN ================= */
 
 export const loginWithGoogle = async (role = "buyer") => {
   const result = await signInWithPopup(auth, googleProvider);
@@ -66,8 +87,8 @@ export const loginWithGoogle = async (role = "buyer") => {
       email: user.email,
       fullName: user.displayName,
       role,
-      photoURL: "",
       provider: "google",
+      photoURL: user.photoURL || "",
       createdAt: new Date(),
     });
   }
@@ -75,16 +96,17 @@ export const loginWithGoogle = async (role = "buyer") => {
   return user;
 };
 
+export const resetPasswordWithEmail = async (email) => {
+  await sendPasswordResetEmail(auth, email);
+};
+
 export const uploadProfileImage = async (file, uid) => {
   const imageRef = ref(storage, `users/${uid}.jpg`);
 
   // upload image
   await uploadBytes(imageRef, file);
-
-  // get URL
   const url = await getDownloadURL(imageRef);
 
-  // save to firestore
   await updateDoc(doc(db, "users", uid), {
     photoURL: url,
   });

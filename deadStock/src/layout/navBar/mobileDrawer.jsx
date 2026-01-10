@@ -298,7 +298,7 @@ const MobileDrawer = ({ open, onClose }) => {
             <Button
               fullWidth
               startIcon={<User size={18} />}
-              onClick={() => handleNavigation("/auth")}
+              onClick={() => handleNavigation("/login")}
               sx={{
                 borderRadius: "24px",
                 textTransform: "none",
