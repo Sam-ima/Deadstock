@@ -22,15 +22,27 @@ const AuctionDetail = ({ product }) => {
   // Transform product data to match what ProductInfo expects
   const transformedProduct = {
     ...product,
-    price: product.highestBid || product.currentBid, // Use highestBid as price
-    images: product.galleryImages || [product.img], // Ensure images array exists
+    price: product.highestBid || product.currentBid,
+    images: product.galleryImages || [product.img],
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", pt: { xs: 3, md: 4 } }}>
+    <Box sx={{ minHeight: "100vh", pt: { xs: 2, md: 4 } }}>
       <Container maxWidth="xl">
-        <Box display={{ xs: "block", md: "flex" }} gap={4}>
-          {/* Product Images */}
+        {/* Mobile Layout Stack */}
+        <Box sx={{ 
+          display: { xs: 'flex', md: 'none' }, 
+          flexDirection: 'column', 
+          gap: 3 
+        }}>
+          {/* Product Info - Top */}
+          <ProductInfo 
+            product={transformedProduct} 
+            isAuction 
+            showPrice={true}
+          />
+          
+          {/* Images - Middle */}
           <ProductImages
             product={transformedProduct}
             selectedImage={selectedImage}
@@ -40,25 +52,65 @@ const AuctionDetail = ({ product }) => {
             isFavorite={isFavorite}
             setIsFavorite={() => dispatch(toggleWishlist(product.id))}
           />
+          
+          {/* Timer - Bottom */}
+          <AuctionTimer product={product} />
+          
+          <Button 
+            fullWidth 
+            size="large" 
+            variant="contained" 
+            sx={{ 
+              mt: 2, 
+              py: 1.5,
+              background: "#194638",
+              "&:hover": { background: "#163b30" }
+            }}
+          >
+            Place Bid (Current: ${product.highestBid || product.currentBid})
+          </Button>
+        </Box>
 
-          {/* Product Info */}
-          <Box sx={{ width: { xs: "100%", md: "40%" } }}>
+        {/* Desktop Layout */}
+        <Box sx={{ 
+          display: { xs: 'none', md: 'flex' }, 
+          gap: 4 
+        }}>
+          {/* Left Column - Images */}
+          <Box sx={{ flex: 1 }}>
+            <ProductImages
+              product={transformedProduct}
+              selectedImage={selectedImage}
+              setSelectedImage={(index) =>
+                dispatch(setSelectedImage({ productId: product.id, index }))
+              }
+              isFavorite={isFavorite}
+              setIsFavorite={() => dispatch(toggleWishlist(product.id))}
+            />
+          </Box>
+          
+          {/* Right Column - Info & Timer */}
+          <Box sx={{ width: "40%" }}>
             <ProductInfo 
               product={transformedProduct} 
               isAuction 
-              // Add price display prop if needed
               showPrice={true}
             />
-
+            
             <Box sx={{ mt: 3 }}>
               <AuctionTimer product={product} />
             </Box>
-{/* 
-            <Button 
+            
+            {/* <Button 
               fullWidth 
               size="large" 
               variant="contained" 
-              sx={{ mt: 3, py: 1.5 }}
+              sx={{ 
+                mt: 3, 
+                py: 1.5,
+                background: "#194638",
+                "&:hover": { background: "#163b30" }
+              }}
             >
               Place Bid (Current: ${product.highestBid || product.currentBid})
             </Button> */}
@@ -66,19 +118,18 @@ const AuctionDetail = ({ product }) => {
         </Box>
 
         {/* Bid History */}
-        <Box sx={{ mt: 6 }}>
+        {/* <Box sx={{ mt: { xs: 4, md: 6 } }}>
           <Typography variant="h6" fontWeight={600} mb={2}>
             Bid History
           </Typography>
           <BidHistory product={product} />
-        </Box>
+        </Box> */}
       </Container>
     </Box>
   );
 };
 
 export default AuctionDetail;
-
 
 
 
