@@ -80,7 +80,7 @@ const ProfileHeader = ({ seller }) => {
       </Typography>
 
       <Typography color="text.secondary">
-        {seller.shopName || seller.email}
+        { seller.email}
       </Typography>
 
       <Chip label="VERIFIED SELLER" color="success" sx={{ mt: 1, px: 2 }} />

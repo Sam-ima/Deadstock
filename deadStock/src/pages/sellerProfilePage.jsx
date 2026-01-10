@@ -36,33 +36,10 @@ const SellerProfilePage = () => {
       >
         <ProfileHeader seller={seller} />
         <ListingsTabs sellerId={seller.uid} />
-        <SettingsList />
+        <SettingsList seller={seller} />
         <RecentActivity />
 
-        <Button
-          fullWidth
-          sx={{
-            mt: 3,
-            bgcolor: "#377e37",
-            color: "black",
-            py: 1.5,
-            borderRadius: 3,
-          }}
-        >
-          settings
-        </Button>
-        <Button
-          fullWidth
-          sx={{
-            mt: 3,
-            bgcolor: "#e3550e",
-            color: "Black",
-            py: 1.5,
-            borderRadius: 3,
-          }}
-        >
-          Log Out
-        </Button>
+     
       </Container>
     </Box>
   );
