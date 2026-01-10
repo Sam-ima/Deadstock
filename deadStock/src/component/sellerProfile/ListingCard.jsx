@@ -1,8 +1,9 @@
 import { Box, Typography, IconButton, Chip, Stack } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 import StarIcon from "@mui/icons-material/Star";
 
-const ListingCard = ({ product }) => {
+const ListingCard = ({ product, onEdit, onDelete }) => {
   const {
     name,
     currentPrice,
@@ -23,7 +24,6 @@ const ListingCard = ({ product }) => {
         bgcolor: "#fff",
         boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
         transition: "all 0.3s ease",
-        cursor: "pointer",
         "&:hover": {
           transform: "translateY(-6px)",
           boxShadow: "0 16px 30px rgba(0,0,0,0.12)",
@@ -50,10 +50,11 @@ const ListingCard = ({ product }) => {
         {/* EDIT */}
         <IconButton
           size="small"
+          onClick={onEdit}
           sx={{
             position: "absolute",
             top: 10,
-            right: 10,
+            right: 40,
             bgcolor: "rgba(255,255,255,0.9)",
             color: "#2e7d32",
             "&:hover": {
@@ -63,6 +64,25 @@ const ListingCard = ({ product }) => {
           }}
         >
           <EditIcon fontSize="small" />
+        </IconButton>
+
+        {/* DELETE */}
+        <IconButton
+          size="small"
+          onClick={onDelete}
+          sx={{
+            position: "absolute",
+            top: 10,
+            right: 10,
+            bgcolor: "rgba(255,255,255,0.9)",
+            color: "#d32f2f",
+            "&:hover": {
+              bgcolor: "#d32f2f",
+              color: "#fff",
+            },
+          }}
+        >
+          <DeleteIcon fontSize="small" />
         </IconButton>
       </Box>
 
@@ -102,12 +122,7 @@ const ListingCard = ({ product }) => {
         </Stack>
 
         {/* DESCRIPTION */}
-        <Typography
-          fontSize={13}
-          color="text.secondary"
-          mt={1}
-          noWrap
-        >
+        <Typography fontSize={13} color="text.secondary" mt={1} noWrap>
           {description}
         </Typography>
 
@@ -115,11 +130,7 @@ const ListingCard = ({ product }) => {
         {features?.length > 0 && (
           <Box mt={1}>
             {features.slice(0, 2).map((feature, i) => (
-              <Typography
-                key={i}
-                fontSize={12}
-                color="text.secondary"
-              >
+              <Typography key={i} fontSize={12} color="text.secondary">
                 • {feature}
               </Typography>
             ))}
