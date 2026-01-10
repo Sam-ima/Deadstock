@@ -10,7 +10,7 @@ import {
   serverTimestamp,
   query,
   where,
-  orderBy
+  orderBy,
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/firebase";
@@ -18,20 +18,32 @@ import { db, storage } from "../firebase/firebase";
 const productsRef = collection(db, "products");
 
 /* CREATE Product with dynamic fields - SAFE VERSION */
-export const addProduct = async (productData, userId, userType, images = []) => {
+export const addProduct = async (
+  productData,
+  userId,
+  userType,
+  images = []
+) => {
   console.log("=== addProduct called ===");
-  console.log("Parameters received:", { productData, userId, userType, images });
+  console.log("Parameters received:", {
+    productData,
+    userId,
+    userType,
+    images,
+  });
 
   // VALIDATE INPUTS
-  if (!productData || typeof productData !== 'object') {
-    throw new Error("Invalid product data: productData is required and must be an object");
+  if (!productData || typeof productData !== "object") {
+    throw new Error(
+      "Invalid product data: productData is required and must be an object"
+    );
   }
 
-  if (!productData.name || productData.name.trim() === '') {
+  if (!productData.name || productData.name.trim() === "") {
     throw new Error("Product name is required");
   }
 
-  if (!userId || userId.trim() === '') {
+  if (!userId || userId.trim() === "") {
     throw new Error("User ID is required");
   }
 
@@ -41,8 +53,8 @@ export const addProduct = async (productData, userId, userType, images = []) => 
     // 1. Generate slug from name
     const slug = productData.name
       .toLowerCase()
-      .replace(/[^\w\s]/gi, '')
-      .replace(/\s+/g, '-');
+      .replace(/[^\w\s]/gi, "")
+      .replace(/\s+/g, "-");
 
     console.log("Generated slug:", slug);
 
@@ -51,14 +63,15 @@ export const addProduct = async (productData, userId, userType, images = []) => 
       // Basic info (with defaults)
       name: productData.name || "Untitled Product",
       slug: slug,
-      description: productData.description || '',
+      description: productData.description || "",
       categoryId: productData.categoryId || null,
       subcategoryId: productData.subcategoryId || null,
 
       // Pricing (with validation)
       basePrice: Number(productData.basePrice) || 0,
       currentPrice: Number(productData.basePrice) || 0,
-      floorPrice: Number(productData.floorPrice) || (Number(productData.basePrice) * 0.3),
+      floorPrice:
+        Number(productData.floorPrice) || Number(productData.basePrice) * 0.3,
 
       // Inventory
       stock: Number(productData.stock) || 1,
@@ -69,8 +82,8 @@ export const addProduct = async (productData, userId, userType, images = []) => 
       sellerType: userType || "B2C",
 
       // Status
-      status: productData.status || 'active',
-      saleType: productData.saleType || 'direct',
+      status: productData.status || "active",
+      saleType: productData.saleType || "direct",
 
       // Images - will be updated later
       images: [],
@@ -83,7 +96,8 @@ export const addProduct = async (productData, userId, userType, images = []) => 
       moq: Number(productData.moq) || 1,
       bulkPrice: productData.bulkPrice ? Number(productData.bulkPrice) : null,
       bulkDiscount: Number(productData.bulkDiscount) || 0,
-      requiresB2BVerification: Boolean(productData.requiresB2BVerification) || false,
+      requiresB2BVerification:
+        Boolean(productData.requiresB2BVerification) || false,
 
       // Timestamps
       createdAt: serverTimestamp(),
@@ -95,7 +109,7 @@ export const addProduct = async (productData, userId, userType, images = []) => 
       lastDepreciatedAt: null,
 
       // Dynamic fields
-      ...processDynamicFields(productData)
+      ...processDynamicFields(productData),
     };
 
     console.log("Base product data prepared:", baseProduct);
@@ -118,7 +132,7 @@ export const addProduct = async (productData, userId, userType, images = []) => 
     const finalProductData = {
       ...baseProduct,
       images: uploadedImages,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     };
 
     console.log("Updating product with images...");
@@ -127,9 +141,8 @@ export const addProduct = async (productData, userId, userType, images = []) => 
     console.log("=== Product created successfully ===");
     return {
       id: productId,
-      ...finalProductData
+      ...finalProductData,
     };
-
   } catch (error) {
     console.error("=== ERROR in addProduct ===");
     console.error("Error:", error);
@@ -158,7 +171,9 @@ const uploadProductImages = async (images, userId, productId = "") => {
 
       const file = image.file || image;
       const timestamp = Date.now();
-      const fileName = `${timestamp}_${index}_${file.name?.replace(/\s+/g, "_") || "image"}`;
+      const fileName = `${timestamp}_${index}_${
+        file.name?.replace(/\s+/g, "_") || "image"
+      }`;
       const path = `products/${userId}/${productId || "temp"}/${fileName}`;
 
       console.log(`Uploading to path: ${path}`);
@@ -194,7 +209,10 @@ const processDynamicFields = (productData) => {
   const dynamicData = {};
 
   // Add specifications if present
-  if (productData.specifications && typeof productData.specifications === 'object') {
+  if (
+    productData.specifications &&
+    typeof productData.specifications === "object"
+  ) {
     dynamicData.specifications = productData.specifications;
   }
 
@@ -205,23 +223,45 @@ const processDynamicFields = (productData) => {
 
   // Add other fields
   if (productData) {
-    Object.keys(productData).forEach(key => {
+    Object.keys(productData).forEach((key) => {
       // Skip reserved fields
       const reservedFields = [
-        'name', 'slug', 'description', 'categoryId', 'subcategoryId',
-        'basePrice', 'currentPrice', 'floorPrice', 'stock', 'sold',
-        'sellerId', 'sellerType', 'status', 'saleType', 'images',
-        'rating', 'reviews', 'moq', 'bulkPrice', 'bulkDiscount',
-        'requiresB2BVerification', 'createdAt', 'updatedAt',
-        'specifications', 'features', 'isDepreciating',
-        'depreciationCount', 'lastDepreciatedAt'
+        "name",
+        "slug",
+        "description",
+        "categoryId",
+        "subcategoryId",
+        "basePrice",
+        "currentPrice",
+        "floorPrice",
+        "stock",
+        "sold",
+        "sellerId",
+        "sellerType",
+        "status",
+        "saleType",
+        "images",
+        "rating",
+        "reviews",
+        "moq",
+        "bulkPrice",
+        "bulkDiscount",
+        "requiresB2BVerification",
+        "createdAt",
+        "updatedAt",
+        "specifications",
+        "features",
+        "isDepreciating",
+        "depreciationCount",
+        "lastDepreciatedAt",
       ];
 
-      if (!reservedFields.includes(key) &&
+      if (
+        !reservedFields.includes(key) &&
         productData[key] !== undefined &&
         productData[key] !== null &&
-        productData[key] !== '') {
-
+        productData[key] !== ""
+      ) {
         dynamicData[key] = productData[key];
       }
     });
@@ -252,8 +292,12 @@ export const getAllProducts = async (filters = {}) => {
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString(),
-      updatedAt: doc.data().updatedAt?.toDate()?.toISOString() || new Date().toISOString()
+      createdAt:
+        doc.data().createdAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
+      updatedAt:
+        doc.data().updatedAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
     }));
   } catch (error) {
     console.error("Error getting products:", error);
@@ -267,7 +311,7 @@ export const updateProduct = async (id, updates) => {
     const productDoc = doc(db, "products", id);
     return await updateDoc(productDoc, {
       ...updates,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
   } catch (error) {
     console.error("Error updating product:", error);
@@ -291,16 +335,20 @@ export const getProductById = async (productId) => {
   try {
     const productRef = doc(db, "products", productId);
     const productDoc = await getDoc(productRef);
-    
+
     if (!productDoc.exists()) {
       throw new Error("Product not found");
     }
-    
+
     return {
       id: productId,
       ...productDoc.data(),
-      createdAt: productDoc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString(),
-      updatedAt: productDoc.data().updatedAt?.toDate()?.toISOString() || new Date().toISOString()
+      createdAt:
+        productDoc.data().createdAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
+      updatedAt:
+        productDoc.data().updatedAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
     };
   } catch (error) {
     console.error("Error getting product:", error);
@@ -340,9 +388,9 @@ export const getProductBySlug = async (slug) => {
 export const getProductsBySeller = async (sellerId, status = "active") => {
   try {
     let q = query(
-      productsRef, 
+      productsRef,
       where("sellerId", "==", sellerId),
-      orderBy("createdAt", "desc")
+      where("status", "==", status)
     );
 
     if (status) {
@@ -353,8 +401,12 @@ export const getProductsBySeller = async (sellerId, status = "active") => {
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString(),
-      updatedAt: doc.data().updatedAt?.toDate()?.toISOString() || new Date().toISOString()
+      createdAt:
+        doc.data().createdAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
+      updatedAt:
+        doc.data().updatedAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
     }));
   } catch (error) {
     console.error("Error getting seller products:", error);
@@ -380,8 +432,12 @@ export const getProductsByCategory = async (categoryId, limit = 20) => {
       const products = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
-        createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString(),
-        updatedAt: doc.data().updatedAt?.toDate()?.toISOString() || new Date().toISOString()
+        createdAt:
+          doc.data().createdAt?.toDate()?.toISOString() ||
+          new Date().toISOString(),
+        updatedAt:
+          doc.data().updatedAt?.toDate()?.toISOString() ||
+          new Date().toISOString(),
       }));
       return products.slice(0, limit);
     }
@@ -390,8 +446,12 @@ export const getProductsByCategory = async (categoryId, limit = 20) => {
     return snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
-      createdAt: doc.data().createdAt?.toDate()?.toISOString() || new Date().toISOString(),
-      updatedAt: doc.data().updatedAt?.toDate()?.toISOString() || new Date().toISOString()
+      createdAt:
+        doc.data().createdAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
+      updatedAt:
+        doc.data().updatedAt?.toDate()?.toISOString() ||
+        new Date().toISOString(),
     }));
   } catch (error) {
     console.error("Error getting category products:", error);
@@ -403,20 +463,24 @@ export const getProductsByCategory = async (categoryId, limit = 20) => {
 export const updateProductImages = async (productId, userId, newImages) => {
   try {
     // Upload new images
-    const uploadedImages = await uploadProductImages(newImages, userId, productId);
-    
+    const uploadedImages = await uploadProductImages(
+      newImages,
+      userId,
+      productId
+    );
+
     // Get current product
     const product = await getProductById(productId);
-    
+
     // Merge with existing images
     const allImages = [...(product.images || []), ...uploadedImages];
-    
+
     // Update product
     await updateProduct(productId, {
       images: allImages,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
-    
+
     return allImages;
   } catch (error) {
     console.error("Error updating product images:", error);
@@ -428,13 +492,15 @@ export const updateProductImages = async (productId, userId, newImages) => {
 export const removeProductImage = async (productId, imageIndex) => {
   try {
     const product = await getProductById(productId);
-    const updatedImages = product.images.filter((_, index) => index !== imageIndex);
-    
+    const updatedImages = product.images.filter(
+      (_, index) => index !== imageIndex
+    );
+
     await updateProduct(productId, {
       images: updatedImages,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
-    
+
     return updatedImages;
   } catch (error) {
     console.error("Error removing product image:", error);
@@ -448,14 +514,14 @@ export const setMainProductImage = async (productId, imageIndex) => {
     const product = await getProductById(productId);
     const updatedImages = product.images.map((img, index) => ({
       ...img,
-      isMain: index === imageIndex
+      isMain: index === imageIndex,
     }));
-    
+
     await updateProduct(productId, {
       images: updatedImages,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
-    
+
     return updatedImages;
   } catch (error) {
     console.error("Error setting main image:", error);

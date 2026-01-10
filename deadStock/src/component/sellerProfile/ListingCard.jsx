@@ -1,7 +1,20 @@
-import { Box, Typography, IconButton } from "@mui/material";
+import { Box, Typography, IconButton, Chip, Stack } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import StarIcon from "@mui/icons-material/Star";
 
-const ListingCard = ({ title, price, img }) => {
+const ListingCard = ({ product }) => {
+  const {
+    name,
+    currentPrice,
+    basePrice,
+    images,
+    stock,
+    rating,
+    description,
+    features,
+    status,
+  } = product;
+
   return (
     <Box
       sx={{
@@ -11,7 +24,6 @@ const ListingCard = ({ title, price, img }) => {
         boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
         transition: "all 0.3s ease",
         cursor: "pointer",
-
         "&:hover": {
           transform: "translateY(-6px)",
           boxShadow: "0 16px 30px rgba(0,0,0,0.12)",
@@ -19,35 +31,31 @@ const ListingCard = ({ title, price, img }) => {
       }}
     >
       {/* IMAGE */}
-      <Box
-        sx={{
-          position: "relative",
-          height: 180,
-        }}
-      >
+      <Box sx={{ position: "relative", height: 200 }}>
         <Box
           component="img"
-          src={img}
-          alt={title}
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
+          src={images?.[0]}
+          alt={name}
+          sx={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
 
-        {/* EDIT ICON – ALWAYS VISIBLE */}
+        {/* STATUS */}
+        <Chip
+          label={status === "active" ? "Selling" : "Sold"}
+          color={status === "active" ? "success" : "warning"}
+          size="small"
+          sx={{ position: "absolute", top: 10, left: 10 }}
+        />
+
+        {/* EDIT */}
         <IconButton
           size="small"
           sx={{
             position: "absolute",
             top: 10,
             right: 10,
-            bgcolor: "rgba(255,255,255,0.85)",
-            backdropFilter: "blur(6px)",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            bgcolor: "rgba(255,255,255,0.9)",
             color: "#2e7d32",
-
             "&:hover": {
               bgcolor: "#2e7d32",
               color: "#fff",
@@ -60,23 +68,63 @@ const ListingCard = ({ title, price, img }) => {
 
       {/* CONTENT */}
       <Box p={2}>
-        <Typography
-          fontWeight={600}
-          fontSize={15}
-          noWrap
-        >
-          {title}
+        {/* NAME */}
+        <Typography fontWeight={700} fontSize={16} noWrap>
+          {name}
         </Typography>
 
+        {/* PRICE */}
+        <Stack direction="row" spacing={1} alignItems="center" mt={0.5}>
+          <Typography fontWeight={700} color="#ff8f00">
+            Rs. {currentPrice}
+          </Typography>
+
+          {basePrice !== currentPrice && (
+            <Typography
+              fontSize={13}
+              sx={{ textDecoration: "line-through", color: "#999" }}
+            >
+              Rs. {basePrice}
+            </Typography>
+          )}
+        </Stack>
+
+        {/* RATING & STOCK */}
+        <Stack direction="row" spacing={2} mt={1}>
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            <StarIcon fontSize="small" color="warning" />
+            <Typography fontSize={13}>{rating || 0}</Typography>
+          </Stack>
+
+          <Typography fontSize={13} color={stock > 0 ? "green" : "red"}>
+            Stock: {stock}
+          </Typography>
+        </Stack>
+
+        {/* DESCRIPTION */}
         <Typography
-          fontWeight={700}
-          sx={{
-            color: "#ff8f00",
-            mt: 0.5,
-          }}
+          fontSize={13}
+          color="text.secondary"
+          mt={1}
+          noWrap
         >
-          {price}
+          {description}
         </Typography>
+
+        {/* FEATURES */}
+        {features?.length > 0 && (
+          <Box mt={1}>
+            {features.slice(0, 2).map((feature, i) => (
+              <Typography
+                key={i}
+                fontSize={12}
+                color="text.secondary"
+              >
+                • {feature}
+              </Typography>
+            ))}
+          </Box>
+        )}
       </Box>
     </Box>
   );
