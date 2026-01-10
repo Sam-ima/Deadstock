@@ -3,10 +3,8 @@ const SellerData = {
     {
       id: 1,
       img: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49",
-
       title: "Classic Low Sneakers",
       price: "$250",
-      img: "/shoe.png",
       status: "selling",
     },
     {
