@@ -1,4 +1,4 @@
-import { Box, Container, Button } from "@mui/material";
+import { Box, Container } from "@mui/material";
 // import ProfileHeader from "../component/sellerProfile/sellerHeader";
 import ListingsTabs from "../component/sellerProfile/listingsTabs";
 // import SettingsList from "../component/sellerProfile/settingsList";
