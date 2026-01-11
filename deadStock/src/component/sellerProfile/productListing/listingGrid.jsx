@@ -46,8 +46,8 @@ const ListingsGrid = ({ products, onEdit, onDelete }) => {
           <ListingCard
             key={item.id}
             product={item}
-            onEdit={onEdit}
-            onDelete={onDelete}
+            onEdit={() => onEdit(item)} // ✅ VERY IMPORTANT
+            onDelete={() => onDelete(item.id)} // ✅
           />
         ))}
       </Box>

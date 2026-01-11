@@ -1,4 +1,4 @@
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -9,18 +9,31 @@ import {
   Stack,
 } from "@mui/material";
 
-const EditProductDialog = ({ open, product, onClose, onSave }) => {
-  const [form, setForm] = useState(product || {});
+const EMPTY_PRODUCT = {
+  name: "",
+  currentPrice: "",
+  basePrice: "",
+  stock: "",
+  description: "",
+};
 
+const EditProductDialog = ({ open, product, onClose, onSave }) => {
+  const [form, setForm] = useState(EMPTY_PRODUCT);
+
+  // Sync form when dialog opens or product changes
   useEffect(() => {
-    setForm(product || {});
-  }, [product]);
+    if (open && product) {
+      setForm({
+        ...EMPTY_PRODUCT,
+        ...product,
+      });
+    }
+  }, [open, product]);
 
   const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
-
-  if (!product) return null;
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
@@ -31,51 +44,56 @@ const EditProductDialog = ({ open, product, onClose, onSave }) => {
           <TextField
             label="Name"
             name="name"
-            value={form.name || ""}
+            value={form.name}
             onChange={handleChange}
+            fullWidth
           />
+
           <TextField
             label="Current Price"
-            type="number"
             name="currentPrice"
-            value={form.currentPrice || ""}
+            type="number"
+            value={form.currentPrice}
             onChange={handleChange}
+            fullWidth
           />
+
           <TextField
             label="Base Price"
-            type="number"
             name="basePrice"
-            value={form.basePrice || ""}
+            type="number"
+            value={form.basePrice}
             onChange={handleChange}
+            fullWidth
           />
+
           <TextField
             label="Stock"
-            type="number"
             name="stock"
-            value={form.stock || ""}
-            onChange={handleChange}
-          />
-          {/* <TextField
-            label="Rating"
             type="number"
-            name="rating"
-            value={form.rating || ""}
+            value={form.stock}
             onChange={handleChange}
-          /> */}
+            fullWidth
+          />
+
           <TextField
             label="Description"
             name="description"
             multiline
             rows={3}
-            value={form.description || ""}
+            value={form.description}
             onChange={handleChange}
+            fullWidth
           />
         </Stack>
       </DialogContent>
 
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={() => onSave(form)}>
+        <Button
+          variant="contained"
+          onClick={() => onSave({ ...product, ...form })}
+        >
           Save
         </Button>
       </DialogActions>
