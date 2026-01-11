@@ -27,7 +27,7 @@ import { auth, db } from "../../firebase/firebase"; // Make sure to import db
 import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
-const ActionIcons = ({ isMobile, onMenuClick }) => {
+const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -145,7 +145,7 @@ const ActionIcons = ({ isMobile, onMenuClick }) => {
 
       {/* Cart - Show only for buyers */}
       {(!userData || userData?.role === "buyer") && (
-        <IconButton color="inherit" onClick={() => navigate("/cart")}>
+        <IconButton color="inherit" onClick={onCartClick}>
           <Badge badgeContent={cartCount} color="warning">
             <ShoppingCart size={20} />
           </Badge>
