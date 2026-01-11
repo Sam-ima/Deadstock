@@ -33,6 +33,9 @@ const Navbar = () => {
           backgroundColor:"#194638ff",
           color: "#ffffff",
           transition: "all 0.3s ease",
+            position: "fixed",
+          width: "100%",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
         }}
       >
         <Toolbar disableGutters>
