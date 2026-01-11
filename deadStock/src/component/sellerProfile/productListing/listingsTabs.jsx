@@ -2,8 +2,7 @@ import {
   Box,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
-  useMediaQuery,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
