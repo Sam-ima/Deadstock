@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
 // import ProfileHeader from "../component/sellerProfile/sellerHeader";
-import ListingsTabs from "../component/sellerProfile/listingsTabs";
+import ListingsTabs from "../component/sellerProfile/productListing/listingsTabs";
 // import SettingsList from "../component/sellerProfile/settingsList";
 import RecentActivity from "../component/sellerProfile/recentActivity";
 import { useEffect, useState } from "react";

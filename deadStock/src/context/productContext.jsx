@@ -21,6 +21,7 @@ export const ProductProvider = ({ children }) => {
     setError(null);
     try {
       const data = await getAllProducts(filters);
+      // console.log('product data',data)
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);

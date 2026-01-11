@@ -19,6 +19,8 @@ const ListingCard = ({ product, onEdit, onDelete }) => {
   return (
     <Box
       sx={{
+        minWidth: 350,
+        width: { xs: 100, sm: 200, md: 350 },
         borderRadius: 4,
         overflow: "hidden",
         bgcolor: "#fff",
@@ -31,26 +33,27 @@ const ListingCard = ({ product, onEdit, onDelete }) => {
       }}
     >
       {/* IMAGE */}
-      <Box sx={{ position: "relative", height: 200 }}>
+      <Box sx={{ position: "relative", height: 150 }}>
         <Box
           component="img"
           src={images?.[0]}
           alt={name}
+          loading="lazy"
           sx={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
 
         {/* STATUS */}
-        <Chip
+        {/* <Chip
           label={status === "active" ? "Selling" : "Sold"}
           color={status === "active" ? "success" : "warning"}
           size="small"
           sx={{ position: "absolute", top: 10, left: 10 }}
-        />
+        /> */}
 
         {/* EDIT */}
         <IconButton
           size="small"
-          onClick={onEdit}
+          onClick={() => onEdit(product)}
           sx={{
             position: "absolute",
             top: 10,
@@ -66,10 +69,9 @@ const ListingCard = ({ product, onEdit, onDelete }) => {
           <EditIcon fontSize="small" />
         </IconButton>
 
-        {/* DELETE */}
         <IconButton
           size="small"
-          onClick={onDelete}
+          onClick={() => onDelete(product.id)}
           sx={{
             position: "absolute",
             top: 10,
