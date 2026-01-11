@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/firebase";
+import { Timestamp } from "firebase/firestore";
 
 const productsRef = collection(db, "products");
 
@@ -276,29 +277,46 @@ export const getAllProducts = async (filters = {}) => {
   try {
     let q = query(productsRef, orderBy("createdAt", "desc"));
 
+    // Apply filters
     if (filters.categoryId) {
       q = query(q, where("categoryId", "==", filters.categoryId));
     }
-
     if (filters.sellerId) {
       q = query(q, where("sellerId", "==", filters.sellerId));
     }
-
     if (filters.status) {
       q = query(q, where("status", "==", filters.status));
     }
 
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt:
-        doc.data().createdAt?.toDate()?.toISOString() ||
-        new Date().toISOString(),
-      updatedAt:
-        doc.data().updatedAt?.toDate()?.toISOString() ||
-        new Date().toISOString(),
-    }));
+
+    // Map documents safely
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+
+      // Safely handle createdAt
+      const createdAt =
+        data.createdAt && typeof data.createdAt.toDate === "function"
+          ? data.createdAt.toDate().toISOString() // Firestore Timestamp
+          : data.createdAt
+          ? new Date(data.createdAt).toISOString() // string or number
+          : new Date().toISOString(); // fallback if missing
+
+      // Safely handle updatedAt
+      const updatedAt =
+        data.updatedAt && typeof data.updatedAt.toDate === "function"
+          ? data.updatedAt.toDate().toISOString()
+          : data.updatedAt
+          ? new Date(data.updatedAt).toISOString()
+          : new Date().toISOString();
+
+      return {
+        id: doc.id,
+        ...data,
+        createdAt,
+        updatedAt,
+      };
+    });
   } catch (error) {
     console.error("Error getting products:", error);
     throw error;
@@ -385,29 +403,46 @@ export const getProductBySlug = async (slug) => {
 };
 
 /* GET Products by Seller */
+const parseFirestoreDate = (value) => {
+  if (!value) return new Date().toISOString(); // fallback if missing
+
+  // If it's a Firestore Timestamp
+  if (typeof value.toDate === "function") {
+    return value.toDate().toISOString();
+  }
+
+  // If it's already a string or number
+  const date = new Date(value);
+  if (!isNaN(date.getTime())) return date.toISOString();
+
+  // fallback if parsing fails
+  return new Date().toISOString();
+};
+
+/* GET products by seller */
 export const getProductsBySeller = async (sellerId, status = "active") => {
   try {
+    if (!sellerId) throw new Error("Seller ID is required");
+
+    // Build query
     let q = query(
       productsRef,
       where("sellerId", "==", sellerId),
       where("status", "==", status)
     );
 
-    if (status) {
-      q = query(q, where("status", "==", status));
-    }
-
     const snapshot = await getDocs(q);
-    return snapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-      createdAt:
-        doc.data().createdAt?.toDate()?.toISOString() ||
-        new Date().toISOString(),
-      updatedAt:
-        doc.data().updatedAt?.toDate()?.toISOString() ||
-        new Date().toISOString(),
-    }));
+
+    // Map documents safely
+    return snapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: parseFirestoreDate(data.createdAt),
+        updatedAt: parseFirestoreDate(data.updatedAt),
+      };
+    });
   } catch (error) {
     console.error("Error getting seller products:", error);
     throw error;
