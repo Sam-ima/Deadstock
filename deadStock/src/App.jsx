@@ -20,7 +20,7 @@ import { CategoryProvider } from "./context/categoryContext.jsx";
 import RootLayout from "./root_layout";
 import AuthPage from "./pages/authPage.jsx";
 import SellItem from "./pages/sellProduct";
-
+import CartPage from "./pages/cart.page.jsx";
 // Lazy pages
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
@@ -52,6 +52,8 @@ const router = createBrowserRouter(
       <Route path="/category/:slug" element={<CategoryPage />} />
       <Route path="/product/:slug" element={<ProductDescriptionPage />} />
       <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
+      <Route path="/cart" element={<CartPage />} />
+
     </Route>
   )
 );

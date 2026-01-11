@@ -7,10 +7,13 @@ import logo from "../../assets/deadstock_logo.png";
 import NavItems from "./navbarItems";
 import ActionIcons from "./actionIcons";
 import MobileDrawer from "./mobileDrawer";
+import CartDrawer from "../../pages/cart.page";
 
 const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+ const [scrolled, setScrolled] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);       // 🛒
+  const [mobileOpen, setMobileOpen] = useState(false);   // 📱
+
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -80,14 +83,24 @@ const Navbar = () => {
             <Box sx={{ minWidth: 120, display: "flex", justifyContent: "flex-end" }}>
               <ActionIcons
                 isMobile={isMobile}
-                onMenuClick={() => setDrawerOpen(true)}
+                onMenuClick={() => setMobileOpen(true)}  // 📱
+                onCartClick={() => setCartOpen(true)}    // 🛒
               />
             </Box>
           </Box>
         </Toolbar>
       </AppBar>
+ {/* 🛒 CART DRAWER */}
+      <CartDrawer
+        open={cartOpen}
+        onClose={() => setCartOpen(false)}
+      />
 
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      {/* 📱 MOBILE MENU DRAWER */}
+      <MobileDrawer
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+      />
     </>
   );
 };
