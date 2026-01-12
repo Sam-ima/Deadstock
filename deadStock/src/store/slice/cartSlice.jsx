@@ -9,12 +9,9 @@ const loadCartFromStorage = () => {
 
   try {
     const savedCart = JSON.parse(localStorage.getItem("deadstock_cart"));
-
-    // 🛡️ Always enforce object shape
     if (savedCart && typeof savedCart === "object" && !Array.isArray(savedCart)) {
       return savedCart;
     }
-
     return {};
   } catch {
     return {};
@@ -27,9 +24,8 @@ const saveCartToStorage = (items) => {
   }
 };
 
-const generateCartItemKey = (item) => {
-  return `${item.id}_${item.unitPrice}_${Date.now()}`;
-};
+// Generate a unique key for each cart addition
+const generateCartItemKey = (item) => `${item.id}_${item.unitPrice}_${Date.now()}`;
 
 /* ----------------------------------------
    Slice
@@ -42,48 +38,34 @@ const cartSlice = createSlice({
     showSuccess: false,
     successMessage: "",
     successProduct: null,
-    lastAdded: null
+    lastAdded: null,
   },
 
   reducers: {
     addItem: (state, action) => {
       const item = action.payload;
 
-      // 🛡️ Defensive safety
       if (!state.items || Array.isArray(state.items)) {
         state.items = {};
       }
 
       const unitPrice = item.unitPrice ?? item.price;
 
-      const existingKey = Object.keys(state.items).find((key) => {
-        const existing = state.items[key];
-        return existing.id === item.id && existing.unitPrice === unitPrice;
-      });
+      // Always create a new cart item (no merging)
+      const newKey = generateCartItemKey(item);
 
-      if (existingKey) {
-        const existingItem = state.items[existingKey];
-
-        existingItem.quantity += item.quantity;
-        existingItem.totalPrice =
-          existingItem.quantity * existingItem.unitPrice;
-        existingItem.updatedAt = new Date().toISOString();
-      } else {
-        const newKey = generateCartItemKey(item);
-
-        state.items[newKey] = {
-          id: item.id,
-          name: item.name,
-          product: item.product,
-          quantity: item.quantity,
-          unitPrice,
-          totalPrice: unitPrice * item.quantity,
-          isBulkOrder: item.isBulkOrder ?? false,
-          cartItemId: newKey,
-          addedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-      }
+      state.items[newKey] = {
+        id: item.id,
+        name: item.name,
+        product: item.product,
+        quantity: item.quantity,
+        unitPrice,
+        totalPrice: unitPrice * item.quantity,
+        isBulkOrder: item.isBulkOrder ?? false,
+        cartItemId: newKey,
+        addedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
       saveCartToStorage(state.items);
 
@@ -129,13 +111,13 @@ const cartSlice = createSlice({
         state.items[cartItemId] = {
           ...state.items[cartItemId],
           ...updates,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
 
         saveCartToStorage(state.items);
       }
-    }
-  }
+    },
+  },
 });
 
 /* ----------------------------------------
@@ -148,7 +130,7 @@ export const {
   removeItem,
   clearCart,
   hideSuccessMessage,
-  updateCartItem
+  updateCartItem,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
