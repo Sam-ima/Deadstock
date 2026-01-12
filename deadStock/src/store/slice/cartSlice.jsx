@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-/* -----------------------------
+/* ----------------------------------------
    Local Storage Helpers
------------------------------ */
+---------------------------------------- */
+
 const loadCartFromStorage = () => {
   if (typeof window === "undefined") return {};
+
   try {
     const savedCart = JSON.parse(localStorage.getItem("deadstock_cart"));
     if (savedCart && typeof savedCart === "object" && !Array.isArray(savedCart)) {
@@ -23,11 +25,12 @@ const saveCartToStorage = (items) => {
 };
 
 // Generate a unique key for each cart addition
-const generateCartItemKey = (item) => `${item.id}_${item.unitPrice ?? item.price}_${Date.now()}`;
+const generateCartItemKey = (item) => `${item.id}_${item.unitPrice}_${Date.now()}`;
 
-/* -----------------------------
+/* ----------------------------------------
    Slice
------------------------------ */
+---------------------------------------- */
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
@@ -37,40 +40,32 @@ const cartSlice = createSlice({
     successProduct: null,
     lastAdded: null,
   },
+
   reducers: {
     addItem: (state, action) => {
       const item = action.payload;
-      if (!state.items || Array.isArray(state.items)) state.items = {};
 
-      const unitPrice = item.unitPrice ?? item.price ?? 0;
-
-      // Check if the same product with same price already exists
-      let existingKey = Object.keys(state.items).find(
-        (key) => state.items[key].id === item.id && state.items[key].unitPrice === unitPrice
-      );
-
-      if (existingKey) {
-        // Merge quantity
-        state.items[existingKey].quantity += item.quantity;
-        state.items[existingKey].totalPrice =
-          state.items[existingKey].quantity * unitPrice;
-        state.items[existingKey].updatedAt = new Date().toISOString();
-      } else {
-        // New cart item
-        const newKey = generateCartItemKey(item);
-        state.items[newKey] = {
-          id: item.id,
-          name: item.name,
-          product: item.product,
-          quantity: item.quantity,
-          unitPrice,
-          totalPrice: unitPrice * item.quantity,
-          isBulkOrder: item.isBulkOrder ?? false,
-          cartItemId: newKey,
-          addedAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
+      if (!state.items || Array.isArray(state.items)) {
+        state.items = {};
       }
+
+      const unitPrice = item.unitPrice ?? item.price;
+
+      // Always create a new cart item (no merging)
+      const newKey = generateCartItemKey(item);
+
+      state.items[newKey] = {
+        id: item.id,
+        name: item.name,
+        product: item.product,
+        quantity: item.quantity,
+        unitPrice,
+        totalPrice: unitPrice * item.quantity,
+        isBulkOrder: item.isBulkOrder ?? false,
+        cartItemId: newKey,
+        addedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
 
       saveCartToStorage(state.items);
 
@@ -82,11 +77,13 @@ const cartSlice = createSlice({
 
     updateItemQuantity: (state, action) => {
       const { cartItemId, quantity } = action.payload;
+
       if (state.items[cartItemId]) {
         state.items[cartItemId].quantity = quantity;
         state.items[cartItemId].totalPrice =
-          quantity * (state.items[cartItemId].unitPrice ?? 0);
+          quantity * state.items[cartItemId].unitPrice;
         state.items[cartItemId].updatedAt = new Date().toISOString();
+
         saveCartToStorage(state.items);
       }
     },
@@ -109,17 +106,23 @@ const cartSlice = createSlice({
 
     updateCartItem: (state, action) => {
       const { cartItemId, updates } = action.payload;
+
       if (state.items[cartItemId]) {
         state.items[cartItemId] = {
           ...state.items[cartItemId],
           ...updates,
           updatedAt: new Date().toISOString(),
         };
+
         saveCartToStorage(state.items);
       }
     },
   },
 });
+
+/* ----------------------------------------
+   Exports
+---------------------------------------- */
 
 export const {
   addItem,
