@@ -33,7 +33,7 @@ const AuthActions = ({
         {isSignup ? "Create Account" : "Login"}
       </Button>
 
-      <Button
+      {/* <Button
         variant="outlined"
         startIcon={<Google />}
         fullWidth
@@ -47,7 +47,7 @@ const AuthActions = ({
         }}
       >
         Continue with Google
-      </Button>
+      </Button> */}
 
       <Typography variant="body2" textAlign="center" color="text.secondary">
         {isSignup ? "Already have an account?" : "New here?"}
