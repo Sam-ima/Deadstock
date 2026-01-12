@@ -146,7 +146,11 @@ const ActionButtons = ({ product, quantity }) => {
           startIcon={<ShoppingCart />}
           onClick={() => handleAction("add")}
           disabled={isOutOfStock}
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            backgroundColor: "#194638", // Set custom color for Add to Cart
+            "&:hover": { backgroundColor: "#163c2e" }, // Hover effect
+          }}
         >
           Add to Cart
         </Button>
@@ -157,7 +161,16 @@ const ActionButtons = ({ product, quantity }) => {
           startIcon={<ShoppingBag />}
           onClick={() => handleAction("buy")}
           disabled={isOutOfStock}
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            borderColor: "#ED6C02", // Set custom color for Buy Now
+            color: "#ED6C02", // Set custom color for Buy Now text
+            "&:hover": {
+              borderColor: "#d85a00", // Hover effect for border color
+              backgroundColor: "#d85a00", // Hover effect for background
+              color: "#FFFFFF", // Text color change on hover
+            },
+          }}
         >
           Buy Now
         </Button>

@@ -29,7 +29,7 @@ const CartDrawer = ({ open, onClose }) => {
 
   const totalItems = cartItemsArray.reduce((sum, item) => sum + toNumber(item.quantity), 0);
   const cartTotal = cartItemsArray.reduce(
-    (sum, item) => sum + toNumber(item.totalPrice ?? (item.unitPrice ?? 0) * item.quantity),
+    (sum, item) => sum + toNumber(item.totalPrice ?? item.unitPrice * item.quantity),
     0
   );
 
@@ -42,11 +42,7 @@ const CartDrawer = ({ open, onClose }) => {
   };
 
   const handleIncrease = (item) => {
-    dispatch(addItem({
-      ...item,
-      quantity: 1,
-      unitPrice: item.unitPrice ?? item.price ?? 0,
-    }));
+    dispatch(addItem({ ...item, quantity: 1 }));
   };
 
   return (
@@ -73,13 +69,13 @@ const CartDrawer = ({ open, onClose }) => {
             right: 0,
             width: { xs: 350, sm: 420 },
             height: "calc(100vh - 64px)",
-            backgroundColor: "#1a3b2d",
+            backgroundColor: "#1a3b2d", 
             zIndex: 1200,
             borderTopLeftRadius: 20,
             borderBottomLeftRadius: 20,
             display: "flex",
             flexDirection: "column",
-            color: "#FFFFFF",
+            color: "#FFFFFF", // all text white
             boxShadow: "-4px 0px 20px rgba(0,0,0,0.5)",
           }}
         >
@@ -109,7 +105,7 @@ const CartDrawer = ({ open, onClose }) => {
             ) : (
               cartItemsArray.map((item) => {
                 const qty = toNumber(item.quantity);
-                const price = toNumber(item.unitPrice ?? item.price ?? 0);
+                const price = toNumber(item.unitPrice);
                 const total = toNumber(item.totalPrice ?? price * qty);
 
                 return (
@@ -118,18 +114,23 @@ const CartDrawer = ({ open, onClose }) => {
                     sx={{
                       mb: 2,
                       p: 2,
-                      backgroundColor: "#194638",
-                      color: "#FFFFFF",
+                      backgroundColor: "#194638ff", 
+                      color: "#FFFFFF", // text white
                       borderRadius: 2,
                       transition: "transform 0.2s",
                       "&:hover": { transform: "scale(1.02)" },
                     }}
                   >
                     <Typography fontWeight={700}>{item.product?.name || item.name}</Typography>
-                    <Typography>${formatPrice(price)} × {qty}</Typography>
+                    <Typography>
+                      ${formatPrice(price)} × {qty}
+                    </Typography>
 
                     <Stack direction="row" justifyContent="space-between" alignItems="center" mt={1}>
-                      <IconButton sx={{ color: "#FFFFFF" }} onClick={() => handleDecrease(item.cartItemId, qty)}>
+                      <IconButton
+                        sx={{ color: "#FFFFFF" }}
+                        onClick={() => handleDecrease(item.cartItemId, qty)}
+                      >
                         <RemoveIcon />
                       </IconButton>
 
@@ -140,7 +141,10 @@ const CartDrawer = ({ open, onClose }) => {
                       </IconButton>
                     </Stack>
 
-                    <IconButton onClick={() => dispatch(removeItem(item.cartItemId))} sx={{ mt: 1 }}>
+                    <IconButton
+                      onClick={() => dispatch(removeItem(item.cartItemId))}
+                      sx={{ mt: 1 }}
+                    >
                       <DeleteIcon sx={{ color: "#FF6B6B" }} />
                     </IconButton>
                   </Card>
@@ -151,7 +155,10 @@ const CartDrawer = ({ open, onClose }) => {
 
           {/* FOOTER */}
           {cartItemsArray.length > 0 && (
-            <Box sx={{ p: 3, backgroundColor: "rgba(25, 70, 56, 0.95)" }}>
+            <Box sx={{ p: 3,
+             backgroundColor: "rgba(25, 70, 56, 0.95)", // Matching navbar color
+
+             }}>
               <Divider sx={{ mb: 2, borderColor: "#FFFFFF" }} />
               <Typography fontWeight={800} sx={{ mb: 2, color: "#FFFFFF" }}>
                 Total: ${formatPrice(cartTotal)}
@@ -161,10 +168,11 @@ const CartDrawer = ({ open, onClose }) => {
                 variant="contained"
                 startIcon={<ShoppingCartCheckoutIcon />}
                 sx={{
-                  backgroundColor: "#2a9d8f",
-                  color: "#FFFFFF",
+                   backgroundColor: "#2a9d8f", // Complementary teal color
+                   color: "#FFFFFF",
+
                   fontWeight: 700,
-                  "&:hover": { backgroundColor: "#E0E0E0", color: "#000" },
+                  "&:hover": { backgroundColor: "#E0E0E0" },
                 }}
               >
                 Checkout
