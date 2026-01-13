@@ -59,61 +59,69 @@ const ActionButtons = ({ product, quantity }) => {
      3️⃣ CORE HANDLER
   ---------------------------------------- */
   const handleAction = (type) => {
-    // If user is not logged in, show dialog
-    if (requireLogin(type)) return;
+    // If user is not logged in, show login dialog
+    if (!user) {
+      setActionType(type);
+      setShowSellerPrompt(true);
+      return;
+    }
 
     // Logged-in users → directly proceed
     proceed(type);
   };
 
   /* ----------------------------------------
-     4️⃣ FINAL EXECUTION
-     ✅ Updates Redux + CartContext
-     ✅ Serializes Firestore Timestamp
+     4️⃣ FINAL EXECUTION - ONLY FOR LOGGED-IN USERS
   ---------------------------------------- */
-const proceed = (type) => {
-  const unitPrice = getFinalPrice();
+  const proceed = (type) => {
+    // Double-check user is logged in
+    if (!user) {
+      toast.error("Please login to continue");
+      return;
+    }
 
-  // Convert Firestore Timestamp to milliseconds
-  const sanitizedProduct = {
-    ...product,
-    lastDepreciatedAt: product.lastDepreciatedAt
-      ? product.lastDepreciatedAt.toMillis()
-      : null,
+    const unitPrice = getFinalPrice();
+
+    // Convert Firestore Timestamp to milliseconds
+    const sanitizedProduct = {
+      ...product,
+      lastDepreciatedAt: product.lastDepreciatedAt
+        ? product.lastDepreciatedAt.toMillis()
+        : null,
+    };
+
+    const cartItem = {
+      product: sanitizedProduct,
+      quantity,
+      unitPrice,
+      totalPrice: (unitPrice || 0) * quantity,
+      isBulkOrder: user?.role === "seller" && meetsMOQ,
+      // Add these fields for Redux compatibility
+      id: product.id,
+      name: product.name,
+      price: product.price, // Original price
+      cartItemId: `${product.id}_${unitPrice}_${Date.now()}`, // Unique ID
+    };
+
+    if (type === "add") {
+      // Add to Redux
+      dispatch(addItem(cartItem));
+
+      // Add to CartContext for drawer update
+      if (cartCtx?.addToCart) cartCtx.addToCart(cartItem);
+
+      toast.success("Item added to cart 🛒", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } else {
+      // Direct purchase
+      sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
+      navigate("/checkout", {
+        state: { isDirectPurchase: true, items: [cartItem] },
+      });
+    }
   };
-
-      const cartItem = {
-    product: sanitizedProduct,
-    quantity,
-    unitPrice, // Make sure this is a number
-    totalPrice: (unitPrice || 0) * quantity,
-    isBulkOrder: user?.role === "seller" && meetsMOQ,
-    // Add these fields for Redux compatibility
-    id: product.id,
-    name: product.name,
-    price: product.price, // Original price
-    cartItemId: `${product.id}_${unitPrice}_${Date.now()}`, // Unique ID
-  };
-
-  if (type === "add") {
-    // Add to Redux
-    dispatch(addItem(cartItem));
-
-    // Add to CartContext for drawer update
-    if (cartCtx?.addToCart) cartCtx.addToCart(cartItem);
-
-    toast.success("Item added to cart 🛒", {
-      position: "top-right",
-      autoClose: 2000,
-    });
-  } else {
-    // Direct purchase
-    sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
-    navigate("/checkout", {
-      state: { isDirectPurchase: true, items: [cartItem] },
-    });
-  }
-};
 
   /* ----------------------------------------
      5️⃣ DIALOG ACTIONS
@@ -153,8 +161,8 @@ const proceed = (type) => {
           disabled={isOutOfStock}
           sx={{
             flex: 1,
-            backgroundColor: "#194638", // Set custom color for Add to Cart
-            "&:hover": { backgroundColor: "#163c2e" }, // Hover effect
+            backgroundColor: "#194638",
+            "&:hover": { backgroundColor: "#163c2e" },
           }}
         >
           Add to Cart
@@ -168,12 +176,12 @@ const proceed = (type) => {
           disabled={isOutOfStock}
           sx={{
             flex: 1,
-            borderColor: "#ED6C02", // Set custom color for Buy Now
-            color: "#ED6C02", // Set custom color for Buy Now text
+            borderColor: "#ED6C02",
+            color: "#ED6C02",
             "&:hover": {
-              borderColor: "#d85a00", // Hover effect for border color
-              backgroundColor: "#d85a00", // Hover effect for background
-              color: "#FFFFFF", // Text color change on hover
+              borderColor: "#d85a00",
+              backgroundColor: "#d85a00",
+              color: "#FFFFFF",
             },
           }}
         >
@@ -192,7 +200,9 @@ const proceed = (type) => {
 
         <DialogContent>
           <DialogContentText>
-            You must be logged in to add items to your cart or make a purchase.
+            {actionType === "add" 
+              ? "You need to be logged in to add items to your cart." 
+              : "You need to be logged in to make a purchase."}
           </DialogContentText>
         </DialogContent>
 
