@@ -208,7 +208,7 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
             <MenuItem
               onClick={handleProfileClick}
               sx={{
-                cursor: "default",
+                // cursor: "default",
                 "&:hover": { backgroundColor: "transparent" },
                 flexDirection: "column",
                 alignItems: "flex-start",
