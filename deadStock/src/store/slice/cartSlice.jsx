@@ -49,7 +49,13 @@ const cartSlice = createSlice({
         state.items = {};
       }
 
-      const unitPrice = item.unitPrice ?? item.price;
+          const unitPrice =
+          typeof item.unitPrice === "number"
+          ? item.unitPrice
+          : typeof item.price === "number"
+          ? item.price
+          : 0;
+
 
       // Always create a new cart item (no merging)
       const newKey = generateCartItemKey(item);

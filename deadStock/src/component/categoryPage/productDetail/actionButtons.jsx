@@ -71,44 +71,49 @@ const ActionButtons = ({ product, quantity }) => {
      ✅ Updates Redux + CartContext
      ✅ Serializes Firestore Timestamp
   ---------------------------------------- */
-  const proceed = (type) => {
-    const unitPrice = getFinalPrice();
+const proceed = (type) => {
+  const unitPrice = getFinalPrice();
 
-    // Convert Firestore Timestamp to milliseconds
-    const sanitizedProduct = {
-      ...product,
-      lastDepreciatedAt: product.lastDepreciatedAt
-        ? product.lastDepreciatedAt.toMillis()
-        : null,
-    };
-
-    const cartItem = {
-      product: sanitizedProduct,
-      quantity,
-      unitPrice,
-      totalPrice: (unitPrice || 0) * quantity,
-      isBulkOrder: user?.role === "seller" && meetsMOQ,
-    };
-
-    if (type === "add") {
-      // Add to Redux
-      dispatch(addItem(cartItem));
-
-      // Add to CartContext for drawer update
-      if (cartCtx?.addToCart) cartCtx.addToCart(cartItem);
-
-      toast.success("Item added to cart 🛒", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    } else {
-      // Direct purchase
-      sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
-      navigate("/checkout", {
-        state: { isDirectPurchase: true, items: [cartItem] },
-      });
-    }
+  // Convert Firestore Timestamp to milliseconds
+  const sanitizedProduct = {
+    ...product,
+    lastDepreciatedAt: product.lastDepreciatedAt
+      ? product.lastDepreciatedAt.toMillis()
+      : null,
   };
+
+      const cartItem = {
+    product: sanitizedProduct,
+    quantity,
+    unitPrice, // Make sure this is a number
+    totalPrice: (unitPrice || 0) * quantity,
+    isBulkOrder: user?.role === "seller" && meetsMOQ,
+    // Add these fields for Redux compatibility
+    id: product.id,
+    name: product.name,
+    price: product.price, // Original price
+    cartItemId: `${product.id}_${unitPrice}_${Date.now()}`, // Unique ID
+  };
+
+  if (type === "add") {
+    // Add to Redux
+    dispatch(addItem(cartItem));
+
+    // Add to CartContext for drawer update
+    if (cartCtx?.addToCart) cartCtx.addToCart(cartItem);
+
+    toast.success("Item added to cart 🛒", {
+      position: "top-right",
+      autoClose: 2000,
+    });
+  } else {
+    // Direct purchase
+    sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
+    navigate("/checkout", {
+      state: { isDirectPurchase: true, items: [cartItem] },
+    });
+  }
+};
 
   /* ----------------------------------------
      5️⃣ DIALOG ACTIONS
