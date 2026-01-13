@@ -10,38 +10,39 @@ import {
 } from "@mui/material";
 import { ShoppingCart, ShoppingBag, Business } from "@mui/icons-material";
 import { CartContext } from "./cartContext";
-import { AuthContext } from "./authContext";
+import { useAuth } from "../../../context/authContext/authContext";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addItem } from "../../../store/slice/cartSlice";
+import { toast } from "react-toastify";
 
 const ActionButtons = ({ product, quantity }) => {
   const cartCtx = useContext(CartContext);
-  const authCtx = useContext(AuthContext);
-
-  const addToCart = cartCtx?.addToCart;
-  const user = authCtx?.user;
+  const { user, loading } = useAuth();
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showSellerPrompt, setShowSellerPrompt] = useState(false);
-  const [actionType, setActionType] = useState(null); // add | buy
+  const [actionType, setActionType] = useState(null); // "add" or "buy"
 
   const isOutOfStock = product.stock === 0;
   const meetsMOQ = product.moq && quantity >= product.moq;
 
   /* ----------------------------------------
-     1️⃣ LOGIN CHECK (HARD RULE)
+     1️⃣ LOGIN CHECK
+     ✅ Only show dialog if user is not logged in
   ---------------------------------------- */
   const requireLogin = (action) => {
+    if (loading) return true;
+
     if (!user) {
-      navigate("/auth", {
-        state: {
-          redirectTo: window.location.pathname,
-          intendedAction: action
-        }
-      });
+      setActionType(action);
+      setShowSellerPrompt(true); // open dialog
       return true;
     }
-    return false;
+
+    return false; // user logged in → skip dialog
   };
 
   /* ----------------------------------------
@@ -58,45 +59,53 @@ const ActionButtons = ({ product, quantity }) => {
      3️⃣ CORE HANDLER
   ---------------------------------------- */
   const handleAction = (type) => {
+    // If user is not logged in, show dialog
     if (requireLogin(type)) return;
 
-    // Seller cannot buy in bulk
-    if (user.role === "seller" && meetsMOQ) {
-      alert("Sellers cannot purchase bulk items.");
-      return;
-    }
-
-    // Buyer meets MOQ → ask seller registration
-    if (user.role === "buyer" && meetsMOQ) {
-      setActionType(type);
-      setShowSellerPrompt(true);
-      return;
-    }
-
+    // Logged-in users → directly proceed
     proceed(type);
   };
 
   /* ----------------------------------------
      4️⃣ FINAL EXECUTION
+     ✅ Updates Redux + CartContext
+     ✅ Serializes Firestore Timestamp
   ---------------------------------------- */
   const proceed = (type) => {
     const unitPrice = getFinalPrice();
 
-    const item = {
+    // Convert Firestore Timestamp to milliseconds
+    const sanitizedProduct = {
       ...product,
+      lastDepreciatedAt: product.lastDepreciatedAt
+        ? product.lastDepreciatedAt.toMillis()
+        : null,
+    };
+
+    const cartItem = {
+      product: sanitizedProduct,
       quantity,
       unitPrice,
-      totalPrice: unitPrice * quantity,
+      totalPrice: (unitPrice || 0) * quantity,
       isBulkOrder: user?.role === "seller" && meetsMOQ,
-      moq: product.moq
     };
 
     if (type === "add") {
-      addToCart(item);
+      // Add to Redux
+      dispatch(addItem(cartItem));
+
+      // Add to CartContext for drawer update
+      if (cartCtx?.addToCart) cartCtx.addToCart(cartItem);
+
+      toast.success("Item added to cart 🛒", {
+        position: "top-right",
+        autoClose: 2000,
+      });
     } else {
-      sessionStorage.setItem("directOrder", JSON.stringify([item]));
+      // Direct purchase
+      sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
       navigate("/checkout", {
-        state: { isDirectPurchase: true, items: [item] }
+        state: { isDirectPurchase: true, items: [cartItem] },
       });
     }
   };
@@ -106,7 +115,12 @@ const ActionButtons = ({ product, quantity }) => {
   ---------------------------------------- */
   const continueAsBuyer = () => {
     setShowSellerPrompt(false);
-    proceed(actionType);
+    navigate("/login", {
+      state: {
+        redirectTo: window.location.pathname,
+        intendedAction: actionType,
+      },
+    });
   };
 
   const registerAsSeller = () => {
@@ -115,13 +129,13 @@ const ActionButtons = ({ product, quantity }) => {
       state: {
         productId: product.id,
         quantity,
-        returnTo: window.location.pathname
-      }
+        returnTo: window.location.pathname,
+      },
     });
   };
 
   /* ----------------------------------------
-     UI
+     6️⃣ UI
   ---------------------------------------- */
   return (
     <>
@@ -132,7 +146,11 @@ const ActionButtons = ({ product, quantity }) => {
           startIcon={<ShoppingCart />}
           onClick={() => handleAction("add")}
           disabled={isOutOfStock}
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            backgroundColor: "#194638", // Set custom color for Add to Cart
+            "&:hover": { backgroundColor: "#163c2e" }, // Hover effect
+          }}
         >
           Add to Cart
         </Button>
@@ -143,43 +161,40 @@ const ActionButtons = ({ product, quantity }) => {
           startIcon={<ShoppingBag />}
           onClick={() => handleAction("buy")}
           disabled={isOutOfStock}
-          sx={{ flex: 1 }}
+          sx={{
+            flex: 1,
+            borderColor: "#ED6C02", // Set custom color for Buy Now
+            color: "#ED6C02", // Set custom color for Buy Now text
+            "&:hover": {
+              borderColor: "#d85a00", // Hover effect for border color
+              backgroundColor: "#d85a00", // Hover effect for background
+              color: "#FFFFFF", // Text color change on hover
+            },
+          }}
         >
           Buy Now
         </Button>
       </Stack>
 
-      {/* Seller Upgrade Prompt */}
+      {/* Login Prompt Dialog */}
       <Dialog open={showSellerPrompt} onClose={() => setShowSellerPrompt(false)}>
         <DialogTitle>
           <Stack direction="row" spacing={1} alignItems="center">
             <Business color="primary" />
-            <span>Bulk Purchase Detected</span>
+            <span>Login Required</span>
           </Stack>
         </DialogTitle>
 
         <DialogContent>
           <DialogContentText>
-            You are purchasing <strong>{quantity}</strong> units, which meets the
-            Minimum Order Quantity (MOQ) of <strong>{product.moq}</strong>.
-          </DialogContentText>
-
-          <DialogContentText sx={{ mt: 2 }}>
-            Registering as a <strong>Seller</strong> allows you to access bulk pricing
-            of <strong>${product.bulkPrice}/unit</strong>.
-          </DialogContentText>
-
-          <DialogContentText sx={{ mt: 2 }} color="text.secondary">
-            You may continue as a buyer, but bulk discounts will not apply.
+            You must be logged in to add items to your cart or make a purchase.
           </DialogContentText>
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={continueAsBuyer}>
-            Continue as Buyer (${product.price}/unit)
-          </Button>
+          <Button onClick={continueAsBuyer}>Login</Button>
           <Button variant="contained" onClick={registerAsSeller}>
-            Register as Seller
+            Register
           </Button>
         </DialogActions>
       </Dialog>

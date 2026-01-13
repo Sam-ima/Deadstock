@@ -2,8 +2,7 @@ import {
   Box,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
-  useMediaQuery,
+  Typography
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -16,7 +15,6 @@ import ListingsGrid from "./listingGrid";
 // import ListingsMobileSlider from "./ListingsMobileSlider";
 import EditProductDialog from "./editProductDialog";
 import ConfirmDialog from "./confirmationDialog";
-
 
 const ListingsTabs = ({ sellerId }) => {
   // const isMobile = useMediaQuery("(max-width:600px)");
@@ -57,10 +55,37 @@ const ListingsTabs = ({ sellerId }) => {
           value={tab}
           exclusive
           onChange={(_, v) => v && setTab(v)}
+          sx={{
+            bgcolor: "#F5F7F6",
+            p: 0.5,
+            borderRadius: "999px",
+            gap: 1.5,
+            // boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+            "& .MuiToggleButton-root": {
+              border: "none",
+              px: 3,
+              py: 1.5,
+              borderRadius: "999px !important",
+              fontWeight: 600,
+              textTransform: "none",
+              transition: "all 0.3s ease",
+              color: "#333",
+              "&:hover": {
+                bgcolor: "#e0f2f1",
+              },
+            },
+            "& .Mui-selected": {
+              color: "#fff !important",
+              background: "linear-gradient(135deg, #2e7d32, #ff8f00)",
+              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
+            },
+          }}
         >
-          <ToggleButton value="selling">Selling</ToggleButton>
-          <ToggleButton value="sold">Sold</ToggleButton>
-          <ToggleButton value="add" onClick={()=>navigate("/sell-item")}>Add</ToggleButton>
+          <ToggleButton value="selling">🟢 Selling</ToggleButton>
+          <ToggleButton value="sold">🟠 Sold</ToggleButton>
+          <ToggleButton value="add" onClick={() => navigate("/sell-item")}>
+            ➕ Add Product
+          </ToggleButton>
         </ToggleButtonGroup>
       </Box>
 
@@ -75,7 +100,11 @@ const ListingsTabs = ({ sellerId }) => {
         )}
 
         {!loading && products.length > 0 && (
-          <ListingsGrid products={products} />
+          <ListingsGrid
+            products={products}
+            onEdit={setEditProduct}
+            onDelete={setDeleteProductId}
+          />
         )}
       </Box>
 

@@ -1,123 +1,187 @@
-// src/components/cart/CartDrawer.jsx
 import {
-  Drawer,
   Box,
   Typography,
   IconButton,
   Divider,
   Button,
   Stack,
-  Avatar,
+  Badge,
+  Card,
+  Slide,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+
 import { useSelector, useDispatch } from "react-redux";
-import { addItem, decreaseItem, removeItem } from "../store/slice/cartSlice";
+import { addItem, updateItemQuantity, removeItem } from "../store/slice/cartSlice";
+
+const toNumber = (v) => (typeof v === "number" && !isNaN(v) ? v : 0);
+const formatPrice = (v) => toNumber(v).toFixed(2);
 
 const CartDrawer = ({ open, onClose }) => {
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.cart.items);
+  const cartItems = useSelector((state) => state.cart.items || {});
+  const cartItemsArray = Object.values(cartItems);
 
-  const cartItems = Object.values(items);
-
-  const cartTotal = cartItems.reduce(
-    (sum, item) => sum + item.product.unitPrice * item.quantity,
+  const totalItems = cartItemsArray.reduce((sum, item) => sum + toNumber(item.quantity), 0);
+  const cartTotal = cartItemsArray.reduce(
+    (sum, item) => sum + toNumber(item.totalPrice ?? item.unitPrice * item.quantity),
     0
   );
 
+  const handleDecrease = (cartItemId, qty) => {
+    if (qty > 1) {
+      dispatch(updateItemQuantity({ cartItemId, quantity: qty - 1 }));
+    } else {
+      dispatch(removeItem(cartItemId));
+    }
+  };
+
+  const handleIncrease = (item) => {
+    dispatch(addItem({ ...item, quantity: 1 }));
+  };
+
   return (
-    <Drawer anchor="right" open={open} onClose={onClose}>
-      <Box sx={{ width: 380, p: 3 }}>
-        {/* Header */}
-        <Stack direction="row" justifyContent="space-between" alignItems="center">
-          <Typography variant="h6" fontWeight={600}>
-            Shopping Cart
-          </Typography>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        </Stack>
+    <>
+      {/* Overlay */}
+      {open && (
+        <Box
+          onClick={onClose}
+          sx={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.3)",
+            zIndex: 1199,
+          }}
+        />
+      )}
 
-        <Divider sx={{ my: 2 }} />
-
-        {/* Cart Items */}
-        {cartItems.length === 0 ? (
-          <Typography color="text.secondary" textAlign="center" mt={5}>
-            Your cart is empty 🛒
-          </Typography>
-        ) : (
-          cartItems.map(({ product, quantity }) => (
-            <Box
-              key={product.id}
-              sx={{
-                mb: 2,
-                p: 1.5,
-                borderRadius: 2,
-                backgroundColor: "#f9f9f9",
-              }}
-            >
-              <Stack direction="row" spacing={2}>
-                <Avatar
-                  src={product.image}
-                  variant="rounded"
-                  sx={{ width: 60, height: 60 }}
-                />
-
-                <Box flex={1}>
-                  <Typography fontWeight={600}>
-                    {product.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    ${product.unitPrice}
-                  </Typography>
-
-                  <Stack direction="row" spacing={1} mt={1}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => dispatch(decreaseItem(product.id))}
-                    >
-                      −
-                    </Button>
-                    <Typography mt={0.5}>{quantity}</Typography>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      onClick={() => dispatch(addItem(product))}
-                    >
-                      +
-                    </Button>
-                  </Stack>
-                </Box>
-
-                <IconButton
-                  color="error"
-                  onClick={() => dispatch(removeItem(product.id))}
-                >
-                  ✕
-                </IconButton>
+      {/* Drawer */}
+      <Slide direction="left" in={open} mountOnEnter unmountOnExit>
+        <Box
+          sx={{
+            position: "fixed",
+            top: 64,
+            right: 0,
+            width: { xs: 350, sm: 420 },
+            height: "calc(100vh - 64px)",
+            backgroundColor: "#1a3b2d", 
+            zIndex: 1200,
+            borderTopLeftRadius: 20,
+            borderBottomLeftRadius: 20,
+            display: "flex",
+            flexDirection: "column",
+            color: "#FFFFFF", // all text white
+            boxShadow: "-4px 0px 20px rgba(0,0,0,0.5)",
+          }}
+        >
+          {/* HEADER */}
+          <Box sx={{ p: 3 }}>
+            <Stack direction="row" justifyContent="space-between" alignItems="center">
+              <Stack direction="row" spacing={2} alignItems="center">
+                <Badge badgeContent={totalItems} color="error">
+                  <ShoppingBagIcon sx={{ fontSize: 32, color: "#FFFFFF" }} />
+                </Badge>
+                <Typography fontWeight={700} sx={{ color: "#FFFFFF" }}>
+                  {totalItems} items • ${formatPrice(cartTotal)}
+                </Typography>
               </Stack>
-            </Box>
-          ))
-        )}
-
-        {/* Footer */}
-        {cartItems.length > 0 && (
-          <Box mt={3}>
-            <Divider sx={{ mb: 2 }} />
-            <Typography variant="h6">
-              Total: ${cartTotal.toFixed(2)}
-            </Typography>
-            <Button
-              fullWidth
-              variant="contained"
-              sx={{ mt: 2, py: 1.2 }}
-            >
-              Checkout
-            </Button>
+              <IconButton onClick={onClose} sx={{ color: "#FFFFFF" }}>
+                <CloseIcon />
+              </IconButton>
+            </Stack>
           </Box>
-        )}
-      </Box>
-    </Drawer>
+
+          {/* CART ITEMS */}
+          <Box sx={{ flex: 1, overflowY: "auto", px: 2 }}>
+            {cartItemsArray.length === 0 ? (
+              <Typography sx={{ mt: 5, textAlign: "center", color: "#FFFFFF" }}>
+                Your cart is empty
+              </Typography>
+            ) : (
+              cartItemsArray.map((item) => {
+                const qty = toNumber(item.quantity);
+                const price = toNumber(item.unitPrice);
+                const total = toNumber(item.totalPrice ?? price * qty);
+
+                return (
+                  <Card
+                    key={item.cartItemId}
+                    sx={{
+                      mb: 2,
+                      p: 2,
+                      backgroundColor: "#194638ff", 
+                      color: "#FFFFFF", // text white
+                      borderRadius: 2,
+                      transition: "transform 0.2s",
+                      "&:hover": { transform: "scale(1.02)" },
+                    }}
+                  >
+                    <Typography fontWeight={700}>{item.product?.name || item.name}</Typography>
+                    <Typography>
+                      ${formatPrice(price)} × {qty}
+                    </Typography>
+
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" mt={1}>
+                      <IconButton
+                        sx={{ color: "#FFFFFF" }}
+                        onClick={() => handleDecrease(item.cartItemId, qty)}
+                      >
+                        <RemoveIcon />
+                      </IconButton>
+
+                      <Typography fontWeight={700}>${formatPrice(total)}</Typography>
+
+                      <IconButton sx={{ color: "#FFFFFF" }} onClick={() => handleIncrease(item)}>
+                        <AddIcon />
+                      </IconButton>
+                    </Stack>
+
+                    <IconButton
+                      onClick={() => dispatch(removeItem(item.cartItemId))}
+                      sx={{ mt: 1 }}
+                    >
+                      <DeleteIcon sx={{ color: "#FF6B6B" }} />
+                    </IconButton>
+                  </Card>
+                );
+              })
+            )}
+          </Box>
+
+          {/* FOOTER */}
+          {cartItemsArray.length > 0 && (
+            <Box sx={{ p: 3,
+             backgroundColor: "rgba(25, 70, 56, 0.95)", // Matching navbar color
+
+             }}>
+              <Divider sx={{ mb: 2, borderColor: "#FFFFFF" }} />
+              <Typography fontWeight={800} sx={{ mb: 2, color: "#FFFFFF" }}>
+                Total: ${formatPrice(cartTotal)}
+              </Typography>
+              <Button
+                fullWidth
+                variant="contained"
+                startIcon={<ShoppingCartCheckoutIcon />}
+                sx={{
+                   backgroundColor: "#2a9d8f", // Complementary teal color
+                   color: "#FFFFFF",
+
+                  fontWeight: 700,
+                  "&:hover": { backgroundColor: "#E0E0E0" },
+                }}
+              >
+                Checkout
+              </Button>
+            </Box>
+          )}
+        </Box>
+      </Slide>
+    </>
   );
 };
 

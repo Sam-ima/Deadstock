@@ -63,12 +63,12 @@ function App() {
     <AuthProvider>
       <CategoryProvider>
         <ProductProvider>
-          <CartProvider>
+          {/* <CartProvider> */}
             <Suspense fallback={<div className="loading">Loading...</div>}>
               <RouterProvider router={router} />
               <ToastContainer transition={Flip} />
             </Suspense>
-          </CartProvider>
+          {/* </CartProvider> */}
         </ProductProvider>
       </CategoryProvider>
     </AuthProvider>
