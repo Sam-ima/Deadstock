@@ -15,10 +15,10 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import { useState, useEffect } from "react"; // Added useEffect
-
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addItem, updateItemQuantity, removeItem } from "../store/slice/cartSlice";
+import { useAuth } from "../context/authContext/authContext"; 
 
 // FIXED: Improved toNumber function
 const toNumber = (v) => {
@@ -43,31 +43,33 @@ const formatPrice = (v) => {
 
 const CartDrawer = ({ open, onClose }) => {
   const dispatch = useDispatch();
-  const cartItems = useSelector((state) => state.cart.items || {});
+  const { user } = useAuth(); // Get user auth state
+  
+  // Only show cart items if user is logged in
+  const cartItems = useSelector((state) => {
+    // If user is not logged in, return empty cart
+    if (!user) {
+      return {};
+    }
+    return state.cart.items || {};
+  });
+  
   const cartItemsArray = Object.values(cartItems);
   
   // Debug: Log cart items to see what's available
   useEffect(() => {
-    if (open && cartItemsArray.length > 0) {
-      console.log("📦 Cart Items Debug:", cartItemsArray);
-      cartItemsArray.forEach((item, index) => {
-        console.log(`Item ${index + 1}:`, {
-          name: item.name || item.product?.name,
-          unitPrice: item.unitPrice,
-          price: item.price,
-          productPrice: item.product?.price,
-          productCurrentPrice: item.product?.currentPrice,
-          totalPrice: item.totalPrice,
-          quantity: item.quantity
-        });
-      });
+    if (open) {
+      console.log("🔐 User logged in:", !!user);
+      console.log("📦 Cart Items:", cartItemsArray.length);
+      if (cartItemsArray.length > 0) {
+        console.log("Cart Items Debug:", cartItemsArray);
+      }
     }
-  }, [open, cartItemsArray]);
+  }, [open, cartItemsArray, user]);
 
   const totalItems = cartItemsArray.reduce((sum, item) => sum + toNumber(item.quantity), 0);
   
   const cartTotal = cartItemsArray.reduce((sum, item) => {
-    // Debug: Check all possible price sources
     const unitPrice = toNumber(
       item.unitPrice || 
       item.price || 
@@ -77,15 +79,6 @@ const CartDrawer = ({ open, onClose }) => {
     
     const quantity = toNumber(item.quantity);
     const totalPrice = toNumber(item.totalPrice || unitPrice * quantity);
-    
-    console.log("Price calculation for item:", {
-      name: item.name,
-      unitPrice,
-      price: item.price,
-      productPrice: item.product?.price,
-      totalPrice,
-      quantity
-    });
     
     return sum + totalPrice;
   }, 0);
@@ -160,7 +153,7 @@ const CartDrawer = ({ open, onClose }) => {
                   <ShoppingBagIcon sx={{ fontSize: 32, color: "#FFFFFF" }} />
                 </Badge>
                 <Typography fontWeight={700} sx={{ color: "#FFFFFF" }}>
-                  {totalItems} items • Rs.{formatPrice(cartTotal)}
+                  {user ? `${totalItems} items • Rs.${formatPrice(cartTotal)}` : "Please Login"}
                 </Typography>
               </Stack>
               <IconButton onClick={onClose} sx={{ color: "#FFFFFF" }}>
@@ -171,7 +164,31 @@ const CartDrawer = ({ open, onClose }) => {
 
           {/* CART ITEMS */}
           <Box sx={{ flex: 1, overflowY: "auto", px: 2, pb: 2 }}>
-            {cartItemsArray.length === 0 ? (
+            {!user ? (
+              <Box sx={{ textAlign: "center", mt: 5, p: 3 }}>
+                <ShoppingBagIcon sx={{ fontSize: 64, color: "rgba(255,255,255,0.5)", mb: 2 }} />
+                <Typography variant="h6" sx={{ color: "#FFFFFF", mb: 2 }}>
+                  Please Login
+                </Typography>
+                <Typography sx={{ color: "rgba(255,255,255,0.8)", mb: 3 }}>
+                  You need to be logged in to view and manage your cart.
+                </Typography>
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    onClose();
+                    navigate("/login", { state: { redirectTo: window.location.pathname } });
+                  }}
+                  sx={{
+                    backgroundColor: "#2a9d8f",
+                    color: "#FFFFFF",
+                    "&:hover": { backgroundColor: "#21867a" },
+                  }}
+                >
+                  Login to Continue
+                </Button>
+              </Box>
+            ) : cartItemsArray.length === 0 ? (
               <Typography sx={{ mt: 5, textAlign: "center", color: "#FFFFFF" }}>
                 Your cart is empty
               </Typography>
@@ -266,8 +283,8 @@ const CartDrawer = ({ open, onClose }) => {
             )}
           </Box>
 
-          {/* FOOTER */}
-          {cartItemsArray.length > 0 && (
+          {/* FOOTER - Only show when user is logged in and cart has items */}
+          {user && cartItemsArray.length > 0 && (
             <Box sx={{ 
               p: 3,
               backgroundColor: "rgba(25, 70, 56, 0.95)",
