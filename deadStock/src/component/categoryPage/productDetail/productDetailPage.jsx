@@ -65,6 +65,7 @@ const ProductDetailPage = () => {
             product={product}
             quantity={quantity}
             setQuantity={setQuantity}
+            
           />
         </Box>
 
