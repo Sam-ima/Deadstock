@@ -1,47 +1,34 @@
-import React from 'react';
-import { 
-  AppBar, 
-  Toolbar, 
-  Typography, 
-  Box, 
-  Badge, 
+import {
+  Box,
+  Typography,
   IconButton,
-  useTheme
-} from '@mui/material';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import StoreIcon from '@mui/icons-material/Store';
+  Stack,
+  Badge,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
+import { formatPrice } from "./cart_utils";
 
-const Header = () => {
-  const theme = useTheme();
-
+const CartDrawerHeader = ({ user, totalItems, cartTotal, onClose }) => {
   return (
-    <AppBar 
-      position="sticky" 
-      elevation={1}
-      sx={{ 
-        background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.warning.main} 100%)`,
-        mb: 4
-      }}
-    >
-      <Toolbar>
-        <StoreIcon sx={{ mr: 2, fontSize: 32 }} />
-        <Typography variant="h5" component="div" sx={{ flexGrow: 1, fontWeight: 600 }}>
-          BusinessPro Store
-        </Typography>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-          <IconButton color="inherit">
-            <Badge badgeContent={3} color="secondary">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-          <Typography variant="body1">
-            Premium Business Solutions
+    <Box sx={{ p: 3 }}>
+      <Stack direction="row" justifyContent="space-between" alignItems="center">
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Badge badgeContent={totalItems} color="error">
+            <ShoppingBagIcon sx={{ fontSize: 32, color: "#FFFFFF" }} />
+          </Badge>
+          <Typography fontWeight={700} sx={{ color: "#FFFFFF" }}>
+            {user
+              ? `${totalItems} items • Rs.${formatPrice(cartTotal)}`
+              : "Please Login"}
           </Typography>
-        </Box>
-      </Toolbar>
-    </AppBar>
+        </Stack>
+        <IconButton onClick={onClose} sx={{ color: "#FFFFFF" }}>
+          <CloseIcon />
+        </IconButton>
+      </Stack>
+    </Box>
   );
 };
 
-export default Header;
+export default CartDrawerHeader;
