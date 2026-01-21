@@ -6,18 +6,29 @@ import {
   Divider,
 } from "@mui/material";
 import ShoppingCartCheckoutIcon from "@mui/icons-material/ShoppingCartCheckout";
+import { useNavigate } from "react-router-dom";
 import { formatPrice } from "./cart_utils";
 
-const CartDrawerFooter = ({ cartTotal, onCheckout }) => {
+const CartDrawerFooter = ({ cartTotal = 0, onCheckout }) => {
+  const navigate = useNavigate();
+
+  const handleCheckout = () => {
+    if (onCheckout) onCheckout();
+    navigate("/checkout");
+  };
+
+  console.log("🛒 Footer - Cart Total:", cartTotal);
+
   return (
     <Box sx={{ p: 3, backgroundColor: "rgba(25, 70, 56, 0.95)" }}>
       <Divider sx={{ mb: 2, borderColor: "#FFFFFF" }} />
+
       <Stack direction="row" justifyContent="space-between" mb={2}>
         <Typography variant="h6" fontWeight={800} color="#FFF">
           Total:
         </Typography>
         <Typography variant="h6" fontWeight={800} color="#FFF">
-          Rs.{formatPrice(cartTotal)}
+          Rs. {formatPrice(cartTotal)}
         </Typography>
       </Stack>
 
@@ -31,9 +42,9 @@ const CartDrawerFooter = ({ cartTotal, onCheckout }) => {
           py: 1.5,
           "&:hover": { backgroundColor: "#21867a" },
         }}
-        onClick={onCheckout}
+        onClick={handleCheckout}
       >
-        Checkout
+        Checkout · Rs. {formatPrice(cartTotal)}
       </Button>
     </Box>
   );

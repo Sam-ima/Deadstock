@@ -25,7 +25,7 @@ const saveCartToStorage = (items) => {
 };
 
 // Generate a unique key for each cart addition
-const generateCartItemKey = (item) => `${item.id}_${item.unitPrice}_${Date.now()}`;
+const generateCartItemKey = (item) => `${item.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 /* ----------------------------------------
    Slice
@@ -49,54 +49,76 @@ const cartSlice = createSlice({
         state.items = {};
       }
 
-          const unitPrice =
-          typeof item.unitPrice === "number"
-          ? item.unitPrice
-          : typeof item.price === "number"
-          ? item.price
-          : 0;
+      const unitPrice = typeof item.unitPrice === "number"
+        ? item.unitPrice
+        : typeof item.price === "number"
+        ? item.price
+        : typeof item.product?.price === "number"
+        ? item.product.price
+        : 0;
 
+      const quantity = typeof item.quantity === "number" ? item.quantity : 1;
 
       // Always create a new cart item (no merging)
       const newKey = generateCartItemKey(item);
+      const now = new Date().toISOString();
 
       state.items[newKey] = {
         id: item.id,
-        name: item.name,
+        name: item.name || item.product?.name || "Product",
         product: item.product,
-        quantity: item.quantity,
-        unitPrice,
-        totalPrice: unitPrice * item.quantity,
+        quantity: quantity,
+        unitPrice: unitPrice,
+        totalPrice: unitPrice * quantity,
         isBulkOrder: item.isBulkOrder ?? false,
         cartItemId: newKey,
-        addedAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+        addedAt: now,
+        updatedAt: now,
       };
 
       saveCartToStorage(state.items);
 
       state.showSuccess = true;
-      state.successMessage = `${item.name} added to cart!`;
+      state.successMessage = `${state.items[newKey].name} added to cart!`;
       state.successProduct = item;
-      state.lastAdded = new Date().toISOString();
+      state.lastAdded = now;
+      
+      console.log("➕ Item added to cart:", {
+        key: newKey,
+        name: state.items[newKey].name,
+        quantity,
+        unitPrice,
+        totalPrice: unitPrice * quantity,
+        addedAt: now
+      });
     },
 
     updateItemQuantity: (state, action) => {
       const { cartItemId, quantity } = action.payload;
 
       if (state.items[cartItemId]) {
-        state.items[cartItemId].quantity = quantity;
-        state.items[cartItemId].totalPrice =
-          quantity * state.items[cartItemId].unitPrice;
+        const newQuantity = Math.max(1, quantity);
+        state.items[cartItemId].quantity = newQuantity;
+        state.items[cartItemId].totalPrice = newQuantity * state.items[cartItemId].unitPrice;
         state.items[cartItemId].updatedAt = new Date().toISOString();
 
         saveCartToStorage(state.items);
+        
+        console.log("✏️ Item quantity updated:", {
+          cartItemId,
+          newQuantity,
+          totalPrice: state.items[cartItemId].totalPrice
+        });
       }
     },
 
     removeItem: (state, action) => {
-      delete state.items[action.payload];
-      saveCartToStorage(state.items);
+      const cartItemId = action.payload;
+      if (state.items[cartItemId]) {
+        console.log("🗑️ Removing item:", cartItemId, state.items[cartItemId].name);
+        delete state.items[cartItemId];
+        saveCartToStorage(state.items);
+      }
     },
 
     clearCart: (state) => {

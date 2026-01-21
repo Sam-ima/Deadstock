@@ -1,4 +1,4 @@
-import { Box, Slide } from "@mui/material";
+import { Box, Slide , Typography} from "@mui/material";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -6,12 +6,12 @@ import {
   removeItem,
 } from "../store/slice/cartSlice";
 import { useAuth } from "../context/authContext/authContext";
-
+// import Typography from "@mui/material";
 import CartDrawerHeader from "../component/cart/cartHeader";
 import CartDrawerItem from "../component/cart/cart_item";
 import CartDrawerFooter from "../component/cart/cart_footer";
 import CartDrawerEmpty from "../component/cart/cart_drawer_empty";
-import { toNumber } from "../component/cart/cart_utils";
+import { toNumber, getItemTotal } from "../component/cart/cart_utils";
 
 const CartDrawer = ({ open, onClose }) => {
   const dispatch = useDispatch();
@@ -21,24 +21,46 @@ const CartDrawer = ({ open, onClose }) => {
     user ? state.cart.items || {} : {}
   );
 
-  const cartItemsArray = Object.values(cartItems);
+  // Convert to array and sort by addedAt (most recent first)
+  const cartItemsArray = Object.values(cartItems).sort((a, b) => {
+    const dateA = new Date(a.addedAt || a.updatedAt || 0);
+    const dateB = new Date(b.addedAt || b.updatedAt || 0);
+    return dateB - dateA; // Most recent first
+  });
 
   useEffect(() => {
     if (open) {
       console.log("🔐 User logged in:", !!user);
       console.log("📦 Cart Items:", cartItemsArray.length);
+      console.log("🕒 Sorted items (most recent first):", cartItemsArray.map(item => ({
+        name: item.name,
+        addedAt: item.addedAt,
+        updatedAt: item.updatedAt
+      })));
     }
   }, [open, cartItemsArray, user]);
 
   const totalItems = cartItemsArray.reduce(
-    (sum, i) => sum + toNumber(i.quantity),
+    (sum, item) => sum + toNumber(item.quantity),
     0
   );
 
   const cartTotal = cartItemsArray.reduce(
-    (sum, i) => sum + toNumber(i.totalPrice),
+    (sum, item) => sum + getItemTotal(item),
     0
   );
+
+  console.log("💰 Cart Total Calculation:", {
+    itemsCount: cartItemsArray.length,
+    totalItems,
+    cartTotal,
+    items: cartItemsArray.map(item => ({
+      name: item.name,
+      quantity: item.quantity,
+      unitPrice: item.unitPrice,
+      totalPrice: getItemTotal(item)
+    }))
+  });
 
   return (
     <>
@@ -81,6 +103,10 @@ const CartDrawer = ({ open, onClose }) => {
           <Box sx={{ flex: 1, overflowY: "auto", px: 2 }}>
             {!user ? (
               <CartDrawerEmpty onClose={onClose} />
+            ) : cartItemsArray.length === 0 ? (
+              <Box sx={{ textAlign: "center", mt: 4, color: "#FFFFFF" }}>
+                <Typography>Your cart is empty</Typography>
+              </Box>
             ) : (
               cartItemsArray.map((item) => (
                 <CartDrawerItem
@@ -113,7 +139,6 @@ const CartDrawer = ({ open, onClose }) => {
 };
 
 export default CartDrawer;
-
 
 
 // import {
