@@ -28,6 +28,8 @@ const ProfilePage = lazy(() => import("./pages/profilePage"));
 const SellerProfilePage = lazy(() => import("./pages/sellerProfilePage.jsx"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const AuctionDetailPage = lazy(() => import("./pages/auctionDetailPage.jsx"));
+const CheckoutPage = lazy(() => import("./pages/checkout.page.jsx"));
+
 const ProductDescriptionPage = lazy(() =>
   import("./pages/productDescriptionPage.jsx")
 );
@@ -53,6 +55,7 @@ const router = createBrowserRouter(
       <Route path="/product/:slug" element={<ProductDescriptionPage />} />
       <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
       <Route path="/cart" element={<CartPage />} />
+      <Route path="/checkout" element={<CheckoutPage />} />
 
     </Route>
   )
