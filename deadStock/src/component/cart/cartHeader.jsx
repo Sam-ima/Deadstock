@@ -19,7 +19,7 @@ const CartDrawerHeader = ({ user, totalItems, cartTotal, onClose }) => {
           </Badge>
           <Typography fontWeight={700} sx={{ color: "#FFFFFF" }}>
             {user
-              ? `${totalItems} items • Rs.${formatPrice(cartTotal)}`
+              ? `${totalItems} ${totalItems === 1 ? 'item' : 'items'} • Rs.${formatPrice(cartTotal)}`
               : "Please Login"}
           </Typography>
         </Stack>
