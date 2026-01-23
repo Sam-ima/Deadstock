@@ -14,6 +14,7 @@ import { useAuth } from "../../../context/authContext/authContext";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addItem } from "../../../store/slice/cartSlice";
+import { setDirectPurchaseItem } from "../../../store/slice/purchaseSlice";
 import { toast } from "react-toastify";
 
 const ActionButtons = ({ product, quantity }) => {
@@ -116,9 +117,14 @@ const ActionButtons = ({ product, quantity }) => {
       });
     } else {
       // Direct purchase
-      sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
+      // sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
+       dispatch(setDirectPurchaseItem(cartItem));
       navigate("/checkout", {
         state: { isDirectPurchase: true, items: [cartItem] },
+      });
+      toast.info("Proceeding to checkout...", {
+        position: "top-right",
+        autoClose: 1500,
       });
     }
   };
