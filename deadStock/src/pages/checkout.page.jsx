@@ -31,6 +31,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth } from '../context/authContext/authContext';
+import { resolveProductImages } from '../component/categoryPage/product/productCard/utils/productImages';
 import { clearDirectPurchaseItem } from '../store/slice/purchaseSlice';
 import { toast } from 'react-toastify';
 
@@ -80,18 +81,17 @@ function CheckoutPage() {
   return sourceItems.map((item) => {
     const product = item.product || item;
 
+     const resolvedImages =
+      product.images?.length > 0
+        ? product.images
+        : resolveProductImages(product);
+
     return {
       ...item,
 
-      product: {
+       product: {
         ...product,
-        // 🔑 Ensure images always exist
-        images:
-          product.images?.length > 0
-            ? product.images
-            : product.image
-            ? [product.image]
-            : [],
+        images: resolvedImages,
       },
 
       // 🔑 Ensure unitPrice always exists
