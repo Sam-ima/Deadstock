@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+// pages/checkout.page.jsx
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
@@ -6,9 +7,6 @@ import {
   TextField,
   Button,
   Paper,
-  Stepper,
-  Step,
-  StepLabel,
   Divider,
   Checkbox,
   FormControlLabel,
@@ -18,6 +16,8 @@ import {
   RadioGroup,
   FormControl,
   InputAdornment,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import PaymentIcon from '@mui/icons-material/Payment';
@@ -27,44 +27,288 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import SecurityIcon from '@mui/icons-material/Security';
 import DiscountIcon from '@mui/icons-material/Discount';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import EmailIcon from '@mui/icons-material/Email';
+import { useSelector, useDispatch } from 'react-redux';
+import { useAuth } from '../context/authContext/authContext';
+import { clearDirectPurchaseItem } from '../store/slice/purchaseSlice';
+import { toast } from 'react-toastify';
 
-// Vibrant, eye-catching color palette
+// Color constants
 const colors = {
-  primary: '#196638',          // Electric green
-  primaryLight: '#588157',     // Lighter green
+  primary: '#196638',
+  primaryLight: '#588157',
   primaryGradient: 'linear-gradient(135deg, #196638 0%, #588157 100%)',
-  accent: '#F57C00',           // Coral pink
-  accentLight: '#FFA0B5',      // Light coral
+  accent: '#F57C00',
+  accentLight: '#FFA0B5',
   accentGradient: 'linear-gradient(135deg, #FFC83D 0%, #F57C00 100%)',
-  success: '#00C896',          // Mint green
-  warning: '#FFC83D',          // Sunny yellow
-  textPrimary: '#2D2D5B',      // Deep blue-gray
-  textSecondary: '#6A6A8F',    // Medium blue-gray
-  textLight: '#FFFFFF',        // White
-  paper: '#FFFFFF',            // White
-  paperLight: '#F8F9FF',       // Very light blue
-  border: '#E6E8FF',           // Light blue border
-  bg: '#F5F7FF',               // Light blue background
-  shadow: 'rgba(58, 54, 224, 0.1)', // Blue shadow
+  success: '#00C896',
+  warning: '#FFC83D',
+  textPrimary: '#2D2D5B',
+  textSecondary: '#6A6A8F',
+  textLight: '#FFFFFF',
+  paper: '#FFFFFF',
+  paperLight: '#F8F9FF',
+  border: '#E6E8FF',
+  bg: '#F5F7FF',
+  shadow: 'rgba(58, 54, 224, 0.1)',
 };
 
 const steps = ['Contact', 'Shipping', 'Payment'];
 
 function CheckoutPage() {
-  const [activeStep, setActiveStep] = useState(1); // start at shipping like screenshot
+  const [activeStep, setActiveStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
+  
+  const { user } = useAuth();
+  const dispatch = useDispatch();
+  
+  // Get items from Redux
+  const directPurchaseItem = useSelector((state) => state.directPurchase.directPurchaseItem);
+  const cartItems = useSelector((state) => state.cart.items);
+  
+  // Create a safe array of items for display
+ const getDisplayItems = () => {
+  const sourceItems = directPurchaseItem
+    ? [directPurchaseItem]
+    : Array.isArray(cartItems)
+    ? cartItems
+    : [];
+
+  return sourceItems.map((item) => {
+    const product = item.product || item;
+
+    return {
+      ...item,
+
+      product: {
+        ...product,
+        // 🔑 Ensure images always exist
+        images:
+          product.images?.length > 0
+            ? product.images
+            : product.image
+            ? [product.image]
+            : [],
+      },
+
+      // 🔑 Ensure unitPrice always exists
+      unitPrice:
+        item.unitPrice ??
+        product.currentPrice ??
+        product.price ??
+        0,
+
+      quantity: item.quantity ?? 1,
+    };
+  });
+};
+
+const displayItems = getDisplayItems();
+
+  
+  // Calculate totals safely
+ const calculateTotals = () => {
+  if (!Array.isArray(displayItems) || displayItems.length === 0) {
+    return {
+      subtotal: 0,
+      shipping: 0,
+      tax: 0,
+      discount: 0,
+      total: 0,
+    };
+  }
+
+  const subtotal = displayItems.reduce((sum, item) => {
+    const unitPrice =
+      item.unitPrice ??
+      item.product?.currentPrice ??
+      item.product?.price ??
+      0;
+
+    const quantity = item.quantity || 1;
+
+    return sum + unitPrice * quantity;
+  }, 0);
+
+  const shipping = subtotal > 200 ? 0 : 25;
+  const tax = subtotal * 0.031;
+  const discount = subtotal > 150 ? 10 : 0;
+  const total = subtotal + shipping + tax - discount;
+
+  return {
+    subtotal: Number(subtotal.toFixed(2)),
+    shipping: Number(shipping.toFixed(2)),
+    tax: Number(tax.toFixed(2)),
+    discount: Number(discount.toFixed(2)),
+    total: Number(total.toFixed(2)),
+  };
+};
+
+const totals = calculateTotals();
 
   const handleNext = () => {
-    if (activeStep < steps.length - 1) {
-      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    if (activeStep < 2) {
+      setActiveStep(prev => prev + 1);
     }
   };
 
   const handleBack = () => {
     if (activeStep > 0) {
-      setActiveStep((prevActiveStep) => prevActiveStep - 1);
+      setActiveStep(prev => prev - 1);
     }
   };
+
+  const handlePayment = async () => {
+    setLoading(true);
+    
+    // Simulate payment processing
+    setTimeout(() => {
+      setLoading(false);
+      setPaymentSuccess(true);
+      
+      // Clear direct purchase item after successful payment
+      if (directPurchaseItem) {
+        dispatch(clearDirectPurchaseItem());
+      }
+      
+      // Show success message
+      toast.success("Payment successful! Order confirmed.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }, 2000);
+  };
+
+  // Check if we have items to display
+  const hasItems = displayItems.length > 0;
+
+  // User email display component
+  const UserEmailDisplay = () => {
+    if (!user) {
+      return (
+        <Alert 
+          severity="warning"
+          sx={{ 
+            mb: 3,
+            borderRadius: 2,
+          }}
+        >
+          <Typography fontWeight={600}>
+            Please login to complete your purchase
+          </Typography>
+        </Alert>
+      );
+    }
+    
+    return (
+      <Alert 
+        severity="info" 
+        icon={<EmailIcon />}
+        sx={{ 
+          mb: 3,
+          borderRadius: 2,
+          bgcolor: `${colors.primary}10`,
+          border: `1px solid ${colors.primary}30`,
+        }}
+      >
+        <Typography fontWeight={600}>
+          Logged in as: <Box component="span" sx={{ color: colors.primary }}>{user.email}</Box>
+        </Typography>
+        {user?.role === 'seller' && (
+          <Typography variant="body2" sx={{ mt: 0.5 }}>
+            Business account • Bulk pricing applied where applicable
+          </Typography>
+        )}
+      </Alert>
+    );
+  };
+
+  // Payment success component
+  const PaymentSuccess = () => (
+    <Box sx={{ textAlign: 'center', py: 6 }}>
+      <CheckCircleIcon sx={{ fontSize: 80, color: colors.success, mb: 3 }} />
+      <Typography variant="h4" fontWeight={700} color={colors.textPrimary} gutterBottom>
+        Payment Successful! 🎉
+      </Typography>
+      <Typography variant="body1" color={colors.textSecondary} sx={{ mb: 4, maxWidth: 500, mx: 'auto' }}>
+        Your order has been confirmed. A confirmation email has been sent to {user?.email || 'your email'}
+      </Typography>
+      <Button
+        variant="contained"
+        onClick={() => window.location.href = '/'}
+        sx={{
+          background: colors.primaryGradient,
+          color: colors.textLight,
+          px: 5,
+          py: 1.5,
+          borderRadius: 2,
+          fontWeight: 700,
+        }}
+      >
+        Continue Shopping
+      </Button>
+    </Box>
+  );
+
+  if (paymentSuccess) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          bgcolor: colors.bg,
+          color: colors.textPrimary,
+          py: { xs: 4, md: 8 },
+        }}
+      >
+        <Container maxWidth="md">
+          <PaymentSuccess />
+        </Container>
+      </Box>
+    );
+  }
+
+  // If no items and user is not in direct purchase flow, show empty state
+  if (!hasItems && !directPurchaseItem) {
+    return (
+      <Box
+        sx={{
+          minHeight: '100vh',
+          bgcolor: colors.bg,
+          color: colors.textPrimary,
+          py: { xs: 4, md: 8 },
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <Container maxWidth="md" sx={{ textAlign: 'center' }}>
+          <Typography variant="h4" fontWeight={700} color={colors.textPrimary} gutterBottom>
+            Your cart is empty
+          </Typography>
+          <Typography variant="body1" color={colors.textSecondary} sx={{ mb: 4 }}>
+            Add items to your cart before proceeding to checkout
+          </Typography>
+          <Button
+            variant="contained"
+            onClick={() => window.location.href = '/'}
+            sx={{
+              background: colors.primaryGradient,
+              color: colors.textLight,
+              px: 5,
+              py: 1.5,
+              borderRadius: 2,
+              fontWeight: 700,
+            }}
+          >
+            Continue Shopping
+          </Button>
+        </Container>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -77,7 +321,7 @@ function CheckoutPage() {
     >
       <Container maxWidth="lg">
         {/* Title */}
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
+        <Box sx={{ textAlign: 'center', mb: 4 }}>
           <Typography
             variant="h3"
             component="h1"
@@ -90,12 +334,17 @@ function CheckoutPage() {
               mb: 2,
             }}
           >
-            Secure Checkout
+            {directPurchaseItem ? 'Direct Purchase' : 'Secure Checkout'}
           </Typography>
           <Typography variant="body1" color={colors.textSecondary} sx={{ maxWidth: 600, mx: 'auto' }}>
-            Complete your purchase in just a few steps. Your items are waiting!
+            {directPurchaseItem 
+              ? 'You\'re purchasing this item directly. Complete your purchase below.' 
+              : 'Complete your purchase in just a few steps. Your items are waiting!'}
           </Typography>
         </Box>
+
+        {/* User Email Display */}
+        <UserEmailDisplay />
 
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', lg: 'row' }, gap: 4 }}>
           {/* Left - Form Section */}
@@ -187,7 +436,7 @@ function CheckoutPage() {
                   <TextField
                     fullWidth
                     label="Email address"
-                    defaultValue="alex.morgan@deadstock.com"
+                    defaultValue={user?.email || ""}
                     margin="normal"
                     variant="outlined"
                     InputLabelProps={{ shrink: true }}
@@ -215,7 +464,7 @@ function CheckoutPage() {
                   <TextField
                     fullWidth
                     label="Full name"
-                    defaultValue="Alex Morgan"
+                    defaultValue={user?.displayName || ""}
                     margin="normal"
                     variant="outlined"
                     InputProps={{
@@ -412,44 +661,6 @@ function CheckoutPage() {
                           </Box>
                         </CardContent>
                       </Card>
-
-                      {/* Crypto */}
-                      <Card
-                        variant="outlined"
-                        sx={{
-                          bgcolor: paymentMethod === 'crypto' ? colors.paperLight : 'transparent',
-                          border: `2px solid ${paymentMethod === 'crypto' ? colors.primary : colors.border}`,
-                          borderRadius: 3,
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            borderColor: colors.primaryLight,
-                            transform: 'translateY(-2px)',
-                          },
-                        }}
-                        onClick={() => setPaymentMethod('crypto')}
-                      >
-                        <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Radio value="crypto" sx={{ color: colors.primary }} />
-                            <Box
-                              sx={{
-                                width: 40,
-                                height: 40,
-                                borderRadius: '10px',
-                                bgcolor: '#F7931A',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                mr: 2,
-                              }}
-                            >
-                              <AccountBalanceWalletIcon sx={{ color: colors.textLight }} />
-                            </Box>
-                            <Typography variant="subtitle1" fontWeight={600}>Cryptocurrency</Typography>
-                          </Box>
-                        </CardContent>
-                      </Card>
                     </RadioGroup>
                   </FormControl>
 
@@ -539,7 +750,7 @@ function CheckoutPage() {
               <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 5 }}>
                 <Button
                   variant="outlined"
-                  disabled={activeStep === 0}
+                  disabled={activeStep === 0 || loading}
                   onClick={handleBack}
                   sx={{
                     borderColor: colors.primary,
@@ -558,7 +769,8 @@ function CheckoutPage() {
 
                 <Button
                   variant="contained"
-                  onClick={handleNext}
+                  onClick={activeStep === steps.length - 1 ? handlePayment : handleNext}
+                  disabled={loading || !user}
                   endIcon={activeStep === steps.length - 1 ? null : <ArrowForwardIcon />}
                   sx={{
                     background: activeStep === steps.length - 1 ? colors.accentGradient : colors.primaryGradient,
@@ -569,14 +781,21 @@ function CheckoutPage() {
                     fontSize: '1rem',
                     py: 1.5,
                     boxShadow: `0 4px 20px ${colors.shadow}`,
+                    minWidth: 180,
                     '&:hover': {
                       boxShadow: `0 6px 30px ${colors.shadow}`,
-                      transform: 'translateY(-2px)',
+                      transform: loading ? 'none' : 'translateY(-2px)',
                     },
                     transition: 'all 0.3s ease',
                   }}
                 >
-                  {activeStep === steps.length - 1 ? 'Pay $204.40' : 'Continue'}
+                  {loading ? (
+                    <CircularProgress size={24} sx={{ color: colors.textLight }} />
+                  ) : activeStep === steps.length - 1 ? (
+                    `Pay $${totals.total.toFixed(2)}`
+                  ) : (
+                    'Continue'
+                  )}
                 </Button>
               </Box>
 
@@ -610,70 +829,88 @@ function CheckoutPage() {
 
               {/* Items */}
               <Box sx={{ my: 3 }}>
-                {/* Item 1 */}
-                <Box sx={{ display: 'flex', gap: 2, mb: 3, p: 2, bgcolor: colors.paperLight, borderRadius: 3 }}>
-                  <Box
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: 2,
-                      bgcolor: colors.primaryLight,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: colors.textLight,
-                      fontWeight: 700,
-                      fontSize: '1.5rem',
-                    }}
-                  >
-                    👟
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <Typography fontWeight={600}>Nike Dunk Low Retro</Typography>
-                      <Typography fontWeight={700} color={colors.primary}>$109.00</Typography>
+                {displayItems.map((item, index) => {
+                  // Safely get item details
+                  const itemName = item.name || item.product?.name || 'Product';
+                  const itemImage = item.product?.images?.[0] || item.image;
+                  const unitPrice = item.unitPrice || item.price || 0;
+                  const quantity = item.quantity || 1;
+                  const isBulk = item.isBulkOrder || false;
+                  
+                  return (
+                    <Box 
+                      key={item.cartItemId || item.id || index}
+                      sx={{ 
+                        display: 'flex', 
+                        gap: 2, 
+                        mb: 3, 
+                        p: 2, 
+                        bgcolor: colors.paperLight, 
+                        borderRadius: 3 
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          borderRadius: 2,
+                          bgcolor: index % 2 === 0 ? colors.primaryLight : colors.accentLight,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: colors.textLight,
+                          fontWeight: 700,
+                          fontSize: '1.5rem',
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {itemImage ? (
+                          <Box
+                            component="img"
+                            src={itemImage}
+                            alt={itemName}
+                            sx={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                            }}
+                          />
+                        ) : (
+                          '📦'
+                        )}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <Typography fontWeight={600}>{itemName}</Typography>
+                          <Typography fontWeight={700} color={colors.primary}>
+                            ${(unitPrice * quantity).toFixed(2)}
+                          </Typography>
+                        </Box>
+                        <Typography variant="body2" color={colors.textSecondary}>
+                          {isBulk ? 'Bulk Order • ' : ''}
+                          Unit Price: ${unitPrice.toFixed(2)}
+                        </Typography>
+                        <Typography variant="caption" color={colors.textSecondary}>
+                          Qty: {quantity}
+                        </Typography>
+                        {isBulk && (
+                          <Typography variant="caption" color={colors.success} sx={{ display: 'block', mt: 0.5 }}>
+                            ✓ Bulk discount applied
+                          </Typography>
+                        )}
+                      </Box>
                     </Box>
-                    <Typography variant="body2" color={colors.textSecondary}>
-                      Green / US 10
-                    </Typography>
-                    <Typography variant="caption" color={colors.textSecondary}>
-                      Qty: 1
-                    </Typography>
-                  </Box>
-                </Box>
-
-                {/* Item 2 */}
-                <Box sx={{ display: 'flex', gap: 2, p: 2, bgcolor: colors.paperLight, borderRadius: 3 }}>
-                  <Box
-                    sx={{
-                      width: 80,
-                      height: 80,
-                      borderRadius: 2,
-                      bgcolor: colors.accentLight,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: colors.textLight,
-                      fontWeight: 700,
-                      fontSize: '1.5rem',
-                    }}
-                  >
-                    ⌚
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <Typography fontWeight={600}>Vintage Seiko 5</Typography>
-                      <Typography fontWeight={700} color={colors.primary}>$65.00</Typography>
-                    </Box>
-                    <Typography variant="body2" color={colors.textSecondary}>
-                      Automatic / Excellent condition
-                    </Typography>
-                    <Typography variant="caption" color={colors.textSecondary}>
-                      Qty: 1
-                    </Typography>
-                  </Box>
-                </Box>
+                  );
+                })}
               </Box>
+
+              {displayItems.length === 0 && (
+                <Box sx={{ textAlign: 'center', py: 4 }}>
+                  <Typography color={colors.textSecondary}>
+                    No items in your order
+                  </Typography>
+                </Box>
+              )}
 
               <Divider sx={{ my: 3, borderColor: colors.border }} />
 
@@ -681,28 +918,30 @@ function CheckoutPage() {
               <Box sx={{ '& > *': { display: 'flex', justifyContent: 'space-between', mb: 2 } }}>
                 <Box>
                   <Typography color={colors.textSecondary}>Subtotal</Typography>
-                  <Typography fontWeight={500}>$174.00</Typography>
+                  <Typography fontWeight={500}>${totals.subtotal.toFixed(2)}</Typography>
                 </Box>
                 <Box>
                   <Typography color={colors.textSecondary}>Shipping</Typography>
                   <Typography fontWeight={500}>
                     <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      $25.00 <LocalShippingIcon sx={{ fontSize: 16 }} />
+                      ${totals.shipping.toFixed(2)} <LocalShippingIcon sx={{ fontSize: 16 }} />
                     </Box>
                   </Typography>
                 </Box>
                 <Box>
                   <Typography color={colors.textSecondary}>Estimated tax</Typography>
-                  <Typography fontWeight={500}>$5.40</Typography>
+                  <Typography fontWeight={500}>${totals.tax.toFixed(2)}</Typography>
                 </Box>
-                <Box sx={{ color: colors.success }}>
-                  <Typography>
-                    <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                      <DiscountIcon sx={{ fontSize: 16 }} /> Deadstock Savings
-                    </Box>
-                  </Typography>
-                  <Typography fontWeight={600}>–$10.00</Typography>
-                </Box>
+                {totals.discount > 0 && (
+                  <Box sx={{ color: colors.success }}>
+                    <Typography>
+                      <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <DiscountIcon sx={{ fontSize: 16 }} /> Discount
+                      </Box>
+                    </Typography>
+                    <Typography fontWeight={600}>–${totals.discount.toFixed(2)}</Typography>
+                  </Box>
+                )}
               </Box>
 
               <Divider sx={{ my: 3, borderColor: colors.border }} />
@@ -713,7 +952,7 @@ function CheckoutPage() {
                   Total Due
                 </Typography>
                 <Typography variant="h4" fontWeight={800} sx={{ background: colors.accentGradient, WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-                  $204.40
+                  ${totals.total.toFixed(2)}
                 </Typography>
               </Box>
               <Typography variant="caption" color={colors.textSecondary}>
@@ -727,6 +966,8 @@ function CheckoutPage() {
                 size="large"
                 startIcon={<LockIcon />}
                 endIcon={<ArrowForwardIcon />}
+                onClick={handlePayment}
+                disabled={loading || !hasItems || !user}
                 sx={{
                   mt: 4,
                   py: 1.8,
@@ -737,74 +978,19 @@ function CheckoutPage() {
                   boxShadow: `0 6px 24px ${colors.accent}40`,
                   '&:hover': {
                     boxShadow: `0 8px 32px ${colors.accent}60`,
-                    transform: 'translateY(-2px)',
+                    transform: loading ? 'none' : 'translateY(-2px)',
                   },
                   transition: 'all 0.3s ease',
                 }}
               >
-                Complete Payment
+                {loading ? (
+                  <CircularProgress size={24} sx={{ color: colors.textLight }} />
+                ) : (
+                  'Complete Payment'
+                )}
               </Button>
-
-              {/* Trust badges */}
-              <Box sx={{ mt: 3, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: colors.success }} />
-                  <Typography variant="caption" color={colors.textSecondary}>
-                    30-Day Returns
-                  </Typography>
-                </Box>
-                <Box component="span" sx={{ color: colors.border }}>•</Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', bgcolor: colors.success }} />
-                  <Typography variant="caption" color={colors.textSecondary}>
-                    Authenticity Guaranteed
-                  </Typography>
-                </Box>
-              </Box>
-            </Paper>
-
-            {/* Promo Card */}
-            <Paper
-              sx={{
-                mt: 3,
-                p: 2.5,
-                bgcolor: colors.warning,
-                borderRadius: 3,
-                color: colors.textPrimary,
-              }}
-            >
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ fontSize: '2rem' }}>🎁</Box>
-                <Box>
-                  <Typography variant="subtitle2" fontWeight={700}>
-                    Free shipping on orders over $200!
-                  </Typography>
-                  <Typography variant="caption">
-                    Add $26 more to qualify for free shipping.
-                  </Typography>
-                </Box>
-              </Box>
             </Paper>
           </Box>
-        </Box>
-
-        {/* Footer */}
-        <Box sx={{ mt: 8, textAlign: 'center', color: colors.textSecondary }}>
-          <Typography variant="caption">
-            © 2023–2026 Deadstock Market Inc. All rights reserved.
-          </Typography>
-          <Box component="span" sx={{ mx: 2, color: colors.border }}>
-            •
-          </Box>
-          <Typography variant="caption" component="a" href="#" color={colors.primary} sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
-            Privacy Policy
-          </Typography>
-          <Box component="span" sx={{ mx: 1.5, color: colors.border }}>
-            •
-          </Box>
-          <Typography variant="caption" component="a" href="#" color={colors.primary} sx={{ textDecoration: 'none', '&:hover': { textDecoration: 'underline' } }}>
-            Terms of Service
-          </Typography>
         </Box>
       </Container>
     </Box>
