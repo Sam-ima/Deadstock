@@ -31,7 +31,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth } from '../context/authContext/authContext';
-import { resolveProductImages } from '../component/categoryPage/product/productCard/utils/productImages';
+import { resolveProductImages } from '../component/categoryPage/product/productCard/utils/ProductImages';
 import { clearDirectPurchaseItem } from '../store/slice/purchaseSlice';
 import { toast } from 'react-toastify';
 
