@@ -59,6 +59,20 @@ export const addProduct = async (
 
     console.log("Generated slug:", slug);
 
+    const totalStock = Number(productData.stock) || 1;
+    const basePrice = Number(productData.basePrice) || 0;
+
+    // user input (could be undefined, empty, null)
+    const userFloorPrice = productData.floorPrice;
+
+    // final floor price logic
+    const floorPrice =
+      userFloorPrice !== undefined &&
+        userFloorPrice !== null &&
+        userFloorPrice !== ''
+        ? Number(userFloorPrice)
+        : basePrice * 0.5;
+
     // 2. Prepare base product data
     const baseProduct = {
       // Basic info (with defaults)
@@ -69,14 +83,16 @@ export const addProduct = async (
       subcategoryId: productData.subcategoryId || null,
 
       // Pricing (with validation)
-      basePrice: Number(productData.basePrice) || 0,
-      currentPrice: Number(productData.basePrice) || 0,
-      floorPrice:
-        Number(productData.floorPrice) || Number(productData.basePrice) * 0.3,
+      basePrice,
+      currentPrice: basePrice,
+      floorPrice,
 
       // Inventory
-      stock: Number(productData.stock) || 1,
+      stock: totalStock,
+      availableStock: totalStock,
+      reservedStock: 0,
       sold: 0,
+
 
       // Seller info
       sellerId: userId,
@@ -172,9 +188,8 @@ const uploadProductImages = async (images, userId, productId = "") => {
 
       const file = image.file || image;
       const timestamp = Date.now();
-      const fileName = `${timestamp}_${index}_${
-        file.name?.replace(/\s+/g, "_") || "image"
-      }`;
+      const fileName = `${timestamp}_${index}_${file.name?.replace(/\s+/g, "_") || "image"
+        }`;
       const path = `products/${userId}/${productId || "temp"}/${fileName}`;
 
       console.log(`Uploading to path: ${path}`);
@@ -299,16 +314,16 @@ export const getAllProducts = async (filters = {}) => {
         data.createdAt && typeof data.createdAt.toDate === "function"
           ? data.createdAt.toDate().toISOString() // Firestore Timestamp
           : data.createdAt
-          ? new Date(data.createdAt).toISOString() // string or number
-          : new Date().toISOString(); // fallback if missing
+            ? new Date(data.createdAt).toISOString() // string or number
+            : new Date().toISOString(); // fallback if missing
 
       // Safely handle updatedAt
       const updatedAt =
         data.updatedAt && typeof data.updatedAt.toDate === "function"
           ? data.updatedAt.toDate().toISOString()
           : data.updatedAt
-          ? new Date(data.updatedAt).toISOString()
-          : new Date().toISOString();
+            ? new Date(data.updatedAt).toISOString()
+            : new Date().toISOString();
 
       return {
         id: doc.id,

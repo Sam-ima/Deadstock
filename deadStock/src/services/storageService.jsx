@@ -27,6 +27,20 @@ export const addProduct = async (productData, userId, userType, images = []) => 
     .replace(/[^\w\s]/gi, '')
     .replace(/\s+/g, '-');
 
+  const totalStock = Number(productData.stock) || 1;
+  const basePrice = Number(productData.basePrice) || 0;
+
+  // user input (could be undefined, empty, null)
+  const userFloorPrice = productData.floorPrice;
+
+  // final floor price logic
+  const floorPrice =
+    userFloorPrice !== undefined &&x
+      userFloorPrice !== null &&
+      userFloorPrice !== ''
+      ? Number(userFloorPrice)
+      : basePrice * 0.5;
+
   // 3. Prepare base product data
   const baseProduct = {
     name: productData.name,
@@ -36,13 +50,16 @@ export const addProduct = async (productData, userId, userType, images = []) => 
     subcategoryId: productData.subcategoryId || null,
 
     // Pricing
-    basePrice: Number(productData.basePrice) || 0,
-    currentPrice: Number(productData.basePrice) || 0,
-    floorPrice: Number(productData.floorPrice) || (Number(productData.basePrice) * 0.3),
+    basePrice,
+    currentPrice: basePrice,
+    floorPrice,
 
     // Inventory
-    stock: Number(productData.stock) || 1,
+    stock: totalStock,
+    availableStock: totalStock,
+    reservedStock: 0,
     sold: 0,
+
 
     // Seller info
     sellerId: userId,
