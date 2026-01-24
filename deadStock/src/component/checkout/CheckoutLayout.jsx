@@ -18,6 +18,8 @@ const CheckoutLayout = ({
   onBack,
   onPayment,
   onPaymentMethodChange,
+  deliveryDetails,
+  setDeliveryDetails
 }) => {
   return (
     <Box
@@ -78,6 +80,8 @@ const CheckoutLayout = ({
               onBack={onBack}
               onPayment={onPayment}
               onPaymentMethodChange={onPaymentMethodChange}
+              deliveryDetails={deliveryDetails}
+              setDeliveryDetails={setDeliveryDetails}
             />
           </Box>
 

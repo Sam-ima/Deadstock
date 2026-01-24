@@ -26,6 +26,8 @@ const CheckoutForm = ({
   onBack,
   onPayment,
   onPaymentMethodChange,
+  deliveryDetails,
+  setDeliveryDetails,
 }) => {
   return (
     <Paper
@@ -47,7 +49,13 @@ const CheckoutForm = ({
 
       {/* Step Content */}
       {activeStep === 0 && <ContactStep user={user} />}
-      {activeStep === 1 && <ShippingStep user={user} />}
+      {activeStep === 1 && (
+        <ShippingStep
+          user={user}
+          deliveryDetails={deliveryDetails}
+          setDeliveryDetails={setDeliveryDetails}
+        />
+      )}
       {activeStep === 2 && (
         <PaymentStep
           paymentMethod={paymentMethod}

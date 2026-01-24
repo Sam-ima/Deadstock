@@ -2,8 +2,6 @@
 import React from "react";
 import {
   Typography,
-  TextField,
-  InputAdornment,
   Box,
   FormControl,
   RadioGroup,
@@ -13,9 +11,8 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import PaymentIcon from "@mui/icons-material/Payment";
 import { colors } from "./Constants";
+import EsewaLogo from "../../assets/esewa-logo.png";
 
 const PaymentStep = ({ paymentMethod, onPaymentMethodChange }) => {
   return (
@@ -28,8 +25,9 @@ const PaymentStep = ({ paymentMethod, onPaymentMethodChange }) => {
       >
         Payment Method
       </Typography>
+
       <Typography variant="body2" color={colors.textSecondary} sx={{ mb: 3 }}>
-        Choose how you'd like to pay
+        Secure payment using eSewa (Nepal)
       </Typography>
 
       <FormControl component="fieldset" sx={{ width: "100%" }}>
@@ -37,37 +35,34 @@ const PaymentStep = ({ paymentMethod, onPaymentMethodChange }) => {
           value={paymentMethod}
           onChange={(e) => onPaymentMethodChange(e.target.value)}
         >
-          {/* Card */}
           <PaymentOption
-            value="card"
+            value="esewa"
             paymentMethod={paymentMethod}
-            icon={<CreditCardIcon />}
-            iconBgColor={
-              paymentMethod === "card" ? colors.primary : colors.border
-            }
-            iconColor={
-              paymentMethod === "card" ? colors.textLight : colors.textPrimary
-            }
-            label="Credit / Debit Card"
-            onClick={() => onPaymentMethodChange("card")}
-          />
-
-          {/* PayPal */}
-          <PaymentOption
-            value="paypal"
-            paymentMethod={paymentMethod}
-            icon={<PaymentIcon />}
-            iconBgColor="#FFC439"
-            iconColor="#003087"
-            label="PayPal"
-            onClick={() => onPaymentMethodChange("paypal")}
+            label="eSewa Digital Wallet"
+            onClick={() => onPaymentMethodChange("esewa")}
           />
         </RadioGroup>
       </FormControl>
 
-      {/* Card fields */}
-      {paymentMethod === "card" && <CardFields />}
+      {/* eSewa info */}
+      {paymentMethod === "esewa" && (   
+        <Box
+          sx={{
+            mt: 3,
+            p: 2,
+            bgcolor: colors.paperLight,
+            borderRadius: 3,
+            border: `1px solid ${colors.border}`,
+          }}
+        >
+          <Typography variant="body2" color={colors.textSecondary}>
+            You will be redirected to <strong>eSewa</strong> to complete your
+            payment securely.
+          </Typography>
+        </Box>
+      )}
 
+      {/* Business Invoice Checkbox */}
       <Box
         sx={{
           mt: 3,
@@ -97,21 +92,16 @@ const PaymentStep = ({ paymentMethod, onPaymentMethodChange }) => {
   );
 };
 
-const PaymentOption = ({
-  value,
-  paymentMethod,
-  icon,
-  iconBgColor,
-  iconColor,
-  label,
-  onClick,
-}) => (
+const PaymentOption = ({ value, paymentMethod, label, onClick }) => (
   <Card
     variant="outlined"
+    onClick={onClick}
     sx={{
       mb: 2,
       bgcolor: paymentMethod === value ? colors.paperLight : "transparent",
-      border: `2px solid ${paymentMethod === value ? colors.primary : colors.border}`,
+      border: `2px solid ${
+        paymentMethod === value ? colors.primary : colors.border
+      }`,
       borderRadius: 3,
       cursor: "pointer",
       transition: "all 0.3s ease",
@@ -120,98 +110,32 @@ const PaymentOption = ({
         transform: "translateY(-2px)",
       },
     }}
-    onClick={onClick}
   >
     <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
         <Radio value={value} sx={{ color: colors.primary }} />
+
         <Box
           sx={{
-            width: 40,
-            height: 40,
-            borderRadius: "10px",
-            bgcolor: iconBgColor,
+            width: 44,
+            height: 44,
+            borderRadius: 2,
+            bgcolor: "#60BB46",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             mr: 2,
           }}
         >
-          {React.cloneElement(icon, { sx: { color: iconColor } })}
+          <img src={EsewaLogo} alt="eSewa" style={{ width: 28, height: 28 }} />
         </Box>
+
         <Typography variant="subtitle1" fontWeight={600}>
           {label}
         </Typography>
       </Box>
     </CardContent>
   </Card>
-);
-
-const CardFields = () => (
-  <Box mt={3}>
-    <TextField
-      fullWidth
-      label="Card number"
-      defaultValue="4242 4242 4242 4242"
-      margin="normal"
-      variant="outlined"
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <CreditCardIcon sx={{ color: colors.primary }} />
-          </InputAdornment>
-        ),
-      }}
-      sx={{
-        "& .MuiOutlinedInput-root": {
-          borderRadius: 2,
-          "&:hover fieldset": {
-            borderColor: colors.primaryLight,
-          },
-        },
-      }}
-    />
-    <Box
-      sx={{
-        display: "flex",
-        gap: 2,
-        flexDirection: { xs: "column", sm: "row" },
-      }}
-    >
-      <TextField
-        fullWidth
-        label="Expiration (MM/YY)"
-        defaultValue="12/28"
-        margin="normal"
-        variant="outlined"
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: 2,
-            "&:hover fieldset": {
-              borderColor: colors.primaryLight,
-            },
-          },
-        }}
-      />
-      <TextField
-        fullWidth
-        label="CVC"
-        defaultValue="123"
-        margin="normal"
-        variant="outlined"
-        type="password"
-        inputProps={{ maxLength: 4 }}
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            borderRadius: 2,
-            "&:hover fieldset": {
-              borderColor: colors.primaryLight,
-            },
-          },
-        }}
-      />
-    </Box>
-  </Box>
 );
 
 export default PaymentStep;
