@@ -5,8 +5,11 @@ import {
   DialogActions,
   TextField,
   Button,
-  Alert
+  Alert,
+  IconButton,
+  Box
 } from "@mui/material";
+import { Close } from "@mui/icons-material";
 
 const AddCategoryDialog = ({
   open,
@@ -22,14 +25,27 @@ const AddCategoryDialog = ({
       onClose={onClose}
       maxWidth="sm"
       fullWidth
+      PaperProps={{
+        sx: {
+          p: 1,
+          borderRadius: 2
+        }
+      }}
       disableEnforceFocus
       disableAutoFocus
     >
-      <DialogTitle sx={{
-            fontSize: { xs: "1.1rem", sm: "1.25rem" }
-          }}>Add New Category</DialogTitle>
+      <DialogTitle sx={{ p: 2, m: 0 }}>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Box sx={{ fontSize: { xs: "1.1rem", sm: "1.25rem" }, fontWeight: 600 }}>
+            Add New Category
+          </Box>
+          <IconButton onClick={onClose} size="small">
+            <Close fontSize="small" />
+          </IconButton>
+        </Box>
+      </DialogTitle>
 
-      <DialogContent>
+      <DialogContent sx={{ pt: 1 }}>
         {errors?.category && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {errors.category}
@@ -63,7 +79,7 @@ const AddCategoryDialog = ({
         />
       </DialogContent>
 
-      <DialogActions>
+      <DialogActions sx={{ p: 2 }}>
         <Button onClick={onClose}>Cancel</Button>
         <Button variant="contained" onClick={onAddCategory}>
           Add Category
