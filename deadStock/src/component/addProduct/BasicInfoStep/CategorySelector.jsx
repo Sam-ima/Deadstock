@@ -1,65 +1,84 @@
-import { Grid, Box, TextField, Button, MenuItem } from "@mui/material";
+import { Box, TextField, Button, MenuItem } from "@mui/material";
 import { Plus } from "lucide-react";
 
 const CategorySelector = ({
   formData,
   setFormData,
   categories,
-  subcategories,
+  subcategories = [],
   onAddCategory,
-  onAddSubcategory
+  onAddSubcategory,
+  loadingSubcategories
 }) => {
   const handleChange = (field, value) =>
     setFormData(prev => ({ ...prev, [field]: value }));
 
   return (
-    <>
-      <Grid item xs={12}>
-        <Box display="flex" gap={1}>
-          <TextField
-            select
-            fullWidth
-            label="Category *"
-            value={formData.categoryId}
-            onChange={(e) => handleChange("categoryId", e.target.value)}
-          >
-            <MenuItem value="">Select Category</MenuItem>
-            {categories.map(c => (
-              <MenuItem key={c.id} value={c.id}>{c.name}</MenuItem>
-            ))}
-          </TextField>
+    <Box sx={{ width: "100%" }}>
+      {/* Category */}
+      <Box sx={{ display: "flex", gap: 1, mb: 2 }}>
+        <TextField
+          select
+          fullWidth
+          
+          size="small"
+          label="Category *"
+          value={formData.categoryId || ""}
+          onChange={(e) => handleChange("categoryId", e.target.value)}
+        >
+          <MenuItem value="">Select Category</MenuItem>
+          {categories.map(c => (
+            <MenuItem key={c.id} value={c.id}>
+              {c.name}
+            </MenuItem>
+          ))}
+        </TextField>
 
-          <Button onClick={onAddCategory} sx={{ height: 56 }}>
-            <Plus size={20} />
-          </Button>
-        </Box>
-      </Grid>
+        <Button
+          variant="outlined"
+          onClick={onAddCategory}
+          sx={{ width: 40, height: 40, minWidth: 40 }}
+        >
+          <Plus size={18} />
+        </Button>
+      </Box>
 
-      <Grid item xs={12}>
-        <Box display="flex" gap={1}>
-          <TextField
-            select
-            fullWidth
-            label="Subcategory (Optional)"
-            value={formData.subcategoryId || ""}
-            onChange={(e) => handleChange("subcategoryId", e.target.value)}
-          >
-            <MenuItem value="">No Subcategory</MenuItem>
-            {subcategories.map(s => (
-              <MenuItem key={s.id} value={s.id}>{s.name}</MenuItem>
-            ))}
-          </TextField>
+      {/* Subcategory */}
+      <Box sx={{ display: "flex", gap: 1 }}>
+        <TextField
+          select
+          fullWidth
+          size="small"
+          label="Subcategory"
+          value={formData.subcategoryId || ""}
+          onChange={(e) => handleChange("subcategoryId", e.target.value)}
+          disabled={!formData.categoryId}   // ✅ FIXED
+        >
+          <MenuItem value="">No Subcategory</MenuItem>
 
-          <Button
-            onClick={onAddSubcategory}
-            disabled={!formData.categoryId}
-            sx={{ height: 56 }}
-          >
-            <Plus size={20} />
-          </Button>
-        </Box>
-      </Grid>
-    </>
+          {loadingSubcategories ? (
+            <MenuItem disabled>Loading...</MenuItem>
+          ) : subcategories.length > 0 ? (
+            subcategories.map(s => (
+              <MenuItem key={s.id} value={s.id}>
+                {s.name}
+              </MenuItem>
+            ))
+          ) : (
+            <MenuItem disabled>No subcategories</MenuItem>
+          )}
+        </TextField>
+
+        <Button
+          variant="outlined"
+          onClick={onAddSubcategory}
+          disabled={!formData.categoryId}
+          sx={{ width: 40, height: 40, minWidth: 40 }}
+        >
+          <Plus size={18} />
+        </Button>
+      </Box>
+    </Box>
   );
 };
 
