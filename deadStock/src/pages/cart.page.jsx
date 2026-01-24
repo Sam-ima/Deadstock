@@ -1,4 +1,5 @@
-import { Box, Slide , Typography} from "@mui/material";
+// CartDrawer.jsx
+import { Box, Slide, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -6,7 +7,6 @@ import {
   removeItem,
 } from "../store/slice/cartSlice";
 import { useAuth } from "../context/authContext/authContext";
-// import Typography from "@mui/material";
 import CartDrawerHeader from "../component/cart/cartHeader";
 import CartDrawerItem from "../component/cart/cart_item";
 import CartDrawerFooter from "../component/cart/cart_footer";
@@ -21,22 +21,16 @@ const CartDrawer = ({ open, onClose }) => {
     user ? state.cart.items || {} : {}
   );
 
-  // Convert to array and sort by addedAt (most recent first)
   const cartItemsArray = Object.values(cartItems).sort((a, b) => {
     const dateA = new Date(a.addedAt || a.updatedAt || 0);
     const dateB = new Date(b.addedAt || b.updatedAt || 0);
-    return dateB - dateA; // Most recent first
+    return dateB - dateA;
   });
 
   useEffect(() => {
     if (open) {
       console.log("🔐 User logged in:", !!user);
       console.log("📦 Cart Items:", cartItemsArray.length);
-      console.log("🕒 Sorted items (most recent first):", cartItemsArray.map(item => ({
-        name: item.name,
-        addedAt: item.addedAt,
-        updatedAt: item.updatedAt
-      })));
     }
   }, [open, cartItemsArray, user]);
 
@@ -49,18 +43,6 @@ const CartDrawer = ({ open, onClose }) => {
     (sum, item) => sum + getItemTotal(item),
     0
   );
-
-  console.log("💰 Cart Total Calculation:", {
-    itemsCount: cartItemsArray.length,
-    totalItems,
-    cartTotal,
-    items: cartItemsArray.map(item => ({
-      name: item.name,
-      quantity: item.quantity,
-      unitPrice: item.unitPrice,
-      totalPrice: getItemTotal(item)
-    }))
-  });
 
   return (
     <>
@@ -80,17 +62,27 @@ const CartDrawer = ({ open, onClose }) => {
         <Box
           sx={{
             position: "fixed",
-            top: 64,
+            top: { xs: 56, sm: 64 },
             right: 0,
-            width: { xs: 350, sm: 420 },
-            height: "calc(100vh - 64px)",
+            width: {
+              xs: "85vw", // Not full screen on mobile
+              sm: 450,
+              md: 500,
+            },
+            maxWidth: { xs: 350 }, // optional max width for very small screens
+            height: {
+              xs: "calc(100vh - 56px)", // mobile
+              sm: "calc(100vh - 64px)", // tablet/desktop
+            },
             backgroundColor: "#1a3b2d",
             zIndex: 1200,
-            borderTopLeftRadius: 20,
-            borderBottomLeftRadius: 20,
+            borderTopLeftRadius: { xs: 12, sm: 20 },
+            borderBottomLeftRadius: { xs: 12, sm: 20 },
             display: "flex",
             flexDirection: "column",
             color: "#FFF",
+            boxShadow: "-5px 0 25px rgba(0,0,0,0.2)",
+            transition: "transform 0.3s ease-in-out",
           }}
         >
           <CartDrawerHeader
@@ -100,12 +92,27 @@ const CartDrawer = ({ open, onClose }) => {
             onClose={onClose}
           />
 
-          <Box sx={{ flex: 1, overflowY: "auto", px: 2 }}>
+          <Box
+            sx={{
+              flex: 1,
+              overflowY: "auto",
+              px: { xs: 2, sm: 3 },
+              py: { xs: 1, sm: 2 },
+              '&::-webkit-scrollbar': { width: '6px' },
+              '&::-webkit-scrollbar-track': { background: 'rgba(255,255,255,0.1)', borderRadius: '3px' },
+              '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.3)', borderRadius: '3px', '&:hover': { background: 'rgba(255,255,255,0.4)' } },
+            }}
+          >
             {!user ? (
               <CartDrawerEmpty onClose={onClose} />
             ) : cartItemsArray.length === 0 ? (
-              <Box sx={{ textAlign: "center", mt: 4, color: "#FFFFFF" }}>
-                <Typography>Your cart is empty</Typography>
+              <Box sx={{ textAlign: "center", mt: 4, color: "#FFF", px: 2 }}>
+                <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' }, mb: 1 }}>
+                  Your cart is empty
+                </Typography>
+                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                  Add some products to get started!
+                </Typography>
               </Box>
             ) : (
               cartItemsArray.map((item) => (
@@ -139,6 +146,7 @@ const CartDrawer = ({ open, onClose }) => {
 };
 
 export default CartDrawer;
+
 
 
 // import {
