@@ -1,5 +1,5 @@
 import { Container } from "@mui/material";
-import AddProductPage from "../component/addProduct/addProductPage";
+import AddProductPage from "../component/addProduct/AddProduct/AddProductPage";
 
 const AuthPageMain = () => {
   return (
