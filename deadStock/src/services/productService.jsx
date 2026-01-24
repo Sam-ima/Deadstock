@@ -1,4 +1,5 @@
-// src/services/productService.jsx - COMPLETE WITH ALL EXPORTS
+// src/services/productService.jsx - COMPLETE WITH ALL EXPORTS (Cloudinary Images)
+
 import {
   collection,
   addDoc,
@@ -12,26 +13,19 @@ import {
   where,
   orderBy,
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { db, storage } from "../firebase/firebase";
-import { Timestamp } from "firebase/firestore";
+
+import { db } from "../firebase/firebase";
 
 const productsRef = collection(db, "products");
 
+// Cloudinary config
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+
 /* CREATE Product with dynamic fields - SAFE VERSION */
-export const addProduct = async (
-  productData,
-  userId,
-  userType,
-  images = []
-) => {
+export const addProduct = async (productData, userId, userType) => {
   console.log("=== addProduct called ===");
-  console.log("Parameters received:", {
-    productData,
-    userId,
-    userType,
-    images,
-  });
+  console.log("Parameters received:", { productData, userId, userType });
 
   // VALIDATE INPUTS
   if (!productData || typeof productData !== "object") {
@@ -59,84 +53,81 @@ export const addProduct = async (
 
     console.log("Generated slug:", slug);
 
+    const totalStock = Number(productData.stock) || 1;
+    const basePrice = Number(productData.basePrice) || 0;
+
+    const userFloorPrice = productData.floorPrice;
+    const floorPrice =
+      userFloorPrice !== undefined &&
+        userFloorPrice !== null &&
+        userFloorPrice !== ""
+        ? Number(userFloorPrice)
+        : basePrice * 0.5;
+
     // 2. Prepare base product data
     const baseProduct = {
-      // Basic info (with defaults)
       name: productData.name || "Untitled Product",
-      slug: slug,
+      slug,
       description: productData.description || "",
       categoryId: productData.categoryId || null,
       subcategoryId: productData.subcategoryId || null,
 
-      // Pricing (with validation)
-      basePrice: Number(productData.basePrice) || 0,
-      currentPrice: Number(productData.basePrice) || 0,
-      floorPrice:
-        Number(productData.floorPrice) || Number(productData.basePrice) * 0.3,
+      basePrice,
+      currentPrice: basePrice,
+      floorPrice,
 
-      // Inventory
-      stock: Number(productData.stock) || 1,
+      stock: totalStock,
+      availableStock: totalStock,
+      reservedStock: 0,
       sold: 0,
 
-      // Seller info
       sellerId: userId,
       sellerType: userType || "B2C",
 
-      // Status
       status: productData.status || "active",
       saleType: productData.saleType || "direct",
 
-      // Images - will be updated later
       images: [],
 
-      // Rating
       rating: 0,
       reviews: 0,
 
-      // B2B fields (with safe defaults)
       moq: Number(productData.moq) || 1,
-      bulkPrice: productData.bulkPrice ? Number(productData.bulkPrice) : null,
+      bulkPrice: productData.bulkPrice
+        ? Number(productData.bulkPrice)
+        : null,
       bulkDiscount: Number(productData.bulkDiscount) || 0,
       requiresB2BVerification:
         Boolean(productData.requiresB2BVerification) || false,
 
-      // Timestamps
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
 
-      // Depreciation fields
       isDepreciating: true,
       depreciationCount: 0,
       lastDepreciatedAt: null,
 
-      // Dynamic fields
       ...processDynamicFields(productData),
     };
 
     console.log("Base product data prepared:", baseProduct);
 
-    // 3. Create the product document FIRST
-    console.log("Creating product document...");
+    // 3. Create product document
     const docRef = await addDoc(productsRef, baseProduct);
     const productId = docRef.id;
-    console.log("Product created with ID:", productId);
 
-    // 4. Upload images if any
-    let uploadedImages = [];
-    if (images && Array.isArray(images) && images.length > 0) {
-      console.log("Uploading images...");
-      uploadedImages = await uploadProductImages(images, userId, productId);
-      console.log("Images uploaded:", uploadedImages.length);
-    }
+    // ✅ Use images already uploaded to Cloudinary
+    const uploadedImages = Array.isArray(productData.images)
+      ? productData.images
+      : [];
 
-    // 5. Update the product with image URLs
+    // 4. Update product with image URLs
     const finalProductData = {
       ...baseProduct,
       images: uploadedImages,
       updatedAt: serverTimestamp(),
     };
 
-    console.log("Updating product with images...");
     await updateDoc(docRef, finalProductData);
 
     console.log("=== Product created successfully ===");
@@ -144,72 +135,69 @@ export const addProduct = async (
       id: productId,
       ...finalProductData,
     };
+
   } catch (error) {
-    console.error("=== ERROR in addProduct ===");
-    console.error("Error:", error);
+    console.error("Error in addProduct:", error);
     throw error;
   }
 };
 
-/* Upload images to Firebase Storage */
+/* Upload images to CLOUDINARY (Firebase Storage removed) */
 const uploadProductImages = async (images, userId, productId = "") => {
-  console.log("Starting image upload...");
+  console.log("Starting Cloudinary image upload...");
 
   if (!images || !Array.isArray(images) || images.length === 0) {
-    console.log("No valid images to upload");
     return [];
   }
 
   const uploadPromises = images.map(async (image, index) => {
     try {
-      console.log(`Processing image ${index}:`, image);
+      const file = image.file || image;
+      if (!(file instanceof File)) return null;
 
-      // Skip if no file
-      if (!image || (!image.file && !(image instanceof File))) {
-        console.log(`Skipping image ${index}: No file found`);
-        return null;
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+      formData.append("folder", `products/${userId}/${productId}`);
+
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (!data.secure_url) {
+        throw new Error("Cloudinary upload failed");
       }
 
-      const file = image.file || image;
-      const timestamp = Date.now();
-      const fileName = `${timestamp}_${index}_${
-        file.name?.replace(/\s+/g, "_") || "image"
-      }`;
-      const path = `products/${userId}/${productId || "temp"}/${fileName}`;
-
-      console.log(`Uploading to path: ${path}`);
-
-      const storageRef = ref(storage, path);
-      await uploadBytes(storageRef, file);
-
-      const url = await getDownloadURL(storageRef);
-      console.log(`Image ${index} uploaded successfully`);
-
       return {
-        url,
-        path,
+        url: data.secure_url,
+        publicId: data.public_id,
         name: file.name || `image_${index}`,
-        size: file.size || 0,
+        size: data.bytes || 0,
+        format: data.format,
+        width: data.width,
+        height: data.height,
         isMain: index === 0,
       };
     } catch (error) {
-      console.error(`Error uploading image ${index}:`, error);
+      console.error("Cloudinary image upload error:", error);
       return null;
     }
   });
 
   const results = await Promise.all(uploadPromises);
-  const validResults = results.filter(Boolean);
-
-  console.log(`Image upload completed: ${validResults.length} successful`);
-  return validResults;
+  return results.filter(Boolean);
 };
 
 /* Helper function to process dynamic fields */
 const processDynamicFields = (productData) => {
   const dynamicData = {};
 
-  // Add specifications if present
   if (
     productData.specifications &&
     typeof productData.specifications === "object"
@@ -217,15 +205,12 @@ const processDynamicFields = (productData) => {
     dynamicData.specifications = productData.specifications;
   }
 
-  // Add features if present
   if (productData.features && Array.isArray(productData.features)) {
     dynamicData.features = productData.features;
   }
 
-  // Add other fields
   if (productData) {
     Object.keys(productData).forEach((key) => {
-      // Skip reserved fields
       const reservedFields = [
         "name",
         "slug",
@@ -268,7 +253,6 @@ const processDynamicFields = (productData) => {
     });
   }
 
-  console.log("Dynamic fields processed:", dynamicData);
   return dynamicData;
 };
 
@@ -299,16 +283,16 @@ export const getAllProducts = async (filters = {}) => {
         data.createdAt && typeof data.createdAt.toDate === "function"
           ? data.createdAt.toDate().toISOString() // Firestore Timestamp
           : data.createdAt
-          ? new Date(data.createdAt).toISOString() // string or number
-          : new Date().toISOString(); // fallback if missing
+            ? new Date(data.createdAt).toISOString() // string or number
+            : new Date().toISOString(); // fallback if missing
 
       // Safely handle updatedAt
       const updatedAt =
         data.updatedAt && typeof data.updatedAt.toDate === "function"
           ? data.updatedAt.toDate().toISOString()
           : data.updatedAt
-          ? new Date(data.updatedAt).toISOString()
-          : new Date().toISOString();
+            ? new Date(data.updatedAt).toISOString()
+            : new Date().toISOString();
 
       return {
         id: doc.id,

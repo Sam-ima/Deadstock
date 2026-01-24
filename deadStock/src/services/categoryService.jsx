@@ -1,4 +1,4 @@
-// src/services/categoryService.js - UPDATED VERSION
+// src/services/categoryService.js
 import {
   collection,
   addDoc,
@@ -15,9 +15,10 @@ const subcategoriesRef = collection(db, "subcategories");
 
 /* CREATE Category */
 export const addCategory = async (categoryData) => {
-  const slug = categoryData.slug || 
-    categoryData.name.toLowerCase().replace(/\s+/g, '-');
-  
+  // ✅ Safely handle missing name
+  const name = categoryData.name || "";
+  const slug = categoryData.slug || name.toLowerCase().replace(/\s+/g, '-');
+
   return await addDoc(categoriesRef, {
     ...categoryData,
     slug,
@@ -35,19 +36,17 @@ export const getCategories = async () => {
   }));
 };
 
-// Update src/services/categoryService.js - READ Subcategories by Category
+/* READ Subcategories by Category */
 export const getSubcategoriesByCategory = async (categoryId) => {
   try {
-    // Use a simple query and sort locally
     const q = query(subcategoriesRef, where("categoryId", "==", categoryId));
     const snapshot = await getDocs(q);
-    
+
     const subcategories = snapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data()
     }));
-    
-    // Sort by name locally to avoid index requirement
+
     return subcategories.sort((a, b) => a.name.localeCompare(b.name));
   } catch (error) {
     console.error("Error getting subcategories:", error);

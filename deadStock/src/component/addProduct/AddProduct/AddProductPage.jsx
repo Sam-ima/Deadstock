@@ -20,14 +20,24 @@ const AddProductPage = () => {
 
   const form = useAddProductForm({ user, createProduct, navigate });
 
+  // ✅ VALIDATED NEXT / PUBLISH HANDLER
   const handleNext = () => {
-    form.activeStep === steps.length - 1
-      ? form.handleSubmit("active")
-      : form.setActiveStep(s => s + 1);
+    const isValid = form.validateCurrentStep();
+    if (!isValid) return;
+
+    if (form.activeStep === steps.length - 1) {
+      form.handleSubmit("active");
+    } else {
+      form.setActiveStep(prev => prev + 1);
+    }
   };
 
   const handleBack = () => {
-    form.activeStep === 0 ? navigate(-1) : form.setActiveStep(s => s - 1);
+    if (form.activeStep === 0) {
+      navigate(-1);
+    } else {
+      form.setActiveStep(prev => prev - 1);
+    }
   };
 
   return (
@@ -37,7 +47,10 @@ const AddProductPage = () => {
 
         <PageHeader user={user} onBack={handleBack} />
 
-        <ProductStepper steps={steps} activeStep={form.activeStep} />
+        <ProductStepper
+          steps={steps}
+          activeStep={form.activeStep}
+        />
 
         <Paper sx={{ p: 4, mb: 4, minHeight: 400 }}>
           <StepContent

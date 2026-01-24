@@ -1,6 +1,7 @@
 // src/pages/AddProduct/hooks/useAddProductForm.js
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { uploadToCloudinary } from "../../../../services/cloudinaryService";
 
 export const useAddProductForm = ({ user, createProduct, navigate }) => {
   const [activeStep, setActiveStep] = useState(0);
@@ -38,7 +39,7 @@ export const useAddProductForm = ({ user, createProduct, navigate }) => {
         if (!formData.name.trim()) return showError("Product name is required"), false;
         if (!formData.categoryId) return showError("Please select a category"), false;
         if (!formData.stock || Number(formData.stock) < 1)
-          return showError("Stock quantity must be at least 1"), false;
+          return showError("Stock must be at least 1"), false;
         return true;
 
       case 1:
@@ -56,17 +57,46 @@ export const useAddProductForm = ({ user, createProduct, navigate }) => {
     }
   };
 
+  // 🔹 UPDATED: Upload images in parallel using Promise.all
+  const uploadImages = async () => {
+    try {
+      const uploadedImages = await Promise.all(
+        images.map(async (img) => {
+          const result = await uploadToCloudinary(img.file);
+          return {
+            url: result.secure_url,
+            publicId: result.public_id,
+            width: result.width,
+            height: result.height,
+            size: result.bytes,
+            isMain: img.isMain
+          };
+        })
+      );
+      return uploadedImages;
+    } catch (err) {
+      console.error("Image upload failed:", err);
+      showError("Failed to upload images. Please try again.");
+      return [];
+    }
+  };
+
   const handleSubmit = async (status = "active") => {
     if (!validateCurrentStep()) return;
 
     setLoading(true);
 
     try {
+      // 1️⃣ Upload images to Cloudinary
+      const uploadedImages = await uploadImages();
+
+      // 2️⃣ Prepare specifications
       const specsObj = {};
       specifications.forEach(s => {
         if (s.key && s.value) specsObj[s.key.trim()] = s.value.trim();
       });
 
+      // 3️⃣ Final product data
       const productData = {
         name: formData.name.trim(),
         description: formData.description?.trim() || "",
@@ -79,6 +109,7 @@ export const useAddProductForm = ({ user, createProduct, navigate }) => {
         stock: Number(formData.stock),
         status,
         saleType: formData.saleType,
+        images: uploadedImages, // ✅ CLOUDINARY URLs
         ...(specifications.length && { specifications: specsObj }),
         ...(features.length && { features: features.filter(f => f.trim()) }),
         moq: Number(b2bFields.moq) || 1,
@@ -87,21 +118,18 @@ export const useAddProductForm = ({ user, createProduct, navigate }) => {
         requiresB2BVerification: Boolean(b2bFields.requiresB2BVerification)
       };
 
-      const imagesForUpload = images.map(img => ({
-        file: img.file || img,
-        name: img.name || `image_${Date.now()}`,
-        size: img.size || 0,
-        url: img.url
-      }));
-
       await createProduct(
         productData,
         user.uid,
-        user.userType || "B2C",
-        imagesForUpload
+        user.userType || "B2C"
       );
 
-      showSuccess(status === "draft" ? "Draft saved successfully!" : "Product published successfully!");
+      showSuccess(
+        status === "draft"
+          ? "Draft saved successfully!"
+          : "Product published successfully!"
+      );
+
       setTimeout(() => navigate("/"), 2000);
 
     } catch (err) {

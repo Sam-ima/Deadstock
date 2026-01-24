@@ -21,8 +21,16 @@ import {
 
 const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser }) => {
   const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+      errors: {
+        ...prev.errors,
+        [field]: undefined
+      }
+    }));
   };
+
 
   const handleB2BChange = (field, value) => {
     setB2bFields(prev => ({ ...prev, [field]: value }));
@@ -50,20 +58,23 @@ const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            label="Base Price (Rs.) *"
+            required
+            label="Base Price (Rs.)"
             type="number"
             value={formData.basePrice}
             onChange={(e) => handleChange("basePrice", e.target.value)}
+            error={Boolean(formData.errors?.basePrice)}
+            helperText={formData.errors?.basePrice || "Starting price of your product"}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <DollarSign size={18} />
+                  <Typography sx={{ fontWeight: 600 }}>Rs.</Typography>
                 </InputAdornment>
               ),
               inputProps: { min: 0.01, step: 0.01 }
             }}
-            helperText="Starting price of your product"
           />
+
         </Grid>
 
         {/* Floor Price */}
