@@ -31,7 +31,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth } from '../context/authContext/authContext';
-import { resolveProductImages } from '../component/categoryPage/product/productCard/utils/productImages';
+import { resolveProductImages } from '../component/categoryPage/product/productCard/utils/ProductImages';
 import { clearDirectPurchaseItem } from '../store/slice/purchaseSlice';
 import { toast } from 'react-toastify';
 
@@ -66,88 +66,110 @@ function CheckoutPage() {
   const { user } = useAuth();
   const dispatch = useDispatch();
   
-  // Get items from Redux
-  const directPurchaseItem = useSelector((state) => state.directPurchase.directPurchaseItem);
-  const cartItems = useSelector((state) => state.cart.items);
+  // Get items from Redux - IMPORTANT: Use correct state path
+  const directPurchaseItem = useSelector((state) => state.directPurchase?.directPurchaseItem);
+  const cartItemsObject = useSelector((state) => state.cart?.items || {});
   
-  // Create a safe array of items for display
- const getDisplayItems = () => {
-  const sourceItems = directPurchaseItem
-    ? [directPurchaseItem]
-    : Array.isArray(cartItems)
-    ? cartItems
-    : [];
+  // Convert cart items object to array and ensure proper structure
+  const cartItemsArray = Object.values(cartItemsObject).map(item => ({
+    ...item,
+    id: item.id || item.product?.id || Math.random().toString(36).substr(2, 9),
+    quantity: item.quantity || 1,
+    unitPrice: item.unitPrice || item.product?.currentPrice || item.product?.price || 0,
+    name: item.name || item.product?.name || 'Product',
+    product: item.product || item
+  }));
 
-  return sourceItems.map((item) => {
-    const product = item.product || item;
+  // Debug logging
+  useEffect(() => {
+    console.log('Direct Purchase Item:', directPurchaseItem);
+    console.log('Cart Items Array:', cartItemsArray);
+    console.log('Cart Items Object:', cartItemsObject);
+  }, [directPurchaseItem, cartItemsArray, cartItemsObject]);
 
-     const resolvedImages =
-      product.images?.length > 0
-        ? product.images
+  // Determine which items to display based on purchase mode
+  const getDisplayItems = () => {
+    // If there's a direct purchase item, show only that
+    if (directPurchaseItem) {
+      console.log('Direct purchase mode - showing single item');
+      const product = directPurchaseItem.product || directPurchaseItem;
+      const resolvedImages = product.images?.length > 0 
+        ? product.images 
         : resolveProductImages(product);
+      
+      return [{
+        ...directPurchaseItem,
+        id: directPurchaseItem.id || product.id || 'direct-' + Math.random().toString(36).substr(2, 9),
+        product: {
+          ...product,
+          images: resolvedImages,
+        },
+        unitPrice: directPurchaseItem.unitPrice || product.currentPrice || product.price || 0,
+        quantity: directPurchaseItem.quantity || 1,
+        name: directPurchaseItem.name || product.name || 'Product',
+        isDirectPurchase: true
+      }];
+    }
+    
+    // Otherwise, show all cart items
+    console.log('Cart checkout mode - showing all cart items:', cartItemsArray.length);
+    
+    return cartItemsArray.map((item) => {
+      const product = item.product || item;
+      const resolvedImages = product.images?.length > 0 
+        ? product.images 
+        : resolveProductImages(product);
+      
+      return {
+        ...item,
+        id: item.id || product.id || Math.random().toString(36).substr(2, 9),
+        product: {
+          ...product,
+          images: resolvedImages,
+        },
+        unitPrice: item.unitPrice || product.currentPrice || product.price || 0,
+        quantity: item.quantity || 1,
+        name: item.name || product.name || 'Product',
+        isDirectPurchase: false
+      };
+    });
+  };
 
-    return {
-      ...item,
-
-       product: {
-        ...product,
-        images: resolvedImages,
-      },
-
-      // 🔑 Ensure unitPrice always exists
-      unitPrice:
-        item.unitPrice ??
-        product.currentPrice ??
-        product.price ??
-        0,
-
-      quantity: item.quantity ?? 1,
-    };
-  });
-};
-
-const displayItems = getDisplayItems();
-
+  const displayItems = getDisplayItems();
   
   // Calculate totals safely
- const calculateTotals = () => {
-  if (!Array.isArray(displayItems) || displayItems.length === 0) {
+  const calculateTotals = () => {
+    if (!Array.isArray(displayItems) || displayItems.length === 0) {
+      return {
+        subtotal: 0,
+        shipping: 0,
+        tax: 0,
+        discount: 0,
+        total: 0,
+      };
+    }
+
+    const subtotal = displayItems.reduce((sum, item) => {
+      const unitPrice = item.unitPrice || 0;
+      const quantity = item.quantity || 1;
+      return sum + (unitPrice * quantity);
+    }, 0);
+
+    const shipping = subtotal > 200 ? 0 : 25;
+    const tax = subtotal * 0.031;
+    const discount = subtotal > 150 ? 10 : 0;
+    const total = subtotal + shipping + tax - discount;
+
     return {
-      subtotal: 0,
-      shipping: 0,
-      tax: 0,
-      discount: 0,
-      total: 0,
+      subtotal: Number(subtotal.toFixed(2)),
+      shipping: Number(shipping.toFixed(2)),
+      tax: Number(tax.toFixed(2)),
+      discount: Number(discount.toFixed(2)),
+      total: Number(total.toFixed(2)),
     };
-  }
-
-  const subtotal = displayItems.reduce((sum, item) => {
-    const unitPrice =
-      item.unitPrice ??
-      item.product?.currentPrice ??
-      item.product?.price ??
-      0;
-
-    const quantity = item.quantity || 1;
-
-    return sum + unitPrice * quantity;
-  }, 0);
-
-  const shipping = subtotal > 200 ? 0 : 25;
-  const tax = subtotal * 0.031;
-  const discount = subtotal > 150 ? 10 : 0;
-  const total = subtotal + shipping + tax - discount;
-
-  return {
-    subtotal: Number(subtotal.toFixed(2)),
-    shipping: Number(shipping.toFixed(2)),
-    tax: Number(tax.toFixed(2)),
-    discount: Number(discount.toFixed(2)),
-    total: Number(total.toFixed(2)),
   };
-};
 
-const totals = calculateTotals();
+  const totals = calculateTotals();
 
   const handleNext = () => {
     if (activeStep < 2) {
@@ -271,7 +293,7 @@ const totals = calculateTotals();
   }
 
   // If no items and user is not in direct purchase flow, show empty state
-  if (!hasItems && !directPurchaseItem) {
+  if (!hasItems) {
     return (
       <Box
         sx={{
@@ -339,7 +361,7 @@ const totals = calculateTotals();
           <Typography variant="body1" color={colors.textSecondary} sx={{ maxWidth: 600, mx: 'auto' }}>
             {directPurchaseItem 
               ? 'You\'re purchasing this item directly. Complete your purchase below.' 
-              : 'Complete your purchase in just a few steps. Your items are waiting!'}
+              : `Complete your purchase for ${displayItems.length} item(s) in just a few steps.`}
           </Typography>
         </Box>
 
@@ -826,27 +848,45 @@ const totals = calculateTotals();
               <Typography variant="h5" gutterBottom fontWeight={700} color={colors.textPrimary}>
                 Order Summary
               </Typography>
+              
+              {/* Purchase mode indicator */}
+              {directPurchaseItem && (
+                <Alert 
+                  severity="info" 
+                  sx={{ 
+                    mb: 2, 
+                    borderRadius: 2,
+                    bgcolor: `${colors.primary}10`,
+                    border: `1px solid ${colors.primary}30`,
+                  }}
+                >
+                  <Typography variant="caption" fontWeight={600}>
+                    Direct Purchase Mode
+                  </Typography>
+                </Alert>
+              )}
 
               {/* Items */}
-              <Box sx={{ my: 3 }}>
-                {displayItems.map((item, index) => {
+              <Box sx={{ my: 3, maxHeight: 400, overflowY: 'auto' }}>
+                {displayItems.length > 0 ? displayItems.map((item, index) => {
                   // Safely get item details
-                  const itemName = item.name || item.product?.name || 'Product';
+                  const itemName = item.name || 'Product';
                   const itemImage = item.product?.images?.[0] || item.image;
-                  const unitPrice = item.unitPrice || item.price || 0;
+                  const unitPrice = item.unitPrice || 0;
                   const quantity = item.quantity || 1;
                   const isBulk = item.isBulkOrder || false;
                   
                   return (
                     <Box 
-                      key={item.cartItemId || item.id || index}
+                      key={item.id || index}
                       sx={{ 
                         display: 'flex', 
                         gap: 2, 
                         mb: 3, 
                         p: 2, 
                         bgcolor: colors.paperLight, 
-                        borderRadius: 3 
+                        borderRadius: 3,
+                        border: `1px solid ${colors.border}`,
                       }}
                     >
                       <Box
@@ -854,7 +894,7 @@ const totals = calculateTotals();
                           width: 80,
                           height: 80,
                           borderRadius: 2,
-                          bgcolor: index % 2 === 0 ? colors.primaryLight : colors.accentLight,
+                          bgcolor: colors.primaryLight,
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -862,6 +902,7 @@ const totals = calculateTotals();
                           fontWeight: 700,
                           fontSize: '1.5rem',
                           overflow: 'hidden',
+                          flexShrink: 0,
                         }}
                       >
                         {itemImage ? (
@@ -879,40 +920,60 @@ const totals = calculateTotals();
                           '📦'
                         )}
                       </Box>
-                      <Box sx={{ flex: 1 }}>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                          <Typography fontWeight={600}>{itemName}</Typography>
-                          <Typography fontWeight={700} color={colors.primary}>
+                          <Typography 
+                            fontWeight={600} 
+                            sx={{ 
+                              fontSize: '0.95rem',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                            }}
+                          >
+                            {itemName}
+                          </Typography>
+                          <Typography fontWeight={700} color={colors.primary} sx={{ ml: 1, flexShrink: 0 }}>
                             ${(unitPrice * quantity).toFixed(2)}
                           </Typography>
                         </Box>
-                        <Typography variant="body2" color={colors.textSecondary}>
+                        <Typography variant="body2" color={colors.textSecondary} sx={{ mt: 0.5 }}>
                           {isBulk ? 'Bulk Order • ' : ''}
                           Unit Price: ${unitPrice.toFixed(2)}
                         </Typography>
                         <Typography variant="caption" color={colors.textSecondary}>
-                          Qty: {quantity}
+                          Qty: {quantity} • Total: ${(unitPrice * quantity).toFixed(2)}
                         </Typography>
                         {isBulk && (
                           <Typography variant="caption" color={colors.success} sx={{ display: 'block', mt: 0.5 }}>
                             ✓ Bulk discount applied
                           </Typography>
                         )}
+                        {item.isDirectPurchase && (
+                          <Typography variant="caption" color={colors.primary} sx={{ display: 'block', mt: 0.5 }}>
+                            ⚡ Direct Purchase
+                          </Typography>
+                        )}
                       </Box>
                     </Box>
                   );
-                })}
+                }) : (
+                  <Box sx={{ textAlign: 'center', py: 4 }}>
+                    <Typography color={colors.textSecondary}>
+                      No items in your order
+                    </Typography>
+                  </Box>
+                )}
               </Box>
 
-              {displayItems.length === 0 && (
-                <Box sx={{ textAlign: 'center', py: 4 }}>
-                  <Typography color={colors.textSecondary}>
-                    No items in your order
-                  </Typography>
-                </Box>
-              )}
-
               <Divider sx={{ my: 3, borderColor: colors.border }} />
+
+              {/* Items count */}
+              <Typography variant="body2" color={colors.textSecondary} sx={{ mb: 2 }}>
+                {displayItems.length} item{displayItems.length !== 1 ? 's' : ''} in order
+              </Typography>
 
               {/* Cost breakdown */}
               <Box sx={{ '& > *': { display: 'flex', justifyContent: 'space-between', mb: 2 } }}>
