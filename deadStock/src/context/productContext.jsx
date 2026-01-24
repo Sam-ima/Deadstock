@@ -21,7 +21,6 @@ export const ProductProvider = ({ children }) => {
     setError(null);
     try {
       const data = await getAllProducts(filters);
-      // console.log('product data',data)
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -31,24 +30,34 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
-  // FIXED: Accept all 4 parameters properly
-  const createProduct = async (productData, userId, userType, images = []) => {
+  // ✅ UPDATED: No image handling here
+  const createProduct = async (productData, userId, userType) => {
     setLoading(true);
     setError(null);
     try {
-      console.log("Creating product in context:", { productData, userId, userType, imagesCount: images?.length });
-      
+      console.log("Creating product in context:", {
+        productData,
+        userId,
+        userType
+      });
+
       if (!productData) {
         throw new Error("Product data is required");
       }
-      
+
       if (!userId) {
         throw new Error("User ID is required");
       }
-      
-      const newProduct = await addProduct(productData, userId, userType || "B2C", images);
-      await fetchProducts(); // Refresh the list
+
+      const newProduct = await addProduct(
+        productData,
+        userId,
+        userType || "B2C"
+      );
+
+      await fetchProducts(); // Refresh list
       return newProduct;
+
     } catch (err) {
       console.error("Error creating product:", err);
       setError(err.message || "Failed to create product");
@@ -63,7 +72,7 @@ export const ProductProvider = ({ children }) => {
     setError(null);
     try {
       await updateProduct(id, updates);
-      await fetchProducts(); // Refresh the list
+      await fetchProducts();
     } catch (err) {
       console.error("Error updating product:", err);
       setError("Failed to update product");
@@ -78,7 +87,7 @@ export const ProductProvider = ({ children }) => {
     setError(null);
     try {
       await deleteProduct(id);
-      await fetchProducts(); // Refresh the list
+      await fetchProducts();
     } catch (err) {
       console.error("Error deleting product:", err);
       setError("Failed to delete product");
@@ -92,8 +101,7 @@ export const ProductProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getProductsBySeller(sellerId, status);
-      return data;
+      return await getProductsBySeller(sellerId, status);
     } catch (err) {
       console.error("Error fetching seller products:", err);
       setError("Failed to load seller products");
@@ -107,8 +115,7 @@ export const ProductProvider = ({ children }) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await getProductById(productId);
-      return data;
+      return await getProductById(productId);
     } catch (err) {
       console.error("Error fetching product:", err);
       setError("Failed to load product");

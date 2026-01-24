@@ -8,7 +8,10 @@ const ProductImageCarousel = ({ images = [], fallbackImage }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showArrows, setShowArrows] = useState(false);
 
-  const totalImages = images.length > 0 ? images.length : 0;
+  // Ensure we have at least one image URL to display
+  const imageUrls = images.length > 0 ? images.map(img => img.url || fallbackImage) : [fallbackImage];
+
+  const totalImages = imageUrls.length;
 
   const nextImage = (e) => {
     e.stopPropagation();
@@ -29,8 +32,8 @@ const ProductImageCarousel = ({ images = [], fallbackImage }) => {
       <Box
         component="img"
         loading="lazy"
-        src={images[currentIndex] || fallbackImage}
-        alt="product"
+        src={imageUrls[currentIndex] || fallbackImage}
+        alt={`product-${currentIndex}`}
         sx={{
           width: "100%",
           height: { xs: 180, sm: 200, md: 220 },
@@ -39,8 +42,6 @@ const ProductImageCarousel = ({ images = [], fallbackImage }) => {
         }}
       />
 
-      {/* Discount Badge can be rendered outside this component */}
-      
       {/* Navigation Arrows */}
       {totalImages > 1 && (
         <>
@@ -97,7 +98,7 @@ const ProductImageCarousel = ({ images = [], fallbackImage }) => {
               zIndex: 2,
             }}
           >
-            {images.map((_, idx) => (
+            {imageUrls.map((_, idx) => (
               <Box
                 key={idx}
                 sx={{

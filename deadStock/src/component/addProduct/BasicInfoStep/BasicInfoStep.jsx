@@ -122,8 +122,22 @@ const BasicInfoStep = ({ formData, setFormData }) => {
         onClose={() => setNewCategoryOpen(false)}
         newCategory={newCategory}
         setNewCategory={setNewCategory}
-        createCategory={createCategory}
+        onAddCategory={async () => {
+          if (!newCategory.name.trim()) return; // optional validation
+
+          try {
+            await createCategory({
+              name: newCategory.name.trim(),
+              description: newCategory.description || `Category for ${newCategory.name}`
+            });
+            setNewCategory({ name: "", description: "" });
+            setNewCategoryOpen(false);
+          } catch (err) {
+            console.error("Failed to create category", err);
+          }
+        }}
       />
+
 
       <AddSubcategoryDialog
         open={newSubcategoryOpen}
