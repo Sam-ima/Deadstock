@@ -144,7 +144,7 @@ const ActionButtons = ({ product, quantity }) => {
 
   const registerAsSeller = () => {
     setShowSellerPrompt(false);
-    navigate("/auth", {
+    navigate("/login", {
       state: {
         productId: product.id,
         quantity,

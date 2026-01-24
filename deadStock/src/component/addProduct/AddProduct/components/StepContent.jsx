@@ -1,5 +1,5 @@
 // components/StepContent.jsx
-import BasicInfoStep from "../../basicInformationSection";
+import BasicInfoStep from "../../BasicInfoStep/BasicInfoStep";
 import PricingStep from "../../pricingSection";
 import ImagesStep from "../../imageUpload";
 import SpecificationsStep from "../../specificationSteps";
