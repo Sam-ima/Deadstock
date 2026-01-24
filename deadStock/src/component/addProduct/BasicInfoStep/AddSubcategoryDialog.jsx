@@ -17,7 +17,7 @@ const AddSubcategoryDialog = ({
   newSubcategory,
   setNewSubcategory,
   onAddSubcategory,
-  errors,
+  errors = {},          // ✅ DEFAULT VALUE
   categoryId,
   categoryName
 }) => {
@@ -27,9 +27,7 @@ const AddSubcategoryDialog = ({
       onClose={onClose}
       maxWidth="sm"
       fullWidth
-      PaperProps={{
-        sx: { p: 1, borderRadius: 2 }
-      }}
+      PaperProps={{ sx: { p: 1, borderRadius: 2 } }}
       disableEnforceFocus
       disableAutoFocus
     >
@@ -55,7 +53,7 @@ const AddSubcategoryDialog = ({
           </Alert>
         )}
 
-        {errors?.subcategory && (
+        {errors.subcategory && (
           <Alert severity="error" sx={{ mb: 2 }}>
             {errors.subcategory}
           </Alert>
@@ -66,12 +64,12 @@ const AddSubcategoryDialog = ({
           margin="dense"
           label="Subcategory Name *"
           fullWidth
-          value={newSubcategory.name}
+          value={newSubcategory.name || ""}
           onChange={(e) =>
             setNewSubcategory({ ...newSubcategory, name: e.target.value })
           }
           sx={{ mb: 2 }}
-          error={!!errors.subcategory}
+          error={Boolean(errors.subcategory)}   // ✅ SAFE
           disabled={!categoryId}
         />
 
@@ -81,7 +79,7 @@ const AddSubcategoryDialog = ({
           fullWidth
           multiline
           rows={2}
-          value={newSubcategory.description}
+          value={newSubcategory.description || ""}
           onChange={(e) =>
             setNewSubcategory({ ...newSubcategory, description: e.target.value })
           }
