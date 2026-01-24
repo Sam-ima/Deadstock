@@ -1,5 +1,5 @@
 import { Box, Typography, Stack, Chip, Rating } from "@mui/material";
-import QuantitySelector from "./quantitySelector";
+import QuantitySelector from "./QuantitySelector";
 import ActionButtons from "./actionButtons";
 
 const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {

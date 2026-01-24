@@ -3,7 +3,7 @@ import { useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { addItem } from "../../../store/slice/cartSlice";
-import QuantityControl from "./quantityControl";
+import QuantityControl from "./QuantityControl";
 
 const ProductDetailPage = () => {
   const dispatch = useDispatch();

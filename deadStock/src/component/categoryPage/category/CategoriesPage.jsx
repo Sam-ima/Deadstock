@@ -7,8 +7,8 @@ import { useCategories } from '../../../context/categoryContext';
 import { useProducts } from '../../../context/productContext';
 import { getCategoryIcon } from './utils/categoryIcons';
 
-import CategoriesSidebar from './categoriesSidebar';
-import CategoryContent from './categoryContent';
+import CategoriesSidebar from './CategoriesSidebar';
+import CategoryContent from './CategoryContent';
 
 const CategoriesPage = () => {
   const { slug } = useParams();

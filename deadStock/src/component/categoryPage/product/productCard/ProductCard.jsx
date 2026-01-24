@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import StarIcon from '@mui/icons-material/Star';
 import StarHalfIcon from '@mui/icons-material/StarHalf';
 
-import ProductImageCarousel from './productImageCarousel';
-import ProductPrice from './productPrice';
-import ProductStock from './productStock';
-import { resolveProductImages } from "./utils/productImages";
+import ProductImageCarousel from './ProductImageCarousel';
+import ProductPrice from './ProductPrice';
+import ProductStock from './ProductStock';
+import { resolveProductImages } from "./utils/ProductImages";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();

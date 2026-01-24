@@ -12,7 +12,7 @@ import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 // Context Providers
-import { CartProvider } from "./component/categoryPage/productDetail/cartContext.jsx";
+import { CartProvider } from "./component/categoryPage/productDetail/CartContext.jsx";
 import { AuthProvider } from "./context/authContext/authContext.jsx";
 import { ProductProvider } from "./context/productContext.jsx";
 import { CategoryProvider } from "./context/categoryContext.jsx";

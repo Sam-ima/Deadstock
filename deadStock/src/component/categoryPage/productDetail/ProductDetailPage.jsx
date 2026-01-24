@@ -3,9 +3,9 @@ import { useParams } from "react-router-dom";
 import { Box, Container, Typography, CircularProgress } from "@mui/material";
 import { getProductBySlug } from "../../../services/productService";
 
-import ProductImages from "./productImages";
-import ProductInfo from "./productInfo";
-import ProductTabs from "./productTabs";
+import ProductImages from "./ProductImages";
+import ProductInfo from "./ProductInfo";
+import ProductTabs from "./ProductTabs";
 
 const ProductDetailPage = () => {
   const { slug } = useParams();

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useState, useContext } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db } from "../../../../../firebase/firebase";
+import { db } from "../../../../../firebase/firebase.jsx";
 import { useAuth } from "../../../../../context/authContext/authContext.jsx"; // Correct import
 
 const ReviewDialog = ({ open, onClose, product }) => {

@@ -9,7 +9,7 @@ import {
   DialogContentText
 } from "@mui/material";
 import { ShoppingCart, ShoppingBag, Business } from "@mui/icons-material";
-import { CartContext } from "./cartContext";
+import { CartContext } from "./CartContext";
 import { useAuth } from "../../../context/authContext/authContext";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
