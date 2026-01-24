@@ -1,16 +1,16 @@
 // src/pages/categories/components/categoryImages.js
-import electronicsImg from "../../../assets/images/electronics.png";
-import automotiveImg from "../../../assets/images/automotive.png";
-import booksImg from "../../../assets/images/bookAndMedia.png";
-import collectiblesImg from "../../../assets/images/collectibles.png";
-import fashionImg from "../../../assets/images/fashion.png";
-import homeGardenImg from "../../../assets/images/homeAndGarden.png";
-import kitchenImg from "../../../assets/images/kitchenAndDining.png";
-import musicImg from "../../../assets/images/musicalInstrument.png";
-import sportsImg from "../../../assets/images/sportsAndFitness.png";
-import wholesaleImg from "../../../assets/images/wholesaleStock.png";
-import fallback1 from "../../../assets/images/random1.png";
-import fallback2 from "../../../assets/images/random2.png";
+import electronicsImg from "../../../../assets/images/electronics.png";
+import automotiveImg from "../../../../assets/images/automotive.png";
+import booksImg from "../../../../assets/images/bookAndMedia.png";
+import collectiblesImg from "../../../../assets/images/collectibles.png";
+import fashionImg from "../../../../assets/images/fashion.png";
+import homeGardenImg from "../../../../assets/images/homeAndGarden.png";
+import kitchenImg from "../../../../assets/images/kitchenAndDining.png";
+import musicImg from "../../../../assets/images/musicalInstrument.png";
+import sportsImg from "../../../../assets/images/sportsAndFitness.png";
+import wholesaleImg from "../../../../assets/images/wholesaleStock.png";
+import fallback1 from "../../../../assets/images/random1.png";
+import fallback2 from "../../../../assets/images/random2.png";
 
 const CATEGORY_IMAGES = {
   electronics: electronicsImg,

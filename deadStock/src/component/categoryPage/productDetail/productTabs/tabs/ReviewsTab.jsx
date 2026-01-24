@@ -1,6 +1,6 @@
 import { Box, Button, Divider } from '@mui/material';
-import ReviewList from '../reviews/reviewList';
-import ReviewDialog from '../reviews/reviewDialog';
+import ReviewList from '../reviews/ReviewList';
+import ReviewDialog from '../reviews/ReviewDialog';
 
 const ReviewsTab = ({ product, openReviewDialog, setOpenReviewDialog }) => (
   <Box>

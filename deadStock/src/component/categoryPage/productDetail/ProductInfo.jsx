@@ -1,6 +1,6 @@
 import { Box, Typography, Stack, Chip, Rating } from "@mui/material";
 import QuantitySelector from "./QuantitySelector";
-import ActionButtons from "./actionButtons";
+import ActionButtons from "./ActionButtons";
 
 const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
   const base = product.basePrice ?? product.currentPrice;

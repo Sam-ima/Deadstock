@@ -1,6 +1,6 @@
 // src/pages/categories/components/CategoryBanner.jsx
 import { Box, Typography, Container } from "@mui/material";
-import { getCategoryImage } from "./categoryImages";
+import { getCategoryImage } from "./CategoryImages";
 import CategoryHeaderChips from "./CategoryHeaderChips";
 
 const CategoryBanner = ({ category, products, activeSubcategory }) => {

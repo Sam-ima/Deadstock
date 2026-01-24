@@ -1,8 +1,8 @@
 // src/pages/categories/CategoryContent.jsx
 import { Box, Typography, Container } from "@mui/material";
-import CategoryBanner from "./components/CategoryBanner";
-import ProductGrid from "./components/ProductGrid";
-import EmptyState from "./components/EmptyState";
+import CategoryBanner from "./categoryContent/CategoryBanner";
+import ProductGrid from "./categoryContent/ProductGrid";
+import EmptyState from "./categoryContent/EmptyState";
 
 const CategoryContent = ({ category, products, activeSubcategory }) => {
   if (!category) {

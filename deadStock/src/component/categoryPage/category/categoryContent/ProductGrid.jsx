@@ -1,6 +1,6 @@
 // src/pages/categories/components/ProductGrid.jsx
 import { Grid, Box } from "@mui/material";
-import ProductCard from "../product/productCard/productCard";
+import ProductCard from "../../product/productCard/ProductCard";
 
 const ProductGrid = ({ products }) => (
   <Grid container spacing={{ xs: 2, sm: 3, md: 4 }} justifyContent="center">

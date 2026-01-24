@@ -1,6 +1,6 @@
 import { Box, Paper, Stack, Chip, IconButton } from "@mui/material";
 import { Favorite, FavoriteBorder } from "@mui/icons-material";
-import { resolveProductImages } from "../product/productCard/utils/productImages";
+import { resolveProductImages } from "../product/productCard/utils/ProductImages";
 
 const ProductImages = ({
   product,

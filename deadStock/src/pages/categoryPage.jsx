@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "@mui/material";
-import Category from "../component/categoryPage/category/categoriesPage";
+import Category from "../component/categoryPage/category/CategoriesPage";
 const CategoryPage = () => {
   return (
     <Container

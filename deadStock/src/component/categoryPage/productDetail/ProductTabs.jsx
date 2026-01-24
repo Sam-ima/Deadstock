@@ -2,11 +2,11 @@
 import { useState } from 'react';
 import { Box, Paper } from '@mui/material';
 
-import TabsHeader from './productTabs/tabs/tabsHeader';
-import DescriptionTab from './productTabs/tabs/descriptionTab';
-import SpecificationsTab from './productTabs/tabs/specificationsTab';
-import FeaturesTab from './productTabs/tabs/featuresTab';
-import ReviewsTab from './productTabs/tabs/reviewsTab';
+import TabsHeader from './productTabs/tabs/TabsHeader';
+import DescriptionTab from './productTabs/tabs/DescriptionTab';
+import SpecificationsTab from './productTabs/tabs/SpecificationsTab';
+import FeaturesTab from './productTabs/tabs/FeaturesTab';
+import ReviewsTab from './productTabs/tabs/ReviewsTab';
 
 const ProductTabs = ({ product, tabValue, setTabValue }) => {
   const [openReviewDialog, setOpenReviewDialog] = useState(false);

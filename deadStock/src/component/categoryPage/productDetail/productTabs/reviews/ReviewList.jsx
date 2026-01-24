@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Grid, Typography, CircularProgress } from "@mui/material";
 import { collection, query, where, orderBy, onSnapshot } from "firebase/firestore";
 import { db } from "../../../../../firebase/firebase";
-import ReviewCard from "./reviewCard";
+import ReviewCard from "./ReviewCard";
 
 const ReviewList = ({ productId }) => {
   const [reviews, setReviews] = useState([]);
