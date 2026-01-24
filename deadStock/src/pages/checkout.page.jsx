@@ -19,6 +19,14 @@ function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [deliveryDetails, setDeliveryDetails] = useState({
+    fullName: "",
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+    phone: "",
+  });
 
   const { user } = useAuth();
   const dispatch = useDispatch();
@@ -31,8 +39,8 @@ function CheckoutPage() {
 
   // Debug logging
   useEffect(() => {
-    console.log('Direct Purchase Item:', directPurchaseItem);
-    console.log('Cart Items Object:', cartItemsObject);
+    console.log("Direct Purchase Item:", directPurchaseItem);
+    console.log("Cart Items Object:", cartItemsObject);
   }, [directPurchaseItem, cartItemsObject]);
 
   // Convert cart items object to array
@@ -53,8 +61,8 @@ function CheckoutPage() {
     resolveProductImages,
   );
 
-  console.log('Display Items:', displayItems);
-  console.log('Direct Purchase Item exists?', !!directPurchaseItem);
+  console.log("Display Items:", displayItems);
+  console.log("Direct Purchase Item exists?", !!directPurchaseItem);
 
   // Calculate totals
   const totals = calculateTotals(displayItems);
@@ -74,22 +82,57 @@ function CheckoutPage() {
   const handlePayment = async () => {
     setLoading(true);
 
-    // Simulate payment processing
-    setTimeout(() => {
-      setLoading(false);
-      setPaymentSuccess(true);
+    try {
+      const res = await fetch(
+        "http://localhost:4000/api/payment/esewa/initiate",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.uid,
+            items: displayItems,
+            totalAmount: totals.total,
+            deliveryDetails,
+          }),
+        },
+      );
 
-      // Clear direct purchase item after successful payment
-      if (directPurchaseItem) {
-        dispatch(clearDirectPurchaseItem());
+      // Check content-type before parsing
+      const contentType = res.headers.get("content-type");
+      if (!contentType?.includes("application/json")) {
+        const text = await res.text();
+        console.error("Server returned non-JSON response:", text);
+        toast.error("Payment initiation failed: invalid server response");
+        return;
       }
 
-      // Show success message
-      toast.success("Payment successful! Order confirmed.", {
-        position: "top-right",
-        autoClose: 3000,
+      const paymentData = await res.json();
+
+      if (!res.ok) {
+        toast.error(paymentData.error || "Unable to initiate payment");
+        return;
+      }
+
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = "https://uat.esewa.com.np/epay/main";
+
+      Object.entries(paymentData).forEach(([key, value]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
       });
-    }, 2000);
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (err) {
+      console.error(err);
+      toast.error("Payment failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Check if we have items to display
@@ -101,11 +144,11 @@ function CheckoutPage() {
 
   // FIXED: Check if we have no items AND no direct purchase item
   if (!hasItems && !directPurchaseItem) {
-    console.log('Showing empty cart state - no items and no direct purchase');
+    console.log("Showing empty cart state - no items and no direct purchase");
     return <EmptyCartState />;
   }
 
-  console.log('Rendering CheckoutLayout with items:', displayItems);
+  // console.log('Rendering CheckoutLayout with items:', displayItems);
 
   return (
     <CheckoutLayout
@@ -120,6 +163,8 @@ function CheckoutPage() {
       onBack={handleBack}
       onPayment={handlePayment}
       onPaymentMethodChange={setPaymentMethod}
+      deliveryDetails={deliveryDetails}
+      setDeliveryDetails={setDeliveryDetails}
     />
   );
 }

@@ -4,6 +4,7 @@ import { getAnalytics } from "firebase/analytics";
 import { getStorage } from "firebase/storage";
 import { getFunctions } from "firebase/functions";
 import { getFirestore } from "firebase/firestore";
+import { getDatabase } from "firebase/database";   // ✅ ADD THIS
 import { getAuth } from "firebase/auth";
 
 import {
@@ -20,7 +21,7 @@ import {
 const firebaseConfig = {
   apiKey: FIREBASE_API_KEY,
   authDomain: FIREBASE_AUTH_DOMAIN,
-  databaseURL: FIREBASE_DATABASE_URL,
+  databaseURL: FIREBASE_DATABASE_URL, // ✅ REQUIRED
   projectId: FIREBASE_PROJECT_ID,
   storageBucket: FIREBASE_STORAGE_BUCKET,
   messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
@@ -31,8 +32,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const analytics = getAnalytics(app);
-export const db = getFirestore(app);
+export const db = getFirestore(app);        // Firestore (orders, products)
+export const rtdb = getDatabase(app);       // ✅ Realtime DB (live status)
 export const storage = getStorage(app);
 export const functions = getFunctions(app);
 export const auth = getAuth(app);
+
 export default app;

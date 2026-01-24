@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { colors } from "./Constants";
 
-const ShippingStep = ({ user }) => {
+const ShippingStep = ({ user, deliveryDetails, setDeliveryDetails }) => {
   return (
     <Box component="form" noValidate>
       <Typography
@@ -25,10 +25,14 @@ const ShippingStep = ({ user }) => {
         Where should we deliver your amazing finds?
       </Typography>
 
+      {/* Full Name */}
       <TextField
         fullWidth
         label="Full name"
-        defaultValue={user?.displayName || ""}
+        value={deliveryDetails.fullName || user?.displayName || ""}
+        onChange={(e) =>
+          setDeliveryDetails((prev) => ({ ...prev, fullName: e.target.value }))
+        }
         margin="normal"
         variant="outlined"
         InputProps={{
@@ -44,10 +48,15 @@ const ShippingStep = ({ user }) => {
         }}
       />
 
+      {/* Street Address */}
       <TextField
         fullWidth
         label="Street address"
         placeholder="123 Main Street"
+        value={deliveryDetails.address || ""}
+        onChange={(e) =>
+          setDeliveryDetails((prev) => ({ ...prev, address: e.target.value }))
+        }
         margin="normal"
         variant="outlined"
         InputProps={{
@@ -63,6 +72,7 @@ const ShippingStep = ({ user }) => {
         }}
       />
 
+      {/* City & Postal / ZIP */}
       <Box
         sx={{
           display: "flex",
@@ -73,12 +83,14 @@ const ShippingStep = ({ user }) => {
         <TextField
           fullWidth
           label="City"
+          value={deliveryDetails.city || ""}
+          onChange={(e) =>
+            setDeliveryDetails((prev) => ({ ...prev, city: e.target.value }))
+          }
           margin="normal"
           variant="outlined"
           InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">🏙️</InputAdornment>
-            ),
+            startAdornment: <InputAdornment position="start">🏙️</InputAdornment>,
           }}
           sx={{
             "& .MuiOutlinedInput-root": {
@@ -92,12 +104,14 @@ const ShippingStep = ({ user }) => {
         <TextField
           fullWidth
           label="Postal / ZIP code"
+          value={deliveryDetails.zip || ""}
+          onChange={(e) =>
+            setDeliveryDetails((prev) => ({ ...prev, zip: e.target.value }))
+          }
           margin="normal"
           variant="outlined"
           InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">📮</InputAdornment>
-            ),
+            startAdornment: <InputAdornment position="start">📮</InputAdornment>,
           }}
           sx={{
             "& .MuiOutlinedInput-root": {
@@ -110,6 +124,53 @@ const ShippingStep = ({ user }) => {
         />
       </Box>
 
+      {/* State / Province */}
+      <TextField
+        fullWidth
+        label="State / Province"
+        value={deliveryDetails.state || ""}
+        onChange={(e) =>
+          setDeliveryDetails((prev) => ({ ...prev, state: e.target.value }))
+        }
+        margin="normal"
+        variant="outlined"
+        InputProps={{
+          startAdornment: <InputAdornment position="start">🗺️</InputAdornment>,
+        }}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+            "&:hover fieldset": {
+              borderColor: colors.primaryLight,
+            },
+          },
+        }}
+      />
+
+      {/* Phone */}
+      <TextField
+        fullWidth
+        label="Phone Number"
+        value={deliveryDetails.phone || ""}
+        onChange={(e) =>
+          setDeliveryDetails((prev) => ({ ...prev, phone: e.target.value }))
+        }
+        margin="normal"
+        variant="outlined"
+        InputProps={{
+          startAdornment: <InputAdornment position="start">📞</InputAdornment>,
+        }}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: 2,
+            "&:hover fieldset": {
+              borderColor: colors.primaryLight,
+            },
+          },
+        }}
+      />
+
+      {/* Save Address Checkbox */}
       <FormControlLabel
         control={
           <Checkbox
@@ -130,3 +191,4 @@ const ShippingStep = ({ user }) => {
 };
 
 export default ShippingStep;
+ 
