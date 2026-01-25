@@ -11,8 +11,8 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
-import { colors } from "./Constants";
-import EsewaLogo from "../../assets/esewa-logo.png";
+import { colors } from "../Constants";
+import EsewaLogo from "../../../assets/esewa-logo.png";
 
 const PaymentStep = ({ paymentMethod, onPaymentMethodChange }) => {
   return (

@@ -12,8 +12,8 @@ import SecurityIcon from "@mui/icons-material/Security";
 import { colors } from "./Constants";
 import ProgressBar from "./ProgressBar";
 import ContactStep from "./ContactStep";
-import ShippingStep from "./ShippingSteps";
-import PaymentStep from "./PaymentStep";
+import ShippingStep from "./ShippingDetails/ShippingSteps";
+import PaymentStep from "./payment/PaymentStep";
 
 const steps = ["Contact", "Shipping", "Payment"];
 

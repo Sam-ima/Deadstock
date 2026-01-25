@@ -10,20 +10,22 @@ import { useDeliveryDetails } from "../component/checkout/hooks/useDeliveryDetai
 
 // Components
 import CheckoutLayout from "../component/checkout/CheckoutLayout";
-import PaymentSuccess from "../component/checkout/PayementSuccess";
-import PaymentFailure from "../component/checkout/PaymentFailurePage";
+import PaymentSuccess from "../component/checkout/payment/PayementSuccess";
+import PaymentFailure from "../component/checkout/payment/PaymentFailurePage";
 import EmptyCartState from "../component/checkout/EmptyCartState";
 import { EsewaPaymentHandler } from "../component/checkout/payment/EsewaPaymentHandler";
 
 function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState("card");
-  
+
   // Custom Hooks
   const { user } = useAuth();
   const { paymentStatus, paymentError, orderId } = usePaymentStatus();
-  const { directPurchaseItem, displayItems, totals, hasItems } = useCheckoutItems();
-  const { deliveryDetails, setDeliveryDetails, isDeliveryDetailsComplete } = useDeliveryDetails();
+  const { directPurchaseItem, displayItems, totals, hasItems } =
+    useCheckoutItems();
+  const { deliveryDetails, setDeliveryDetails, isDeliveryDetailsComplete } =
+    useDeliveryDetails();
 
   // Payment Handler
   const { handlePayment, loading } = EsewaPaymentHandler({
@@ -31,7 +33,7 @@ function CheckoutPage() {
     displayItems,
     totals,
     deliveryDetails,
-    isDeliveryDetailsComplete
+    isDeliveryDetailsComplete,
   });
 
   // Navigation Handlers
