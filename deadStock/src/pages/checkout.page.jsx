@@ -1,106 +1,65 @@
-// pages/checkout.page.jsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-
-// Hooks
 import { useAuth } from "../context/authContext/authContext";
 import { usePaymentStatus } from "../component/checkout/hooks/usePaymentStatus";
 import { useCheckoutItems } from "../component/checkout/hooks/useCheckoutItems";
 import { useDeliveryDetails } from "../component/checkout/hooks/useDeliveryDetails";
-
-// Components
 import CheckoutLayout from "../component/checkout/CheckoutLayout";
 import PaymentSuccess from "../component/checkout/payment/PayementSuccess";
 import PaymentFailure from "../component/checkout/payment/PaymentFailurePage";
 import EmptyCartState from "../component/checkout/EmptyCartState";
 import { EsewaPaymentHandler } from "../component/checkout/payment/EsewaPaymentHandler";
+import { finalizeProductStock } from "../component/cart/cart_utils";
 
 function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState(null);
 
-  // Custom Hooks
   const { user } = useAuth();
   const { paymentStatus, paymentError, orderId } = usePaymentStatus();
-  const { directPurchaseItem, displayItems, totals, hasItems } =
-    useCheckoutItems();
-  const { deliveryDetails, setDeliveryDetails, isDeliveryDetailsComplete } =
-    useDeliveryDetails();
+  const { directPurchaseItem, displayItems, totals, hasItems } = useCheckoutItems();
+  const { deliveryDetails, setDeliveryDetails, isDeliveryDetailsComplete } = useDeliveryDetails();
   const isPaymentMethodSelected = paymentMethod === "esewa";
 
-  // Payment Handler
-  const { handlePayment, loading } = EsewaPaymentHandler({
-    user,
-    displayItems,
-    totals,
-    deliveryDetails,
-    isDeliveryDetailsComplete,
-    isPaymentMethodSelected,
-  });
+  const { handlePayment, loading } = EsewaPaymentHandler({ user, displayItems, totals, deliveryDetails, isDeliveryDetailsComplete, isPaymentMethodSelected });
 
-  // Navigation Handlers
-  const handleBack = () => {
-    if (activeStep > 0) {
-      setActiveStep((prev) => prev - 1);
-    }
-  };
-
+  const handleBack = () => { if (activeStep > 0) setActiveStep(prev => prev - 1); };
   const handleNext = () => {
-    // Step-specific validation
-    if (activeStep === 1) {
-      // Shipping step
-      if (!isDeliveryDetailsComplete()) {
-        toast.error("Please fill all delivery details before continuing.");
-        return;
-      }
-    } else if (activeStep === 2) {
-      // Payment step
-      if (!isPaymentMethodSelected) {
-        toast.error("Please select eSewa as your payment method to continue.");
-        return;
-      }
-    }
-
-    if (activeStep < 2) {
-      setActiveStep((prev) => prev + 1);
-    }
+    if (activeStep === 1 && !isDeliveryDetailsComplete()) { toast.error("Please fill all delivery details."); return; }
+    if (activeStep === 2 && !isPaymentMethodSelected) { toast.error("Please select eSewa."); return; }
+    if (activeStep < 2) setActiveStep(prev => prev + 1);
   };
+  const handlePaymentMethodChange = (method) => setPaymentMethod(method);
 
-  // Handle payment method change
-  const handlePaymentMethodChange = (method) => {
-    setPaymentMethod(method);
-    // if (method === "esewa") {
-    //   toast.success("eSewa payment selected. You can now proceed to payment.");
-    // }
-  };
-  // Handle payment with validation
   const handlePaymentWithValidation = () => {
-    if (!isPaymentMethodSelected) {
-      toast.error("Please select eSewa as your payment method.");
-      return;
-    }
-
-    if (!isDeliveryDetailsComplete()) {
-      toast.error("Please complete all delivery details first.");
-      return;
-    }
-
+    if (!isPaymentMethodSelected) { toast.error("Select eSewa."); return; }
+    if (!isDeliveryDetailsComplete()) { toast.error("Complete delivery details."); return; }
     handlePayment();
   };
 
-  // Render Payment Status Pages
-  if (paymentStatus === "success") {
-    return <PaymentSuccess userEmail={user?.email} orderId={orderId} />;
-  }
+  // ------------------------
+  // Finalize stock on payment status change
+  // ------------------------
+  useEffect(() => {
+    if (!paymentStatus || paymentStatus === "pending") return;
 
-  if (paymentStatus === "failed") {
-    return <PaymentFailure errorMessage={paymentError} orderId={orderId} />;
-  }
+    const finalizeAllItems = async () => {
+      const status = paymentStatus === "success" ? "success" : "failed";
+      for (const item of displayItems) {
+        try {
+          await finalizeProductStock(item.product.id, item.quantity, status);
+        } catch (err) {
+          console.error("❌ Stock finalize error:", err.message);
+        }
+      }
+    };
 
-  // Check for empty cart
-  if (!hasItems) {
-    return <EmptyCartState />;
-  }
+    finalizeAllItems();
+  }, [paymentStatus, displayItems]);
+
+  if (paymentStatus === "success") return <PaymentSuccess userEmail={user?.email} orderId={orderId} />;
+  if (paymentStatus === "failed") return <PaymentFailure errorMessage={paymentError} orderId={orderId} />;
+  if (!hasItems) return <EmptyCartState />;
 
   return (
     <CheckoutLayout
