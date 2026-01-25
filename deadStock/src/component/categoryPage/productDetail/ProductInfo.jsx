@@ -110,7 +110,7 @@ const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
           color="text.secondary"
           sx={{ fontSize: { xs: "0.75rem", sm: "0.85rem" } }}
         >
-          {product.stock} units available • {product.sold} units sold
+          {product.availableStock} units available • {product.sold} units sold
         </Typography>
       </Box>
 
