@@ -17,7 +17,7 @@ import { EsewaPaymentHandler } from "../component/checkout/payment/EsewaPaymentH
 
 function CheckoutPage() {
   const [activeStep, setActiveStep] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [paymentMethod, setPaymentMethod] = useState(null);
 
   // Custom Hooks
   const { user } = useAuth();
@@ -26,6 +26,7 @@ function CheckoutPage() {
     useCheckoutItems();
   const { deliveryDetails, setDeliveryDetails, isDeliveryDetailsComplete } =
     useDeliveryDetails();
+  const isPaymentMethodSelected = paymentMethod === "esewa";
 
   // Payment Handler
   const { handlePayment, loading } = EsewaPaymentHandler({
@@ -34,6 +35,7 @@ function CheckoutPage() {
     totals,
     deliveryDetails,
     isDeliveryDetailsComplete,
+    isPaymentMethodSelected,
   });
 
   // Navigation Handlers
@@ -44,14 +46,46 @@ function CheckoutPage() {
   };
 
   const handleNext = () => {
-    if (!isDeliveryDetailsComplete()) {
-      toast.error("Please fill all delivery details before continuing.");
-      return;
+    // Step-specific validation
+    if (activeStep === 1) {
+      // Shipping step
+      if (!isDeliveryDetailsComplete()) {
+        toast.error("Please fill all delivery details before continuing.");
+        return;
+      }
+    } else if (activeStep === 2) {
+      // Payment step
+      if (!isPaymentMethodSelected) {
+        toast.error("Please select eSewa as your payment method to continue.");
+        return;
+      }
     }
 
     if (activeStep < 2) {
       setActiveStep((prev) => prev + 1);
     }
+  };
+
+  // Handle payment method change
+  const handlePaymentMethodChange = (method) => {
+    setPaymentMethod(method);
+    // if (method === "esewa") {
+    //   toast.success("eSewa payment selected. You can now proceed to payment.");
+    // }
+  };
+  // Handle payment with validation
+  const handlePaymentWithValidation = () => {
+    if (!isPaymentMethodSelected) {
+      toast.error("Please select eSewa as your payment method.");
+      return;
+    }
+
+    if (!isDeliveryDetailsComplete()) {
+      toast.error("Please complete all delivery details first.");
+      return;
+    }
+
+    handlePayment();
   };
 
   // Render Payment Status Pages
@@ -79,8 +113,8 @@ function CheckoutPage() {
       totals={totals}
       onNext={handleNext}
       onBack={handleBack}
-      onPayment={handlePayment}
-      onPaymentMethodChange={setPaymentMethod}
+      onPayment={handlePaymentWithValidation}
+      onPaymentMethodChange={handlePaymentMethodChange}
       deliveryDetails={deliveryDetails}
       setDeliveryDetails={setDeliveryDetails}
     />
