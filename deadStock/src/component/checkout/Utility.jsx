@@ -2,7 +2,7 @@
 export const getDisplayItems = (directPurchaseItem, cartItemsArray, resolveProductImages) => {
   // If there's a direct purchase item, show only that
   if (directPurchaseItem) {
-    console.log('Direct purchase mode - showing single item:', directPurchaseItem);
+   
     const product = directPurchaseItem.product || directPurchaseItem;
     const resolvedImages = product.images?.length > 0 
       ? product.images 
@@ -22,8 +22,7 @@ export const getDisplayItems = (directPurchaseItem, cartItemsArray, resolveProdu
     }];
   }
   
-  // Otherwise, show all cart items
-  console.log('Cart checkout mode - showing all cart items:', cartItemsArray.length);
+ 
   
   return cartItemsArray.map((item) => {
     const product = item.product || item;

@@ -21,6 +21,8 @@ import RootLayout from "./root_layout";
 import AuthPage from "./pages/authPage.jsx";
 import SellItem from "./pages/sellProduct";
 import CartPage from "./pages/cart.page.jsx";
+import PaymentFailure from "./component/checkout/PaymentFailurePage.jsx";
+import PaymentSuccess from "./component/checkout/PayementSuccess.jsx";
 // Lazy pages
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));
@@ -30,11 +32,11 @@ const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const AuctionDetailPage = lazy(() => import("./pages/auctionDetailPage.jsx"));
 const CheckoutPage = lazy(() => import("./pages/checkout.page.jsx"));
 
-const ProductDescriptionPage = lazy(() =>
-  import("./pages/productDescriptionPage.jsx")
+const ProductDescriptionPage = lazy(
+  () => import("./pages/productDescriptionPage.jsx"),
 );
-const ResetPassword = lazy(() =>
-  import("./component/forms/passwordReset/resetPassword.jsx")
+const ResetPassword = lazy(
+  () => import("./component/forms/passwordReset/resetPassword.jsx"),
 );
 const HowToSell = lazy(() => import("./pages/howToSellPage.jsx"));
 
@@ -56,9 +58,10 @@ const router = createBrowserRouter(
       <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/checkout" element={<CheckoutPage />} />
-
-    </Route>
-  )
+      <Route path="/payment-success" element={<PaymentSuccess />} />
+      <Route path="/payment-failed" element={<PaymentFailure />} />
+    </Route>,
+  ),
 );
 
 function App() {
@@ -67,10 +70,10 @@ function App() {
       <CategoryProvider>
         <ProductProvider>
           {/* <CartProvider> */}
-            <Suspense fallback={<div className="loading">Loading...</div>}>
-              <RouterProvider router={router} />
-              <ToastContainer transition={Flip} />
-            </Suspense>
+          <Suspense fallback={<div className="loading">Loading...</div>}>
+            <RouterProvider router={router} />
+            <ToastContainer transition={Flip} />
+          </Suspense>
           {/* </CartProvider> */}
         </ProductProvider>
       </CategoryProvider>
