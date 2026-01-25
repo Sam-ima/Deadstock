@@ -1,10 +1,8 @@
-// components/checkout/PaymentSuccess.jsx
-import React from "react";
 import { Box, Container, Typography, Button, Stack } from "@mui/material";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { colors } from "./Constants";
+import ErrorIcon from "@mui/icons-material/Error";
+import { colors } from "../Constants";
 
-const PaymentSuccess = ({ userEmail, orderId }) => {
+const PaymentFailure = ({ errorMessage, orderId }) => {
   return (
     <Box
       sx={{
@@ -16,16 +14,14 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
     >
       <Container maxWidth="md">
         <Box sx={{ textAlign: "center", py: 6 }}>
-          <CheckCircleIcon
-            sx={{ fontSize: 80, color: colors.success, mb: 3 }}
-          />
+          <ErrorIcon sx={{ fontSize: 80, color: colors.error, mb: 3 }} />
           <Typography
             variant="h4"
             fontWeight={700}
-            color={colors.success}
+            color={colors.error}
             gutterBottom
           >
-            Payment Successful! 🎉
+            Payment Failed! 😕
           </Typography>
           
           <Typography
@@ -33,8 +29,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
             color={colors.textSecondary}
             sx={{ mb: 3, maxWidth: 500, mx: "auto" }}
           >
-            Your order has been confirmed and is being processed. A confirmation email has been sent to{" "}
-            <strong>{userEmail || "your email"}</strong>
+            {errorMessage || "We couldn't process your payment. Please try again."}
           </Typography>
           
           {orderId && (
@@ -62,7 +57,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
           >
             <Button
               variant="contained"
-              onClick={() => (window.location.href = "/orders")}
+              onClick={() => (window.location.href = "/checkout")}
               sx={{
                 background: colors.primaryGradient,
                 color: colors.textLight,
@@ -72,7 +67,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
                 fontWeight: 700,
               }}
             >
-              View Order
+              Try Again
             </Button>
             
             <Button
@@ -91,7 +86,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
                 }
               }}
             >
-              Continue Shopping
+              Go to Home
             </Button>
           </Stack>
           
@@ -100,7 +95,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
             color={colors.textSecondary}
             sx={{ mt: 4, display: "block" }}
           >
-            You will receive tracking information once your order ships.
+            If this issue persists, please contact support.
           </Typography>
         </Box>
       </Container>
@@ -108,4 +103,4 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
   );
 };
 
-export default PaymentSuccess;
+export default PaymentFailure;

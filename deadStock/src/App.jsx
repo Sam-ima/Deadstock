@@ -21,8 +21,8 @@ import RootLayout from "./root_layout";
 import AuthPage from "./pages/authPage.jsx";
 import SellItem from "./pages/sellProduct";
 import CartPage from "./pages/cart.page.jsx";
-import PaymentFailure from "./component/checkout/PaymentFailurePage.jsx";
-import PaymentSuccess from "./component/checkout/PayementSuccess.jsx";
+import PaymentFailure from "./component/checkout/payment/PaymentFailurePage.jsx";
+import PaymentSuccess from "./component/checkout/payment/PayementSuccess.jsx";
 // Lazy pages
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/auction.page"));

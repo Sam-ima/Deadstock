@@ -1,8 +1,10 @@
+// components/checkout/PaymentSuccess.jsx
+import React from "react";
 import { Box, Container, Typography, Button, Stack } from "@mui/material";
-import ErrorIcon from "@mui/icons-material/Error";
-import { colors } from "./Constants";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { colors } from "../Constants";
 
-const PaymentFailure = ({ errorMessage, orderId }) => {
+const PaymentSuccess = ({ userEmail, orderId }) => {
   return (
     <Box
       sx={{
@@ -14,14 +16,16 @@ const PaymentFailure = ({ errorMessage, orderId }) => {
     >
       <Container maxWidth="md">
         <Box sx={{ textAlign: "center", py: 6 }}>
-          <ErrorIcon sx={{ fontSize: 80, color: colors.error, mb: 3 }} />
+          <CheckCircleIcon
+            sx={{ fontSize: 80, color: colors.success, mb: 3 }}
+          />
           <Typography
             variant="h4"
             fontWeight={700}
-            color={colors.error}
+            color={colors.success}
             gutterBottom
           >
-            Payment Failed! 😕
+            Payment Successful! 🎉
           </Typography>
           
           <Typography
@@ -29,7 +33,8 @@ const PaymentFailure = ({ errorMessage, orderId }) => {
             color={colors.textSecondary}
             sx={{ mb: 3, maxWidth: 500, mx: "auto" }}
           >
-            {errorMessage || "We couldn't process your payment. Please try again."}
+            Your order has been confirmed and is being processed. A confirmation email has been sent to{" "}
+            <strong>{userEmail || "your email"}</strong>
           </Typography>
           
           {orderId && (
@@ -57,7 +62,7 @@ const PaymentFailure = ({ errorMessage, orderId }) => {
           >
             <Button
               variant="contained"
-              onClick={() => (window.location.href = "/checkout")}
+              onClick={() => (window.location.href = "/orders")}
               sx={{
                 background: colors.primaryGradient,
                 color: colors.textLight,
@@ -67,7 +72,7 @@ const PaymentFailure = ({ errorMessage, orderId }) => {
                 fontWeight: 700,
               }}
             >
-              Try Again
+              View Order
             </Button>
             
             <Button
@@ -86,7 +91,7 @@ const PaymentFailure = ({ errorMessage, orderId }) => {
                 }
               }}
             >
-              Go to Home
+              Continue Shopping
             </Button>
           </Stack>
           
@@ -95,7 +100,7 @@ const PaymentFailure = ({ errorMessage, orderId }) => {
             color={colors.textSecondary}
             sx={{ mt: 4, display: "block" }}
           >
-            If this issue persists, please contact support.
+            You will receive tracking information once your order ships.
           </Typography>
         </Box>
       </Container>
@@ -103,4 +108,4 @@ const PaymentFailure = ({ errorMessage, orderId }) => {
   );
 };
 
-export default PaymentFailure;
+export default PaymentSuccess;

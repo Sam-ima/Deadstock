@@ -2,12 +2,13 @@
 import { useState } from "react";
 
 const initialDeliveryDetails = {
-  fullName: "",
+  // fullName: "",
   address: "",
   city: "",
   state: "",
   zip: "",
   phone: "",
+  // email:""
 };
 
 export function useDeliveryDetails() {

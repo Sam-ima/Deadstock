@@ -12,8 +12,8 @@ import SecurityIcon from "@mui/icons-material/Security";
 import { colors } from "./Constants";
 import ProgressBar from "./ProgressBar";
 import ContactStep from "./ContactStep";
-import ShippingStep from "./ShippingSteps";
-import PaymentStep from "./PaymentStep";
+import ShippingStep from "./ShippingDetails/ShippingSteps";
+import PaymentStep from "./payment/PaymentStep";
 
 const steps = ["Contact", "Shipping", "Payment"];
 
@@ -120,22 +120,6 @@ const CheckoutForm = ({
           )}
         </Button>
       </Box>
-
-      {/* Security badge */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          mt: 4,
-          gap: 1,
-        }}
-      >
-        <SecurityIcon sx={{ color: colors.success, fontSize: 20 }} />
-        <Typography variant="caption" color={colors.textSecondary}>
-          SSL Secured • 256-bit Encryption • PCI Compliant
-        </Typography>
-      </Box> */}
     </Paper>
   );
 };
