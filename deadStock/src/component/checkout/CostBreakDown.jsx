@@ -10,19 +10,19 @@ const CostBreakdown = ({ totals }) => {
     <Box sx={{ '& > *': { display: 'flex', justifyContent: 'space-between', mb: 2 } }}>
       <Box>
         <Typography color={colors.textSecondary}>Subtotal</Typography>
-        <Typography fontWeight={500}>${totals.subtotal.toFixed(2)}</Typography>
+        <Typography fontWeight={500}>Rs. {totals.subtotal.toFixed(2)}</Typography>
       </Box>
       <Box>
         <Typography color={colors.textSecondary}>Shipping</Typography>
         <Typography fontWeight={500}>
           <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            ${totals.shipping.toFixed(2)} <LocalShippingIcon sx={{ fontSize: 16 }} />
+            Rs. {totals.shipping.toFixed(2)} <LocalShippingIcon sx={{ fontSize: 16 }} />
           </Box>
         </Typography>
       </Box>
       <Box>
         <Typography color={colors.textSecondary}>Estimated tax</Typography>
-        <Typography fontWeight={500}>${totals.tax.toFixed(2)}</Typography>
+        <Typography fontWeight={500}>Rs. {totals.tax.toFixed(2)}</Typography>
       </Box>
       {totals.discount > 0 && (
         <Box sx={{ color: colors.success }}>
@@ -31,7 +31,7 @@ const CostBreakdown = ({ totals }) => {
               <DiscountIcon sx={{ fontSize: 16 }} /> Discount
             </Box>
           </Typography>
-          <Typography fontWeight={600}>–${totals.discount.toFixed(2)}</Typography>
+          <Typography fontWeight={600}>Rs. {totals.discount.toFixed(2)}</Typography>
         </Box>
       )}
     </Box>

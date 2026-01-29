@@ -1,5 +1,3 @@
-// components/checkout/UserEmailDisplay.jsx
-import React from "react";
 import { Alert, Typography, Box } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import { colors } from "./Constants";
