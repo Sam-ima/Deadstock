@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo,useEffect } from "react";
 import {
   Box,
   Button,
@@ -14,7 +14,7 @@ import { useCategories } from "../../../context/categoryContext";
 import BrowseHeader from "./browseHeader";
 import BrowseList from "./browseList";
 import CategoryCard from "../categoryCard";
-
+import { useSearch } from "../../Searchbar/SearchContext";
 // Icons
 import DevicesIcon from "@mui/icons-material/Devices";
 import CheckroomIcon from "@mui/icons-material/Checkroom";
@@ -28,19 +28,20 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import BookIcon from "@mui/icons-material/Book";
 
 const iconMap = {
-  "electronics": <DevicesIcon fontSize="small" />,
-  "fashion": <CheckroomIcon fontSize="small" />,
-  "art": <CollectionsIcon fontSize="small" />,
+  electronics: <DevicesIcon fontSize="small" />,
+  fashion: <CheckroomIcon fontSize="small" />,
+  art: <CollectionsIcon fontSize="small" />,
   "wholesale-stock": <WarehouseIcon fontSize="small" />,
-  "vehicles": <DirectionsCarIcon fontSize="small" />,
-  "home": <HomeIcon fontSize="small" />,
-  "food": <RestaurantIcon fontSize="small" />,
-  "fitness": <FitnessCenterIcon fontSize="small" />,
-  "music": <MusicNoteIcon fontSize="small" />,
-  "books": <BookIcon fontSize="small" />,
+  vehicles: <DirectionsCarIcon fontSize="small" />,
+  home: <HomeIcon fontSize="small" />,
+  food: <RestaurantIcon fontSize="small" />,
+  fitness: <FitnessCenterIcon fontSize="small" />,
+  music: <MusicNoteIcon fontSize="small" />,
+  books: <BookIcon fontSize="small" />,
 };
 
 const BrowseByCategory = () => {
+  const { query } = useSearch();
   const navigate = useNavigate();
   const { categories, loading } = useCategories();
   const [showAll, setShowAll] = useState(false);
@@ -75,7 +76,21 @@ const BrowseByCategory = () => {
     : enrichedCategories.slice(0, visibleCount);
 
   const showToggle = enrichedCategories.length > visibleCount;
+  const filteredCategories = useMemo(() => {
+    if (!query) return enrichedCategories;
 
+    const q = query.toLowerCase();
+    return enrichedCategories.filter(
+      (cat) =>
+        cat.name.toLowerCase().includes(q) ||
+        cat.slug?.toLowerCase().includes(q),
+    );
+  }, [query, enrichedCategories]);
+  useEffect(() => {
+    if (query.trim()) {
+      setShowAll(true);
+    }
+  }, [query]);
   if (loading) return null;
 
   return (
@@ -94,7 +109,7 @@ const BrowseByCategory = () => {
         {/* 🔹 GRID VIEW */}
         {showAll && (
           <Grid container spacing={3} mt={2} justifyContent="center">
-            {enrichedCategories.map((category) => (
+            {filteredCategories.map((category) => (
               <Grid
                 item
                 xs={12}
