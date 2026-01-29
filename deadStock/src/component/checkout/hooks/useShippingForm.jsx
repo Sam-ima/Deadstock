@@ -64,10 +64,12 @@ export const useShippingForm = (initialDeliveryDetails = {}, user = null) => {
       }
 
       // Phone validation
+      // Phone validation (Nepal)
       if (field.id === "phone" && deliveryDetails.phone) {
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-        if (!phoneRegex.test(deliveryDetails.phone.replace(/\D/g, ""))) {
-          newErrors.phone = "Please enter a valid phone number";
+        const cleanedPhone = deliveryDetails.phone.replace(/\s|-/g, "");
+        if (!NEPAL_PHONE_REGEX.test(cleanedPhone)) {
+          newErrors.phone =
+            "Enter a valid Nepal phone number (e.g. 98XXXXXXXX or +97798XXXXXXXX)";
         }
       }
     });

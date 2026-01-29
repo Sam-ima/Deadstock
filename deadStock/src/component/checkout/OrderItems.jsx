@@ -1,5 +1,3 @@
-// components/checkout/OrderItem.jsx
-import React from 'react';
 import { Box, Typography } from '@mui/material';
 import { colors } from './Constants';
 
@@ -43,6 +41,7 @@ const OrderItem = ({ item, index }) => {
             component="img"
             src={itemImage}
             alt={itemName}
+            loading='lazy'
             sx={{
               width: '100%',
               height: '100%',
@@ -69,15 +68,15 @@ const OrderItem = ({ item, index }) => {
             {itemName}
           </Typography>
           <Typography fontWeight={700} color={colors.primary} sx={{ ml: 1, flexShrink: 0 }}>
-            ${(unitPrice * quantity).toFixed(2)}
+            Rs. {(unitPrice * quantity).toFixed(2)}
           </Typography>
         </Box>
         <Typography variant="body2" color={colors.textSecondary} sx={{ mt: 0.5 }}>
           {isBulk ? 'Bulk Order • ' : ''}
-          Unit Price: ${unitPrice.toFixed(2)}
+          Unit Price: Rs. {unitPrice.toFixed(2)}
         </Typography>
         <Typography variant="caption" color={colors.textSecondary}>
-          Qty: {quantity} • Total: ${(unitPrice * quantity).toFixed(2)}
+          Qty: {quantity} • Total: Rs. {(unitPrice * quantity).toFixed(2)}
         </Typography>
         {isBulk && (
           <Typography variant="caption" color={colors.success} sx={{ display: 'block', mt: 0.5 }}>

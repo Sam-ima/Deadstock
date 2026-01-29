@@ -1,14 +1,10 @@
-// components/checkout/CheckoutForm.jsx
-import React from "react";
 import {
   Paper,
-  Typography,
   Button,
   Box,
   CircularProgress,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import SecurityIcon from "@mui/icons-material/Security";
 import { colors } from "./Constants";
 import ProgressBar from "./ProgressBar";
 import ContactStep from "./ContactStep";

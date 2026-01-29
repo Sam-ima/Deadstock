@@ -113,7 +113,7 @@ const OrderSummary = ({
             backgroundClip: "text",
           }}
         >
-          ${totals.total.toFixed(2)}
+          Rs. {totals.total.toFixed(2)}
         </Typography>
       </Box>
       <Typography variant="caption" color={colors.textSecondary}>
