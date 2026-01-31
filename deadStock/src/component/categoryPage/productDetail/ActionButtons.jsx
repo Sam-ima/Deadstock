@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  DialogContentText
+  DialogContentText,
 } from "@mui/material";
 import { ShoppingCart, ShoppingBag, Business } from "@mui/icons-material";
 import { CartContext } from "./CartContext";
@@ -16,41 +16,45 @@ import { useDispatch } from "react-redux";
 import { addItem } from "../../../store/slice/cartSlice";
 import { setDirectPurchaseItem } from "../../../store/slice/purchaseSlice";
 import { toast } from "react-toastify";
+import { reserveProductStock } from "../../cart/cart_utils";
 
 const ActionButtons = ({ product, quantity }) => {
   const cartCtx = useContext(CartContext);
   const { user, loading } = useAuth();
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [showSellerPrompt, setShowSellerPrompt] = useState(false);
   const [actionType, setActionType] = useState(null); // "add" or "buy"
+  const [loadingStock, setLoadingStock] = useState(false); // disable buttons while reserving
 
-  const isOutOfStock = product.stock === 0;
-  const meetsMOQ = product.moq && quantity >= product.moq;
+  const isOutOfStock =
+    product.availableStock === 0 || quantity > product.availableStock;
 
   /* ----------------------------------------
      1️⃣ LOGIN CHECK
-     ✅ Only show dialog if user is not logged in
   ---------------------------------------- */
   const requireLogin = (action) => {
     if (loading) return true;
 
     if (!user) {
       setActionType(action);
-      setShowSellerPrompt(true); // open dialog
+      setShowSellerPrompt(true);
       return true;
     }
 
-    return false; // user logged in → skip dialog
+    return false;
   };
 
   /* ----------------------------------------
      2️⃣ PRICE LOGIC
   ---------------------------------------- */
   const getFinalPrice = () => {
-    if (user?.role === "seller" && meetsMOQ && product.bulkPrice) {
+    if (
+      user?.role === "seller" &&
+      product.bulkPrice &&
+      quantity >= product.moq
+    ) {
       return product.bulkPrice;
     }
     return product.price;
@@ -59,73 +63,73 @@ const ActionButtons = ({ product, quantity }) => {
   /* ----------------------------------------
      3️⃣ CORE HANDLER
   ---------------------------------------- */
-  const handleAction = (type) => {
-    // If user is not logged in, show login dialog
+  const handleAction = async (type) => {
     if (!user) {
       setActionType(type);
       setShowSellerPrompt(true);
       return;
     }
 
-    // Logged-in users → directly proceed
-    proceed(type);
+    // Reserve stock on backend before adding
+    await reserveStockAndProceed(type);
   };
 
   /* ----------------------------------------
-     4️⃣ FINAL EXECUTION - ONLY FOR LOGGED-IN USERS
+     4️⃣ RESERVE STOCK + PROCEED
   ---------------------------------------- */
-  const proceed = (type) => {
-    // Double-check user is logged in
-    if (!user) {
-      toast.error("Please login to continue");
-      return;
-    }
+  const reserveStockAndProceed = async (type) => {
+    if (loadingStock) return;
+    setLoadingStock(true);
 
-    const unitPrice = getFinalPrice();
+    try {
+      // Call backend to reserve stock (atomic)
+      await reserveProductStock(product.id, quantity);
+      console.log("Reserving stock:", { product, quantity: quantity });
+      // Backend succeeded → proceed locally
+      const unitPrice = getFinalPrice();
 
-    // Convert Firestore Timestamp to milliseconds
-    const sanitizedProduct = {
-      ...product,
-      lastDepreciatedAt: product.lastDepreciatedAt
-        ? product.lastDepreciatedAt.toMillis()
-        : null,
-    };
+      const sanitizedProduct = {
+        ...product,
+        lastDepreciatedAt: product.lastDepreciatedAt
+          ? product.lastDepreciatedAt.toMillis()
+          : null,
+      };
 
-    const cartItem = {
-      product: sanitizedProduct,
-      quantity,
-      unitPrice,
-      totalPrice: (unitPrice || 0) * quantity,
-      isBulkOrder: user?.role === "seller" && meetsMOQ,
-      // Add these fields for Redux compatibility
-      id: product.id,
-      name: product.name,
-      price: product.price, // Original price
-      cartItemId: `${product.id}_${unitPrice}_${Date.now()}`, // Unique ID
-    };
+      const cartItem = {
+        product: sanitizedProduct,
+        quantity,
+        unitPrice,
+        totalPrice: unitPrice * quantity,
+        isBulkOrder: user?.role === "seller" && quantity >= product.moq,
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        cartItemId: `${product.id}_${unitPrice}_${Date.now()}`,
+      };
 
-    if (type === "add") {
-      // Add to Redux
-      dispatch(addItem(cartItem));
+      if (type === "add") {
+        dispatch(addItem(cartItem));
+        cartCtx?.addToCart?.(cartItem);
 
-      // Add to CartContext for drawer update
-      if (cartCtx?.addToCart) cartCtx.addToCart(cartItem);
-
-      toast.success("Item added to cart 🛒", {
-        position: "top-right",
-        autoClose: 2000,
-      });
-    } else {
-      // Direct purchase
-      // sessionStorage.setItem("directOrder", JSON.stringify([cartItem]));
-       dispatch(setDirectPurchaseItem(cartItem));
-      navigate("/checkout", {
-        state: { isDirectPurchase: true, items: [cartItem] },
-      });
-      toast.info("Proceeding to checkout...", {
-        position: "top-right",
-        autoClose: 1500,
-      });
+        toast.success("Item added to cart 🛒", {
+          position: "top-right",
+          autoClose: 2000,
+        });
+      } else {
+        dispatch(setDirectPurchaseItem(cartItem));
+        navigate("/checkout", {
+          state: { isDirectPurchase: true, items: [cartItem] },
+        });
+        toast.info("Proceeding to checkout...", {
+          position: "top-right",
+          autoClose: 1500,
+        });
+      }
+    } catch (err) {
+      console.error("❌ Stock reservation failed:", err.message);
+      toast.error(err.message || "Unable to reserve stock");
+    } finally {
+      setLoadingStock(false);
     }
   };
 
@@ -164,14 +168,14 @@ const ActionButtons = ({ product, quantity }) => {
           size="large"
           startIcon={<ShoppingCart />}
           onClick={() => handleAction("add")}
-          disabled={isOutOfStock}
+          disabled={isOutOfStock || loadingStock}
           sx={{
             flex: 1,
             backgroundColor: "#194638",
             "&:hover": { backgroundColor: "#163c2e" },
           }}
         >
-          Add to Cart
+          {loadingStock ? "Reserving..." : "Add to Cart"}
         </Button>
 
         <Button
@@ -179,7 +183,7 @@ const ActionButtons = ({ product, quantity }) => {
           size="large"
           startIcon={<ShoppingBag />}
           onClick={() => handleAction("buy")}
-          disabled={isOutOfStock}
+          disabled={isOutOfStock || loadingStock}
           sx={{
             flex: 1,
             borderColor: "#ED6C02",
@@ -191,12 +195,14 @@ const ActionButtons = ({ product, quantity }) => {
             },
           }}
         >
-          Buy Now
+          {loadingStock ? "Reserving..." : "Buy Now"}
         </Button>
       </Stack>
 
-      {/* Login Prompt Dialog */}
-      <Dialog open={showSellerPrompt} onClose={() => setShowSellerPrompt(false)}>
+      <Dialog
+        open={showSellerPrompt}
+        onClose={() => setShowSellerPrompt(false)}
+      >
         <DialogTitle>
           <Stack direction="row" spacing={1} alignItems="center">
             <Business color="primary" />
@@ -206,8 +212,8 @@ const ActionButtons = ({ product, quantity }) => {
 
         <DialogContent>
           <DialogContentText>
-            {actionType === "add" 
-              ? "You need to be logged in to add items to your cart." 
+            {actionType === "add"
+              ? "You need to be logged in to add items to your cart."
               : "You need to be logged in to make a purchase."}
           </DialogContentText>
         </DialogContent>

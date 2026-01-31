@@ -1,5 +1,3 @@
-// components/checkout/CheckoutLayout.jsx
-import React from "react";
 import { Box, Container, Typography, Paper } from "@mui/material";
 import UserEmailDisplay from "./UserEmailDispay";
 import CheckoutForm from "./CheckoutForm";
@@ -18,6 +16,8 @@ const CheckoutLayout = ({
   onBack,
   onPayment,
   onPaymentMethodChange,
+  deliveryDetails,
+  setDeliveryDetails,
 }) => {
   return (
     <Box
@@ -26,7 +26,7 @@ const CheckoutLayout = ({
         bgcolor: colors.bg,
         color: colors.textPrimary,
         py: { xs: 4, md: 8 },
-        mt:4
+        mt: 4,
       }}
     >
       <Container maxWidth="lg">
@@ -78,6 +78,8 @@ const CheckoutLayout = ({
               onBack={onBack}
               onPayment={onPayment}
               onPaymentMethodChange={onPaymentMethodChange}
+              deliveryDetails={deliveryDetails}
+              setDeliveryDetails={setDeliveryDetails}
             />
           </Box>
 

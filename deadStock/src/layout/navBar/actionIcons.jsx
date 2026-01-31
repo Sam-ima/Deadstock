@@ -27,6 +27,7 @@ import { signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useSelector } from "react-redux"; // ✅ Import Redux hook
 import { toNumber } from "../../component/cart/cart_utils";
+import SearchBar from "../../component/Searchbar/Searchbar";
 
 const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
   const navigate = useNavigate();
@@ -36,13 +37,13 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
 
   // ✅ Connect to Redux cart items
   const cartItems = useSelector((state) =>
-    user ? state.cart.items || {} : {}
+    user ? state.cart.items || {} : {},
   );
 
   // ✅ Calculate total cart count dynamically
   const cartCount = Object.values(cartItems).reduce(
     (sum, item) => sum + toNumber(item.quantity),
-    0
+    0,
   );
 
   // Fetch user data from Firestore when auth state changes
@@ -112,34 +113,7 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
 
   return (
     <Box display="flex" alignItems="center" gap={1}>
-      <Paper
-        elevation={0}
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          px: 1,
-          height: 38,
-          borderRadius: "20px",
-          backgroundColor: "rgba(255, 255, 255, 0.15)",
-          border: "1px solid rgba(255,255,255,0.3)",
-          backdropFilter: "blur(8px)",
-          transition: "all 0.3s ease",
-          "&:hover": {
-            backgroundColor: "rgba(255,255,255,0.25)",
-          },
-        }}
-      >
-        <Search size={16} />
-        <InputBase
-          placeholder="Search products..."
-          sx={{
-            ml: 1,
-            color: "#fff",
-            fontSize: "0.9rem",
-            width: { xs: 100, sm: 180, md: 100, lg: 200 },
-          }}
-        />
-      </Paper>
+      <SearchBar />
 
       {/* Cart icon only for buyers */}
       {(!userData || userData?.role === "buyer") && (
@@ -213,7 +187,12 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
               <Typography
                 variant="caption"
                 color="text.secondary"
-                sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 0.5 }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 0.5,
+                  mt: 0.5,
+                }}
               >
                 {userData?.role === "seller" ? (
                   <>
@@ -271,8 +250,6 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
 };
 
 export default ActionIcons;
-
-
 
 // import { useNavigate } from "react-router-dom";
 // import {
@@ -447,7 +424,7 @@ export default ActionIcons;
 //             sx={{
 //               display: { xs: "none", sm: "none", md: "block" },
 //               p: 0.5,
-              
+
 //             }}
 //           >
 //             {userData?.photoURL ? (

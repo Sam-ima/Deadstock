@@ -1,19 +1,15 @@
-// components/checkout/CheckoutForm.jsx
-import React from "react";
 import {
   Paper,
-  Typography,
   Button,
   Box,
   CircularProgress,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import SecurityIcon from "@mui/icons-material/Security";
 import { colors } from "./Constants";
 import ProgressBar from "./ProgressBar";
 import ContactStep from "./ContactStep";
-import ShippingStep from "./ShippingSteps";
-import PaymentStep from "./PaymentStep";
+import ShippingStep from "./ShippingDetails/ShippingSteps";
+import PaymentStep from "./payment/PaymentStep";
 
 const steps = ["Contact", "Shipping", "Payment"];
 
@@ -26,6 +22,8 @@ const CheckoutForm = ({
   onBack,
   onPayment,
   onPaymentMethodChange,
+  deliveryDetails,
+  setDeliveryDetails,
 }) => {
   return (
     <Paper
@@ -47,7 +45,13 @@ const CheckoutForm = ({
 
       {/* Step Content */}
       {activeStep === 0 && <ContactStep user={user} />}
-      {activeStep === 1 && <ShippingStep user={user} />}
+      {activeStep === 1 && (
+        <ShippingStep
+          user={user}
+          deliveryDetails={deliveryDetails}
+          setDeliveryDetails={setDeliveryDetails}
+        />
+      )}
       {activeStep === 2 && (
         <PaymentStep
           paymentMethod={paymentMethod}
@@ -112,22 +116,6 @@ const CheckoutForm = ({
           )}
         </Button>
       </Box>
-
-      {/* Security badge */}
-      {/* <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          mt: 4,
-          gap: 1,
-        }}
-      >
-        <SecurityIcon sx={{ color: colors.success, fontSize: 20 }} />
-        <Typography variant="caption" color={colors.textSecondary}>
-          SSL Secured • 256-bit Encryption • PCI Compliant
-        </Typography>
-      </Box> */}
     </Paper>
   );
 };
