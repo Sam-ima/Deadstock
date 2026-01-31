@@ -1,12 +1,59 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, IconButton, Stack } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { updateItemQuantity, removeItem } from "../../store/slice/cartSlice";
+import {
+  updateDirectPurchaseQuantity,
+  removeDirectPurchaseItem,
+} from "../../store/slice/purchaseSlice";
 import { colors } from "./Constants";
 
 const OrderItem = ({ item, index }) => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const isDirectPurchase = location.state?.isDirectPurchase;
   const itemName = item.name || "Product";
   const itemImage = item.product?.images?.[0] || item.image;
   const unitPrice = item.unitPrice || 0;
   const quantity = item.quantity || 1;
   const isBulk = item.isBulkOrder || false;
+
+  const cartItemId = item.cartItemId || item.id;
+
+  const handleIncrease = () => {
+    if (item.isDirectPurchase) {
+      dispatch(updateDirectPurchaseQuantity({ quantity: quantity + 1 }));
+    } else {
+      dispatch(updateItemQuantity({ cartItemId, quantity: quantity + 1 }));
+    }
+  };
+
+  const handleDecrease = () => {
+    if (item.isDirectPurchase) {
+      if (quantity > 1) {
+        dispatch(updateDirectPurchaseQuantity({ quantity: quantity - 1 }));
+      } else {
+        dispatch(removeDirectPurchaseItem());
+      }
+    } else {
+      if (quantity > 1) {
+        dispatch(updateItemQuantity({ cartItemId, quantity: quantity - 1 }));
+      } else {
+        dispatch(removeItem(cartItemId));
+      }
+    }
+  };
+
+  const handleRemove = () => {
+    if (item.isDirectPurchase) {
+      dispatch(removeDirectPurchaseItem());
+    } else {
+      dispatch(removeItem(cartItemId));
+    }
+  };
 
   return (
     <Box
@@ -20,6 +67,7 @@ const OrderItem = ({ item, index }) => {
         border: `1px solid ${colors.border}`,
       }}
     >
+      {/* Image */}
       <Box
         sx={{
           width: 80,
@@ -29,9 +77,6 @@ const OrderItem = ({ item, index }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          color: colors.textLight,
-          fontWeight: 700,
-          fontSize: "1.5rem",
           overflow: "hidden",
           flexShrink: 0,
         }}
@@ -42,16 +87,14 @@ const OrderItem = ({ item, index }) => {
             src={itemImage}
             alt={itemName}
             loading="lazy"
-            sx={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-            }}
+            sx={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
         ) : (
           "📦"
         )}
       </Box>
+
+      {/* Details */}
       <Box sx={{ flex: 1, minWidth: 0 }}>
         <Box
           sx={{
@@ -73,14 +116,12 @@ const OrderItem = ({ item, index }) => {
           >
             {itemName}
           </Typography>
-          <Typography
-            fontWeight={700}
-            color={colors.primary}
-            sx={{ ml: 1, flexShrink: 0 }}
-          >
+
+          <Typography fontWeight={600} color={colors.primary}>
             Rs. {(unitPrice * quantity).toFixed(2)}
           </Typography>
         </Box>
+
         <Typography
           variant="body2"
           color={colors.textSecondary}
@@ -89,9 +130,29 @@ const OrderItem = ({ item, index }) => {
           {isBulk ? "Bulk Order • " : ""}
           Unit Price: Rs. {unitPrice.toFixed(2)}
         </Typography>
-        <Typography variant="caption" color={colors.textSecondary}>
-          Qty: {quantity} • Total: Rs. {(unitPrice * quantity).toFixed(2)}
-        </Typography>
+
+        {/* Quantity Controls */}
+        <Stack direction="row" alignItems="center" spacing={1} sx={{ mt: 1 }}>
+          <IconButton size="small" onClick={handleDecrease}>
+            <RemoveIcon fontSize="small" />
+          </IconButton>
+
+          <Typography fontWeight={600}>{quantity}</Typography>
+
+          <IconButton size="small" onClick={handleIncrease}>
+            <AddIcon fontSize="small" />
+          </IconButton>
+
+          <IconButton
+            size="small"
+            color="error"
+            sx={{ ml: 1 }}
+            onClick={handleRemove}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </Stack>
+
         {isBulk && (
           <Typography
             variant="caption"
@@ -101,7 +162,8 @@ const OrderItem = ({ item, index }) => {
             ✓ Bulk discount applied
           </Typography>
         )}
-        {item.isDirectPurchase && (
+
+        {/* {item.isDirectPurchase && (
           <Typography
             variant="caption"
             color={colors.primary}
@@ -109,7 +171,7 @@ const OrderItem = ({ item, index }) => {
           >
             ⚡ Direct Purchase
           </Typography>
-        )}
+        )} */}
       </Box>
     </Box>
   );
