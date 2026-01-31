@@ -63,14 +63,14 @@ export const calculateTotals = (displayItems) => {
   }, 0);
 
   const shipping = subtotal > 200 ? 0 : 25;
-  const tax = subtotal * 0.031;
+  // const tax = subtotal * 0.031;
   const discount = subtotal > 150 ? 10 : 0;
-  const total = subtotal + shipping + tax - discount;
+  const total = subtotal + shipping - discount;
 
   return {
     subtotal: Number(subtotal.toFixed(2)),
     shipping: Number(shipping.toFixed(2)),
-    tax: Number(tax.toFixed(2)),
+    // tax: Number(tax.toFixed(2)),
     discount: Number(discount.toFixed(2)),
     total: Number(total.toFixed(2)),
   };
