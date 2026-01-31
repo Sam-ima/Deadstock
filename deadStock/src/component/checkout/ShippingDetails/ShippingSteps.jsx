@@ -1,21 +1,15 @@
-// components/checkout/steps/ShippingStep.jsx
+// components/checkout/steps/ShippingStep.jsx - Simple version
 import React from "react";
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, useTheme, useMediaQuery } from "@mui/material";
 import { colors } from "../Constants";
 import { SHIPPING_FIELDS } from "./shippingFields";
 import ShippingFieldGroup from "./ShippingFIeldGroup";
-import ShippingRow from "./ShippingRow";
-// import SaveAddressCheckbox from "./components/SaveAddressCheckbox";
 
 const ShippingStep = React.memo(
-  ({
-    user,
-    deliveryDetails,
-    setDeliveryDetails,
-    errors = {},
-    // onSaveAddressChange,
-    // saveAddress = true
-  }) => {
+  ({ user, deliveryDetails, setDeliveryDetails, errors = {} }) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
     const handleFieldChange = (fieldId, value) => {
       setDeliveryDetails((prev) => ({
         ...prev,
@@ -23,25 +17,11 @@ const ShippingStep = React.memo(
       }));
     };
 
-    // Group fields for layout
-    const singleColumnFields = SHIPPING_FIELDS.filter(
-      (field) => field.fullWidth || field.id === "email",
-    );
-
-    const rowFields = SHIPPING_FIELDS.filter(
-      (field) => !field.fullWidth && field.id !== "email",
-    );
-
-    const cityZipFields = rowFields.filter(
-      (field) => field.id === "city" || field.id === "zip",
-    );
-
-    const remainingFields = singleColumnFields.filter(
-      (field) =>
-        field.id !== "fullName" &&
-        field.id !== "email" &&
-        field.id !== "address",
-    );
+    const fieldValues = {
+      ...deliveryDetails,
+      fullName: deliveryDetails.fullName || user?.fullName || "",
+      email: deliveryDetails.email || user?.email || "",
+    };
 
     return (
       <Box component="form" noValidate sx={{ width: "100%" }}>
@@ -59,60 +39,109 @@ const ShippingStep = React.memo(
             Where should we deliver your amazing finds?
           </Typography>
         </Box>
-
-        {/* Full Name */}
-        <ShippingFieldGroup
-          fields={[SHIPPING_FIELDS.find((f) => f.id === "fullName")]}
-          values={{
-            ...deliveryDetails,
-            fullName: deliveryDetails.fullName || user?.fullName || "",
+        {/* State & Phone in row on larger screens */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: 2,
           }}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
+        >
+          <Box sx={{ width: "100%" }}>
+            <ShippingFieldGroup
+              fields={[SHIPPING_FIELDS.find((f) => f.id === "fullName")]}
+              values={fieldValues}
+              onChange={handleFieldChange}
+              errors={errors}
+              isRowItem={true}
+            />
+          </Box>
+          <Box sx={{ width: "100%" }}>
+            <ShippingFieldGroup
+              fields={[SHIPPING_FIELDS.find((f) => f.id === "email")]}
+              values={fieldValues}
+              onChange={handleFieldChange}
+              errors={errors}
+              isRowItem={true}
+            />
+          </Box>
+        </Box>
 
-        {/* Email */}
-        <ShippingFieldGroup
-          fields={[SHIPPING_FIELDS.find((f) => f.id === "email")]}
-          values={{
-            ...deliveryDetails,
-            email: deliveryDetails.email || user?.email || "",
+        {/* State & Phone in row on larger screens */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: 2,
           }}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
+        >
+          <Box sx={{ width: "100%" }}>
+            <ShippingFieldGroup
+              fields={[SHIPPING_FIELDS.find((f) => f.id === "address")]}
+              values={fieldValues}
+              onChange={handleFieldChange}
+              errors={errors}
+              isRowItem={true}
+            />
+          </Box>
+          <Box sx={{ width: "100%" }}>
+            <ShippingFieldGroup
+              fields={[SHIPPING_FIELDS.find((f) => f.id === "phone")]}
+              values={fieldValues}
+              onChange={handleFieldChange}
+              errors={errors}
+              isRowItem={true}
+            />
+          </Box>
+        </Box>
 
-        {/* Address */}
-        <ShippingFieldGroup
-          fields={[SHIPPING_FIELDS.find((f) => f.id === "address")]}
-          values={deliveryDetails}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
+        {/* City & ZIP in row on larger screens */}
+        <Box
+          sx={{
+            mb: 3,
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: 2,
+          }}
+        >
+          <Box sx={{ width: "100%" }}>
+            <ShippingFieldGroup
+              fields={[SHIPPING_FIELDS.find((f) => f.id === "city")]}
+              values={fieldValues}
+              onChange={handleFieldChange}
+              errors={errors}
+              isRowItem={true}
+            />
+          </Box>
+          <Box sx={{ width: "100%" }}>
+            <ShippingFieldGroup
+              fields={[SHIPPING_FIELDS.find((f) => f.id === "zip")]}
+              values={fieldValues}
+              onChange={handleFieldChange}
+              errors={errors}
+              isRowItem={true}
+            />
+          </Box>
+        </Box>
 
-        {/* City & ZIP Code (in row on larger screens) */}
-        <ShippingRow spacing={2}>
-          <ShippingFieldGroup
-            fields={cityZipFields}
-            values={deliveryDetails}
-            onChange={handleFieldChange}
-            errors={errors}
-          />
-        </ShippingRow>
-
-        {/* State & Phone (full width) */}
-        <ShippingFieldGroup
-          fields={remainingFields}
-          values={deliveryDetails}
-          onChange={handleFieldChange}
-          errors={errors}
-        />
-
-        {/* Save Address Checkbox */}
-        {/* <SaveAddressCheckbox
-        checked={saveAddress}
-        onChange={onSaveAddressChange}
-      /> */}
+        {/* State & Phone in row on larger screens */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            gap: 2,
+          }}
+        >
+          <Box sx={{ width: "50%" }}>
+            <ShippingFieldGroup
+              fields={[SHIPPING_FIELDS.find((f) => f.id === "state")]}
+              values={fieldValues}
+              onChange={handleFieldChange}
+              errors={errors}
+              isRowItem={true}
+            />
+          </Box>
+        </Box>
       </Box>
     );
   },
