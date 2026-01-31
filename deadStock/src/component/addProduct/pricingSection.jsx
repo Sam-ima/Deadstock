@@ -38,8 +38,8 @@ const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser
 
   // Auto-calculate floor price
   React.useEffect(() => {
-    if (formData.basePrice && !formData.floorPrice) {
-      const calculatedFloor = Number(formData.basePrice) * 0.3;
+    if (formData.basePrice) {
+      const calculatedFloor = Number(formData.basePrice) * 0.5;
       setFormData(prev => ({ ...prev, floorPrice: calculatedFloor.toFixed(2) }));
     }
   }, [formData.basePrice]);
@@ -62,7 +62,7 @@ const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser
             label="Base Price (Rs.)"
             type="number"
             value={formData.basePrice}
-            onChange={(e) => handleChange("basePrice", e.target.value)}
+            onChange={(e) => handleChange("basePrice", Number(e.target.value))}
             error={Boolean(formData.errors?.basePrice)}
             helperText={formData.errors?.basePrice || "Starting price of your product"}
             InputProps={{
@@ -77,8 +77,37 @@ const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser
 
         </Grid>
 
-        {/* Floor Price */}
         <Grid item xs={12} md={6}>
+          <Paper
+            variant="outlined"
+            sx={{
+              p: 2,
+              borderRadius: 2,
+              bgcolor: "#f9fafb",
+              height: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: 0.5
+            }}
+          >
+            <Typography variant="subtitle2" fontWeight={600}>
+              Minimum Floor Price
+            </Typography>
+
+            <Typography variant="h6" color="success.main" fontWeight={700}>
+              Rs. {formData.floorPrice || "—"}
+            </Typography>
+
+            <Typography variant="caption" color="text.secondary">
+              Floor price is automatically set to <b>50%</b> of the base price.
+              This is the lowest price before depreciation stops.
+            </Typography>
+          </Paper>
+        </Grid>
+
+        {/* Floor Price */}
+        {/* <Grid item xs={12} md={6}>
           <TextField
             fullWidth
             label="Minimum Price (Rs.)"
@@ -95,7 +124,7 @@ const PricingStep = ({ formData, setFormData, b2bFields, setB2bFields, isB2BUser
             }}
             helperText="Lowest price before automatic depreciation stops"
           />
-        </Grid>
+        </Grid> */}
 
         {/* Sale Type Selection */}
         <Grid item xs={12}>

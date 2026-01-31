@@ -1,5 +1,3 @@
-// src/services/productService.jsx - COMPLETE WITH ALL EXPORTS (Cloudinary Images)
-
 import {
   collection,
   addDoc,
@@ -18,55 +16,42 @@ import { db } from "../firebase/firebase";
 
 const productsRef = collection(db, "products");
 
-// Cloudinary config
+// Cloudinary config (unchanged)
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
 /* CREATE Product with dynamic fields - SAFE VERSION */
 export const addProduct = async (productData, userId, userType) => {
-  console.log("=== addProduct called ===");
-  console.log("Parameters received:", { productData, userId, userType });
-
-  // VALIDATE INPUTS
   if (!productData || typeof productData !== "object") {
-    throw new Error(
-      "Invalid product data: productData is required and must be an object"
-    );
+    throw new Error("Invalid product data");
   }
 
-  if (!productData.name || productData.name.trim() === "") {
+  if (!productData.name?.trim()) {
     throw new Error("Product name is required");
   }
 
-  if (!userId || userId.trim() === "") {
+  if (!productData.manufacture_date) {
+    throw new Error("Manufacture date is required");
+  }
+
+  if (!userId) {
     throw new Error("User ID is required");
   }
 
-  console.log("All validations passed, proceeding...");
-
   try {
-    // 1. Generate slug from name
     const slug = productData.name
       .toLowerCase()
       .replace(/[^\w\s]/gi, "")
       .replace(/\s+/g, "-");
 
-    console.log("Generated slug:", slug);
-
     const totalStock = Number(productData.stock) || 1;
     const basePrice = Number(productData.basePrice) || 0;
 
-    const userFloorPrice = productData.floorPrice;
-    const floorPrice =
-      userFloorPrice !== undefined &&
-        userFloorPrice !== null &&
-        userFloorPrice !== ""
-        ? Number(userFloorPrice)
-        : basePrice * 0.5;
+    // ✅ FLOOR PRICE IS ALWAYS 50% OF BASE PRICE
+    const floorPrice = basePrice * 0.5;
 
-    // 2. Prepare base product data
     const baseProduct = {
-      name: productData.name || "Untitled Product",
+      name: productData.name,
       slug,
       description: productData.description || "",
       categoryId: productData.categoryId || null,
@@ -75,6 +60,8 @@ export const addProduct = async (productData, userId, userType) => {
       basePrice,
       currentPrice: basePrice,
       floorPrice,
+
+      manufacture_date: productData.manufacture_date,
 
       stock: totalStock,
       availableStock: totalStock,
@@ -87,16 +74,12 @@ export const addProduct = async (productData, userId, userType) => {
       status: productData.status || "active",
       saleType: productData.saleType || "direct",
 
-      images: [],
+      images: productData.images || [],
 
       rating: 0,
       reviews: 0,
 
       moq: Number(productData.moq) || 1,
-      bulkPrice: productData.bulkPrice
-        ? Number(productData.bulkPrice)
-        : null,
-      bulkDiscount: Number(productData.bulkDiscount) || 0,
       requiresB2BVerification:
         Boolean(productData.requiresB2BVerification) || false,
 
@@ -110,42 +93,20 @@ export const addProduct = async (productData, userId, userType) => {
       ...processDynamicFields(productData),
     };
 
-    console.log("Base product data prepared:", baseProduct);
-
-    // 3. Create product document
     const docRef = await addDoc(productsRef, baseProduct);
-    const productId = docRef.id;
 
-    // ✅ Use images already uploaded to Cloudinary
-    const uploadedImages = Array.isArray(productData.images)
-      ? productData.images
-      : [];
-
-    // 4. Update product with image URLs
-    const finalProductData = {
-      ...baseProduct,
-      images: uploadedImages,
-      updatedAt: serverTimestamp(),
-    };
-
-    await updateDoc(docRef, finalProductData);
-
-    console.log("=== Product created successfully ===");
     return {
-      id: productId,
-      ...finalProductData,
+      id: docRef.id,
+      ...baseProduct,
     };
-
   } catch (error) {
     console.error("Error in addProduct:", error);
     throw error;
   }
 };
 
-/* Upload images to CLOUDINARY (Firebase Storage removed) */
+/* Upload images to CLOUDINARY (unchanged) */
 const uploadProductImages = async (images, userId, productId = "") => {
-  console.log("Starting Cloudinary image upload...");
-
   if (!images || !Array.isArray(images) || images.length === 0) {
     return [];
   }
@@ -162,10 +123,7 @@ const uploadProductImages = async (images, userId, productId = "") => {
 
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
+        { method: "POST", body: formData }
       );
 
       const data = await response.json();
@@ -184,8 +142,7 @@ const uploadProductImages = async (images, userId, productId = "") => {
         height: data.height,
         isMain: index === 0,
       };
-    } catch (error) {
-      console.error("Cloudinary image upload error:", error);
+    } catch {
       return null;
     }
   });
@@ -209,53 +166,49 @@ const processDynamicFields = (productData) => {
     dynamicData.features = productData.features;
   }
 
-  if (productData) {
-    Object.keys(productData).forEach((key) => {
-      const reservedFields = [
-        "name",
-        "slug",
-        "description",
-        "categoryId",
-        "subcategoryId",
-        "basePrice",
-        "currentPrice",
-        "floorPrice",
-        "stock",
-        "sold",
-        "sellerId",
-        "sellerType",
-        "status",
-        "saleType",
-        "images",
-        "rating",
-        "reviews",
-        "moq",
-        "bulkPrice",
-        "bulkDiscount",
-        "requiresB2BVerification",
-        "createdAt",
-        "updatedAt",
-        "specifications",
-        "features",
-        "isDepreciating",
-        "depreciationCount",
-        "lastDepreciatedAt",
-      ];
+  Object.keys(productData).forEach((key) => {
+    const reservedFields = [
+      "name",
+      "slug",
+      "description",
+      "categoryId",
+      "subcategoryId",
+      "basePrice",
+      "currentPrice",
+      "floorPrice",
+      "manufacture_date",
+      "stock",
+      "sold",
+      "sellerId",
+      "sellerType",
+      "status",
+      "saleType",
+      "images",
+      "rating",
+      "reviews",
+      "moq",
+      "requiresB2BVerification",
+      "createdAt",
+      "updatedAt",
+      "specifications",
+      "features",
+      "isDepreciating",
+      "depreciationCount",
+      "lastDepreciatedAt",
+    ];
 
-      if (
-        !reservedFields.includes(key) &&
-        productData[key] !== undefined &&
-        productData[key] !== null &&
-        productData[key] !== ""
-      ) {
-        dynamicData[key] = productData[key];
-      }
-    });
-  }
+    if (
+      !reservedFields.includes(key) &&
+      productData[key] !== undefined &&
+      productData[key] !== null &&
+      productData[key] !== ""
+    ) {
+      dynamicData[key] = productData[key];
+    }
+  });
 
   return dynamicData;
 };
-
 /* READ Products with filters */
 export const getAllProducts = async (filters = {}) => {
   try {
