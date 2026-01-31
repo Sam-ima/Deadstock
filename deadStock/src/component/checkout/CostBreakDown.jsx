@@ -20,10 +20,10 @@ const CostBreakdown = ({ totals }) => {
           </Box>
         </Typography>
       </Box>
-      <Box>
+      {/* <Box>
         <Typography color={colors.textSecondary}>Estimated tax</Typography>
         <Typography fontWeight={500}>Rs. {totals.tax.toFixed(2)}</Typography>
-      </Box>
+      </Box> */}
       {totals.discount > 0 && (
         <Box sx={{ color: colors.success }}>
           <Typography>
