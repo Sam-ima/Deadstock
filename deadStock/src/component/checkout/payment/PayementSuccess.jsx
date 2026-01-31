@@ -33,8 +33,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
             color={colors.textSecondary}
             sx={{ mb: 3, maxWidth: 500, mx: "auto" }}
           >
-            Your order has been confirmed and is being processed. A confirmation email has been sent to{" "}
-            <strong>{userEmail || "your email"}</strong>
+            Your order has been confirmed and is being processed. 
           </Typography>
           
           {orderId && (
@@ -60,7 +59,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
             justifyContent="center"
             sx={{ mt: 4 }}
           >
-            <Button
+            {/* <Button
               variant="contained"
               onClick={() => (window.location.href = "/orders")}
               sx={{
@@ -73,7 +72,7 @@ const PaymentSuccess = ({ userEmail, orderId }) => {
               }}
             >
               View Order
-            </Button>
+            </Button> */}
             
             <Button
               variant="outlined"
