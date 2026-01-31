@@ -1,13 +1,21 @@
-import { Box, Pagination, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Pagination,
+  IconButton,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { useState, useEffect, useMemo } from "react";
-import ListingCard from "./ListingCard";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-const ListingsGrid = ({ products, onEdit, onDelete }) => {
+import ProductCard from "../../categoryPage/product/productCard/ProductCard";
+
+const ListingsGrid = ({ products = [], onEdit, onDelete }) => {
   const theme = useTheme();
 
-  const isXs = useMediaQuery(theme.breakpoints.down("sm")); // <600
-  const isSm = useMediaQuery(theme.breakpoints.between("sm", "md")); // 600–900
-  //   const isMdUp = useMediaQuery(theme.breakpoints.up("md")); // ≥900
+  const isXs = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSm = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
   const PER_PAGE = useMemo(() => {
     if (isXs) return 1;
@@ -17,7 +25,6 @@ const ListingsGrid = ({ products, onEdit, onDelete }) => {
 
   const [page, setPage] = useState(1);
 
-  // Reset page when products OR layout changes
   useEffect(() => {
     setPage(1);
   }, [products, PER_PAGE]);
@@ -35,26 +42,76 @@ const ListingsGrid = ({ products, onEdit, onDelete }) => {
       <Box
         display="grid"
         gridTemplateColumns={{
-          xs: "1fr", // 1 card per row on mobile
-          sm: "1fr 1fr", // 2 cards
-          md: "1fr 1fr 1fr", // 3 cards
+          xs: "1fr",
+          sm: "1fr 1fr",
+          md: "1fr 1fr 1fr",
         }}
-        gap={{ xs: 1, sm: 3 }}
-        justifyItems="center" // ✅ centers cards horizontally
+        gap={{ xs: 2, sm: 3 }}
+        justifyItems="center"
       >
-        {visibleProducts.map((item) => (
-          <ListingCard
-            key={item.id}
-            product={item}
-            onEdit={() => onEdit(item)} // ✅ VERY IMPORTANT
-            onDelete={() => onDelete(item.id)} // ✅
-          />
+        {visibleProducts.map((product) => (
+          <Box
+            key={product.id}
+            sx={{
+              // backgroundColor:'red',
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
+            {/* 🔶 CHANGE 1: ACTION BAR ABOVE CARD */}
+            <Box
+              sx={{
+                width: { xs: "270px", sm: "280px", md: "280px" }, // matches ProductCard
+                display: "flex",
+                justifyContent: "flex-end",
+                mb: 0.5,
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <IconButton
+                size="small"
+                onClick={() => onEdit(product)}
+                sx={{
+                  bgcolor: "rgba(255,255,255,0.9)",
+                  color: "#2e7d32",
+                  mr: 0.5,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                  "&:hover": {
+                    bgcolor: "#2e7d32",
+                    color: "#fff",
+                  },
+                }}
+              >
+                <EditIcon fontSize="small" />
+              </IconButton>
+
+              <IconButton
+                size="small"
+                onClick={() => onDelete(product.id)}
+                sx={{
+                  bgcolor: "rgba(255,255,255,0.9)",
+                  color: "#d32f2f",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                  "&:hover": {
+                    bgcolor: "#d32f2f",
+                    color: "#fff",
+                  },
+                }}
+              >
+                <DeleteIcon fontSize="small" />
+              </IconButton>
+            </Box>
+
+            {/* 🔶 CHANGE 2: PRODUCT CARD BELOW */}
+            <ProductCard product={product} />
+          </Box>
         ))}
       </Box>
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <Box mt={4} display="flex" justifyContent="center" alignItems="center">
+        <Box mt={4} display="flex" justifyContent="center">
           <Pagination
             count={totalPages}
             page={page}

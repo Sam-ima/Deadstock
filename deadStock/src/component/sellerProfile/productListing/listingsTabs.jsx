@@ -13,7 +13,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import ListingsGrid from "./listingGrid";
 // import ListingsMobileSlider from "./ListingsMobileSlider";
-import EditProductDialog from "./editProductDialog";
+import EditProductDialog from "./editProductDialog/EditProductDialog";
 import ConfirmDialog from "./confirmationDialog";
 
 const ListingsTabs = ({ sellerId }) => {

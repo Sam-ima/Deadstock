@@ -221,21 +221,34 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
       ) : (
         !isMobile && (
           <Button
-            startIcon={<User size={15} />}
             onClick={() => navigate("/login")}
             sx={{
               ml: 0,
-              px: 1,
+              px: { xs: 2, sm: 3 },        // responsive padding
               py: 1,
               borderRadius: "24px",
               textTransform: "none",
               fontWeight: 600,
               backgroundColor: "#F57C00",
               color: "#fff",
-              "&:hover": { backgroundColor: "#EF6C00" },
+
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+
+              lineHeight: 1.2,             // prevents text overflow
+              whiteSpace: "nowrap",        // keeps text inside
+              overflow: "hidden",
+
+              minWidth: "auto",            // avoids forced width issues
+              height: "40px",              // consistent button height
+
+              "&:hover": {
+                backgroundColor: "#EF6C00",
+              },
             }}
           >
-            Login/Register
+            Login / Register
           </Button>
         )
       )}
