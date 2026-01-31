@@ -1,10 +1,8 @@
-// components/checkout/PaymentSuccess.jsx
-import React from "react";
 import { Box, Container, Typography, Button, Stack } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { colors } from "../Constants";
 
-const PaymentSuccess = ({ userEmail, orderId }) => {
+const PaymentSuccess = ({  orderId }) => {
   return (
     <Box
       sx={{
