@@ -11,15 +11,15 @@ const ProductImages = ({
 }) => {
   const base = product.basePrice ?? product.currentPrice;
   const current = product.currentPrice ?? base;
-
+  console.log("des:")
   const discountPercent =
     base > current ? Math.round(((base - current) / base) * 100) : 0;
 
   // 🔑 Use Firestore images if present, otherwise fallback to static images
   const images =
-    product.images?.length > 0
-      ? product.images
-      : resolveProductImages(product);
+  product.images?.length > 0
+    ? product.images.map(img => img.url)
+    : resolveProductImages(product);
 
   return (
     <Box flex={1}>
