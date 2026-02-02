@@ -77,7 +77,7 @@ const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
                 Rs.{base}
               </Typography>
               <Chip
-                label={`Save Rs.{base - current}`}
+                label={`Save Rs.${base - current}`}
                 color="error"
                 size="small"
               />
