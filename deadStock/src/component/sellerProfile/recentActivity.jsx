@@ -1,6 +1,5 @@
 import { Box, Typography, List, ListItem, ListItemText } from "@mui/material";
 
-
 const RecentActivity = () => {
   return (
     <Box mt={4}>

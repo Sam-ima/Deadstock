@@ -40,14 +40,15 @@ const ListingsGrid = ({ products = [], onEdit, onDelete }) => {
     <>
       {/* GRID */}
       <Box
-        display="grid"
+        display="flex"
         gridTemplateColumns={{
           xs: "1fr",
           sm: "1fr 1fr",
           md: "1fr 1fr 1fr",
         }}
         gap={{ xs: 2, sm: 3 }}
-        justifyItems="center"
+        justifyContent="center"
+        sx={{backgroundColor:'#fafafa'}}
       >
         {visibleProducts.map((product) => (
           <Box

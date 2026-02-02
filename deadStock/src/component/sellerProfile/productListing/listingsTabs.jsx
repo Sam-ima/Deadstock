@@ -50,7 +50,7 @@ const ListingsTabs = ({ sellerId }) => {
   return (
     <>
       {/* Tabs */}
-      <Box mt={4} display="flex" justifyContent="center">
+      <Box mt={4} display="flex" justifyContent="center" >
         <ToggleButtonGroup
           value={tab}
           exclusive
@@ -119,7 +119,7 @@ const ListingsTabs = ({ sellerId }) => {
       <ConfirmDialog
         open={!!deleteProductId}
         title="Delete Product?"
-        description="This action cannot be undone."
+        description="Are you sure you want to permanently delete this product? This action cannot be undone and all associated data will be removed."
         onCancel={() => setDeleteProductId(null)}
         onConfirm={handleDelete}
       />

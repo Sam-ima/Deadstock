@@ -325,13 +325,18 @@ export const getProductBySlug = async (slug) => {
 
     return {
       id: docSnap.id,
-      ...docSnap.data(),
-      createdAt:
-        docSnap.data().createdAt?.toDate()?.toISOString() ||
-        new Date().toISOString(),
-      updatedAt:
-        docSnap.data().updatedAt?.toDate()?.toISOString() ||
-        new Date().toISOString(),
+      ...data,
+      createdAt: data.createdAt?.toDate
+        ? data.createdAt.toDate().toISOString() // Firestore Timestamp
+        : data.createdAt
+          ? new Date(data.createdAt).toISOString() // string / number / Date
+          : new Date().toISOString(),
+
+      updatedAt: data.updatedAt?.toDate
+        ? data.updatedAt.toDate().toISOString()
+        : data.updatedAt
+          ? new Date(data.updatedAt).toISOString()
+          : new Date().toISOString(),
     };
   } catch (error) {
     console.error("Error getting product by slug:", error);
