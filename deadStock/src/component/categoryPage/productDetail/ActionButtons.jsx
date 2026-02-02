@@ -84,7 +84,7 @@ const ActionButtons = ({ product, quantity }) => {
     try {
       // Call backend to reserve stock (atomic)
       await reserveProductStock(product.id, quantity);
-      console.log("Reserving stock:", { product, quantity: quantity });
+      // console.log("Reserving stock:", { product, quantity: quantity });
       // Backend succeeded → proceed locally
       const unitPrice = getFinalPrice();
 
