@@ -322,21 +322,23 @@ export const getProductBySlug = async (slug) => {
     }
 
     const docSnap = snapshot.docs[0];
+    const data = docSnap.data(); // ✅ THIS WAS MISSING
 
     return {
       id: docSnap.id,
       ...data,
+
       createdAt: data.createdAt?.toDate
         ? data.createdAt.toDate().toISOString() // Firestore Timestamp
         : data.createdAt
           ? new Date(data.createdAt).toISOString() // string / number / Date
-          : new Date().toISOString(),
+          : null,
 
       updatedAt: data.updatedAt?.toDate
         ? data.updatedAt.toDate().toISOString()
         : data.updatedAt
           ? new Date(data.updatedAt).toISOString()
-          : new Date().toISOString(),
+          : null,
     };
   } catch (error) {
     console.error("Error getting product by slug:", error);
