@@ -11,7 +11,7 @@ const ProductImages = ({
 }) => {
   const base = product.basePrice ?? product.currentPrice;
   const current = product.currentPrice ?? base;
-  console.log("des:")
+  // console.log("des:")
   const discountPercent =
     base > current ? Math.round(((base - current) / base) * 100) : 0;
 

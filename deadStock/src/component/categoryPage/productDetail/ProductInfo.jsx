@@ -34,7 +34,7 @@ const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
       >
         {product.name}
       </Typography>
-
+          
       {/* Rating and Reviews */}
       <Stack
         direction={{ xs: "column", sm: "row" }}
