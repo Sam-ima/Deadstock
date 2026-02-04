@@ -1,16 +1,15 @@
-import { Box, Container } from "@mui/material";
-// import ProfileHeader from "../component/sellerProfile/sellerHeader";
-import ListingsTabs from "../component/sellerProfile/productListing/listingsTabs";
-// import SettingsList from "../component/sellerProfile/settingsList";
-import RecentActivity from "../component/sellerProfile/recentActivity";
+import { Box, Container, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
+
+import ProfileHeader from "../component/Profile/ProfileHeader/profileHeader";
 import ProfileInfo from "../component/profile/profileInfo";
-import ProfileHeader from "../component/profile/ProfileHeader/profileHeader";
+// import RecentActivity from "../component/sellerProfile/recentActivity";
+import ListingsTabs from "../component/sellerProfile/productListing/listingsTabs";
 
 const SellerProfilePage = () => {
-  const [seller, setSeller] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -19,30 +18,29 @@ const SellerProfilePage = () => {
 
       const snap = await getDoc(doc(db, "users", uid));
       if (snap.exists()) {
-        setSeller(snap.data());
+        const data = snap.data();
+        setUser(data);
       }
     };
 
     fetchProfile();
   }, []);
 
-  if (!seller) return null;
+  if (!user)
+    return <Typography textAlign="center">Loading profile...</Typography>;
+
   return (
     <Box bgcolor="#fff" minHeight="100vh">
       <Container
         maxWidth="lg"
-        sx={{
-          paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
-          paddingBottom: "2px",
-        }}
+        sx={{ paddingTop: { xs: "50px", lg: "60px" }, paddingBottom: "2px" }}
       >
-        <ProfileHeader buyer={seller} />
-        <ListingsTabs sellerId={seller.uid} />
-        {/* <SettingsList seller={seller} /> */}
-        <ProfileInfo buyer={seller}/>
-        <RecentActivity />
+        <ProfileHeader buyer={user} />
+        <ListingsTabs user={user} />
+        <ProfileInfo buyer={user} />
+        {/* <RecentActivity /> */}
 
-     
+        {/* Listings + Orders Tabs */}
       </Container>
     </Box>
   );

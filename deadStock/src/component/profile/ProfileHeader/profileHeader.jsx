@@ -1,21 +1,16 @@
-import { useState } from "react";
-import {
-  Box,
-  Typography
-} from "@mui/material";
-// import EditIcon from "@mui/icons-material/Edit";
+import { useState, useEffect } from "react";
+import { Box, Typography } from "@mui/material";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
-// import { uploadToCloudinary } from "../../services/cloudinaryService";
 import { toast } from "react-toastify";
 import AvatarUploader from "./AvatarUpload";
 import RoleBadge from "./RoleBadge";
 import BusinessDialog from "./BusinessDialog";
 import RoleUpgradeCard from "./RoleUpgradeCard";
 
-const BuyerHeader = ({ buyer }) => {
-  if (!buyer) return null;
-
+const ProfileHeaderMain = ({ buyer }) => {
+  // Local state to immediately reflect role changes
+  const [localBuyer, setLocalBuyer] = useState(buyer);
   const [avatar, setAvatar] = useState(buyer.photoURL || "");
   const [open, setOpen] = useState(false);
   const [business, setBusiness] = useState({
@@ -27,27 +22,33 @@ const BuyerHeader = ({ buyer }) => {
     panVat: "",
   });
 
+  useEffect(() => {
+    setLocalBuyer(buyer); // Update localBuyer if props change
+  }, [buyer]);
+
   const handleRoleUpdate = async () => {
     const ref = doc(db, "users", buyer.uid);
 
     // SELLER → BUYER
-    if (buyer.role === "seller") {
+    if (localBuyer.role === "seller") {
       await updateDoc(ref, {
         role: "both",
         buyerType: "business",
         updatedAt: serverTimestamp(),
       });
+      setLocalBuyer({ ...localBuyer, role: "both", buyerType: "business" });
       toast.success("You are now Buyer & Seller");
       return;
     }
 
     // BUYER → SELLER
-    if (buyer.role === "buyer") {
-      if (buyer.buyerType === "business") {
+    if (localBuyer.role === "buyer") {
+      if (localBuyer.buyerType === "business") {
         await updateDoc(ref, {
           role: "both",
           updatedAt: serverTimestamp(),
         });
+        setLocalBuyer({ ...localBuyer, role: "both" });
         toast.success("You are now Buyer & Seller");
       } else {
         setOpen(true); // collect business info
@@ -65,6 +66,13 @@ const BuyerHeader = ({ buyer }) => {
       updatedAt: serverTimestamp(),
     });
 
+    setLocalBuyer({
+      ...localBuyer,
+      role: "both",
+      buyerType: "business",
+      business,
+    });
+
     toast.success("Seller account activated 🎉");
     setOpen(false);
   };
@@ -75,8 +83,8 @@ const BuyerHeader = ({ buyer }) => {
       <Typography variant="h5" mt={2} fontWeight={700}>
         {buyer.fullName}
       </Typography>
-      <RoleBadge buyer={buyer} />
-      <RoleUpgradeCard buyer={buyer} onActivate={handleRoleUpdate} />
+      <RoleBadge buyer={localBuyer} />
+      <RoleUpgradeCard buyer={localBuyer} onActivate={handleRoleUpdate} />
       <BusinessDialog
         open={open}
         setOpen={setOpen}
@@ -89,4 +97,4 @@ const BuyerHeader = ({ buyer }) => {
   );
 };
 
-export default BuyerHeader
+export default ProfileHeaderMain;
