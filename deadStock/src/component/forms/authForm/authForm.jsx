@@ -123,11 +123,12 @@ export const AuthForm = ({ mode, setMode, role }) => {
 
         toast.success("Logged in successfully");
 
-        if (userData.role === "seller") {
-          navigate("/sellerProfile");
-        } else {
-          navigate("/profile");
-        }
+        // if (userData.role === "seller") {
+        //   navigate("/sellerProfile");
+        // } else {
+        //   navigate("/profile");
+        // }
+        navigate("/sellerProfile")
       }
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
