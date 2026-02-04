@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import ListingsGrid from "./listingGrid";
 import EditProductDialog from "./editProductDialog/EditProductDialog";
 import ConfirmDialog from "./confirmationDialog";
+import { toast } from "react-toastify";
 
 const ListingsTabs = ({ sellerId }) => {
   const navigate = useNavigate();
@@ -46,13 +47,26 @@ const ListingsTabs = ({ sellerId }) => {
   };
 
   // 🔥 NEW: Toggle bidding handler
-  const handleToggleBidding = async (productId, isDepreciating) => {
-    await updateProduct(productId, { isDepreciating });
+ const handleToggleBidding = async (productId, isDepreciating) => {
+  try {
+    // Determine saleType: if bidding enabled, set to 'auction'
+    const saleType = !isDepreciating ? "auction" : "direct";
 
+    // Update in backend
+    await updateProduct(productId, { isDepreciating, saleType });
+    // toast.success("bidding enabled!")
+
+    // Update frontend state
     setProducts((prev) =>
-      prev.map((p) => (p.id === productId ? { ...p, isDepreciating } : p)),
+      prev.map((p) =>
+        p.id === productId ? { ...p, isDepreciating, saleType } : p
+      )
     );
-  };
+  } catch (error) {
+    console.error("Failed to toggle bidding:", error);
+  }
+};
+
 
   return (
     <>
@@ -85,7 +99,7 @@ const ListingsTabs = ({ sellerId }) => {
           }}
         >
           <ToggleButton value="selling">🟢 Selling</ToggleButton>
-          <ToggleButton value="sold">🟠 Sold</ToggleButton>
+          {/* <ToggleButton value="sold">🟠 Sold</ToggleButton> */}
           <ToggleButton value="add" onClick={() => navigate("/how-to-sell")}>
             ➕ Add Product
           </ToggleButton>
