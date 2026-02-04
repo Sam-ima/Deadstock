@@ -6,6 +6,7 @@ import { db } from "../../firebase/firebase";
 import { uploadToCloudinary } from "../../services/cloudinaryService";
 
 const BuyerHeader = ({ buyer }) => {
+  console.log("buyer:", buyer);
   if (!buyer) return null;
 
   const [avatar, setAvatar] = useState(buyer.photoURL || "");
@@ -89,9 +90,9 @@ const BuyerHeader = ({ buyer }) => {
         {buyer.fullName || "No Name"}
       </Typography>
 
-      <Typography color="text.secondary">
+      {/* <Typography color="text.secondary">
         @{buyer.email?.split("@")[0] || "username"}
-      </Typography>
+      </Typography> */}
 
       {buyer.role === "buyer" && (
         <Chip

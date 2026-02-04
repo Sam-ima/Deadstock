@@ -10,9 +10,14 @@ import {
   Divider,
   TextField,
   Button,
+  Stack,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
+import StoreIcon from "@mui/icons-material/Store";
+import BadgeIcon from "@mui/icons-material/Badge";
 // import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
@@ -29,12 +34,14 @@ const ProfileInfo = ({ buyer }) => {
   const [isEditingShipping, setIsEditingShipping] = useState(false);
   const [formData, setFormData] = useState({ ...buyer });
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   if (!buyer) return null;
 
   const isBusiness =
     buyer.role === "seller" ||
     (buyer.role === "buyer" && buyer.buyerType === "business");
-
+   const isSeller = buyer.role === "seller";
   const sectionStyle = {
     p: 2,
     mb: 3,
@@ -94,14 +101,26 @@ const ProfileInfo = ({ buyer }) => {
   return (
     <Box sx={{ mt: 3, mb: 5 }}>
       {/* Personal Info */}
-      <Paper sx={sectionStyle}>
-        <Box sx={headerStyle}>
+      <Paper sx={{ ...sectionStyle, p: isMobile ? 2 : 3 }}>
+        {/* Header */}
+        <Box
+          sx={{
+            ...headerStyle,
+            flexDirection: isMobile ? "column" : "row",
+            gap: 1,
+          }}
+        >
           <Typography
             variant="h6"
-            sx={{ color: "#c15c3a", fontFamily: "Inter" }}
+            sx={{
+              color: "#c15c3a",
+              fontFamily: "Inter",
+              fontWeight: 600,
+            }}
           >
             Personal Info
           </Typography>
+
           <IconButton
             size="small"
             color={isEditingPersonal ? "error" : "primary"}
@@ -115,60 +134,121 @@ const ProfileInfo = ({ buyer }) => {
           </IconButton>
         </Box>
 
-        <Divider sx={{ mb: 1 }} />
-        <List>
-          <ListItem>
-            <ListItemIcon>
-              <EmailIcon color="warning" />
-            </ListItemIcon>
-            {isEditingPersonal ? (
-              <TextField
-                name="email"
-                label="Email"
-                value={formData.email}
-                onChange={handleChange}
-                fullWidth
-              />
-            ) : (
-              <ListItemText
-                primary="Email"
-                secondary={buyer.email || "Not Provided"}
-              />
-            )}
-          </ListItem>
+        <Divider sx={{ my: 1.5 }} />
 
-          <ListItem>
-            <ListItemIcon>
-              <PhoneIcon color="warning" />
-            </ListItemIcon>
-            {isEditingPersonal ? (
-              <TextField
-                name="phone"
-                label="Phone"
-                value={formData.phone || ""}
-                onChange={handleChange}
-                fullWidth
-              />
-            ) : (
-              <ListItemText
-                primary="Phone"
-                secondary={buyer.phone || "Not Provided"}
-              />
-            )}
-          </ListItem>
+        <List disablePadding>
+          <Stack spacing={1.5}>
+            {/* Email */}
+            <ListItem disableGutters>
+              <ListItemIcon>
+                <EmailIcon color="warning" />
+              </ListItemIcon>
 
-          {isEditingPersonal && (
-            <Box sx={{ mt: 2 }}>
-              <Button
-                variant="contained"
-                color="success"
-                startIcon={<SaveIcon />}
-                onClick={() => handleSave("personal")}
-              >
-                Save
-              </Button>
-            </Box>
-          )}
+              {isEditingPersonal ? (
+                <TextField
+                  name="email"
+                  label="Email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  fullWidth
+                  size="small"
+                />
+              ) : (
+                <ListItemText
+                  primary="Email"
+                  secondary={buyer.email || "Not Provided"}
+                />
+              )}
+            </ListItem>
+
+            {/* Phone */}
+            <ListItem disableGutters>
+              <ListItemIcon>
+                <PhoneIcon color="warning" />
+              </ListItemIcon>
+
+              {isEditingPersonal ? (
+                <TextField
+                  name="phone"
+                  label="Phone"
+                  value={formData.phone || ""}
+                  onChange={handleChange}
+                  fullWidth
+                  size="small"
+                />
+              ) : (
+                <ListItemText
+                  primary="Phone"
+                  secondary={buyer.phone || "Not Provided"}
+                />
+              )}
+            </ListItem>
+
+            {/* Seller-only fields */}
+            {isSeller && (
+              <>
+                {/* Shop Name */}
+                <ListItem disableGutters>
+                  <ListItemIcon>
+                    <StoreIcon color="warning" />
+                  </ListItemIcon>
+
+                  {isEditingPersonal ? (
+                    <TextField
+                      name="shopName"
+                      label="Shop Name"
+                      value={formData.shopName || ""}
+                      onChange={handleChange}
+                      fullWidth
+                      size="small"
+                    />
+                  ) : (
+                    <ListItemText
+                      primary="Shop Name"
+                      secondary={buyer.shopName || "Not Provided"}
+                    />
+                  )}
+                </ListItem>
+
+                {/* PAN / VAT */}
+                <ListItem disableGutters>
+                  <ListItemIcon>
+                    <BadgeIcon color="warning" />
+                  </ListItemIcon>
+
+                  {isEditingPersonal ? (
+                    <TextField
+                      name="panVat"
+                      label="PAN / VAT"
+                      value={formData.panVat || ""}
+                      onChange={handleChange}
+                      fullWidth
+                      size="small"
+                    />
+                  ) : (
+                    <ListItemText
+                      primary="PAN / VAT"
+                      secondary={buyer.panVat || "Not Provided"}
+                    />
+                  )}
+                </ListItem>
+              </>
+            )}
+
+            {/* Save button */}
+            {isEditingPersonal && (
+              <Box sx={{ mt: 2, textAlign: "right" }}>
+                <Button
+                  variant="contained"
+                  color="success"
+                  startIcon={<SaveIcon />}
+                  onClick={() => handleSave("personal")}
+                >
+                  Save Changes
+                </Button>
+              </Box>
+            )}
+          </Stack>
         </List>
       </Paper>
 
