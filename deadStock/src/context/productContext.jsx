@@ -6,7 +6,9 @@ import {
   updateProduct,
   deleteProduct,
   getProductsBySeller,
-  getProductById
+  getProductById,
+  resolveAuctionStatus,
+  getDisplayPrice
 } from "../services/productService";
 
 const ProductContext = createContext();
@@ -21,6 +23,14 @@ export const ProductProvider = ({ children }) => {
     setError(null);
     try {
       const data = await getAllProducts(filters);
+
+      // 🆕 Decorate products with auction state
+      const enriched = data.map((product) => ({
+        ...product,
+        auctionStatus: resolveAuctionStatus(product),
+        displayPrice: getDisplayPrice(product),
+      }));
+
       setProducts(data);
     } catch (err) {
       console.error("Error fetching products:", err);

@@ -47,8 +47,43 @@ export const addProduct = async (productData, userId, userType) => {
     const totalStock = Number(productData.stock) || 1;
     const basePrice = Number(productData.basePrice) || 0;
 
-    // ✅ FLOOR PRICE IS ALWAYS 50% OF BASE PRICE
+    // ✅ FLOOR PRICE = 50% OF BASE PRICE
     const floorPrice = basePrice * 0.5;
+
+    const saleType = productData.saleType || "direct";
+
+    /* ---------------- AUCTION LOGIC ---------------- */
+    let auctionData = null;
+
+    if (saleType === "auction") {
+      const now = new Date();
+
+      // ⏰ Auction goes live after 24 hours
+      const startTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+      // ⌛ Seller-defined duration (default 2 hours)
+      const durationHours = Number(productData.auctionDuration || 2);
+
+      const endTime = new Date(
+        startTime.getTime() + durationHours * 60 * 60 * 1000
+      );
+
+      auctionData = {
+        status: "scheduled", // scheduled → live → ended
+        startTime,
+        endTime,
+
+        startingBid: basePrice,
+        highestBid: basePrice,
+        highestBidderId: null,
+
+        bidCount: 0,
+        minBidIncrement: productData.minBidIncrement || 10,
+
+        createdAt: serverTimestamp(),
+      };
+    }
+    /* ------------------------------------------------ */
 
     const baseProduct = {
       name: productData.name,
@@ -72,7 +107,7 @@ export const addProduct = async (productData, userId, userType) => {
       sellerType: userType || "B2C",
 
       status: productData.status || "active",
-      saleType: productData.saleType || "direct",
+      saleType, // ✅ direct | auction
 
       images: productData.images || [],
 
@@ -86,9 +121,13 @@ export const addProduct = async (productData, userId, userType) => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp(),
 
-      isDepreciating: true,
+      // ❌ No depreciation for auction items
+      isDepreciating: saleType !== "auction",
       depreciationCount: 0,
       lastDepreciatedAt: null,
+
+      // ✅ Attach auction only when saleType === "auction"
+      ...(saleType === "auction" && { auction: auctionData }),
 
       ...processDynamicFields(productData),
     };
@@ -103,6 +142,29 @@ export const addProduct = async (productData, userId, userType) => {
     console.error("Error in addProduct:", error);
     throw error;
   }
+};
+
+export const resolveAuctionStatus = (product) => {
+  if (product.saleType !== "auction" || !product.auction) return null;
+
+  const now = new Date();
+  const start = product.auction.startTime.toDate
+    ? product.auction.startTime.toDate()
+    : new Date(product.auction.startTime);
+  const end = product.auction.endTime.toDate
+    ? product.auction.endTime.toDate()
+    : new Date(product.auction.endTime);
+
+  if (now < start) return "scheduled";
+  if (now >= start && now < end) return "live";
+  return "ended";
+};
+
+export const getDisplayPrice = (product) => {
+  if (product.saleType === "auction" && product.auction) {
+    return product.auction.highestBid;
+  }
+  return product.currentPrice;
 };
 
 /* Upload images to CLOUDINARY (unchanged) */
