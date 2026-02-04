@@ -4,6 +4,8 @@ import {
   IconButton,
   useMediaQuery,
   useTheme,
+  Switch,
+  Typography,
 } from "@mui/material";
 import { useState, useEffect, useMemo } from "react";
 import EditIcon from "@mui/icons-material/Edit";
@@ -11,7 +13,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 
 import ProductCard from "../../categoryPage/product/productCard/ProductCard";
 
-const ListingsGrid = ({ products = [], onEdit, onDelete }) => {
+const ListingsGrid = ({ products = [], onEdit, onDelete, onToggleBidding }) => {
   const theme = useTheme();
 
   const isXs = useMediaQuery(theme.breakpoints.down("sm"));
@@ -48,63 +50,90 @@ const ListingsGrid = ({ products = [], onEdit, onDelete }) => {
         }}
         gap={{ xs: 2, sm: 3 }}
         justifyContent="center"
-        sx={{backgroundColor:'#fafafa'}}
+        sx={{ backgroundColor: "#fafafa", p: 1 }}
       >
         {visibleProducts.map((product) => (
           <Box
             key={product.id}
             sx={{
-              // backgroundColor:'red',
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
             }}
           >
-            {/* 🔶 CHANGE 1: ACTION BAR ABOVE CARD */}
+            {/* 🔥 ACTION BAR */}
             <Box
-              sx={{
-                width: { xs: "270px", sm: "280px", md: "280px" }, // matches ProductCard
-                display: "flex",
-                justifyContent: "flex-end",
-                mb: 0.5,
-              }}
               onClick={(e) => e.stopPropagation()}
+              sx={{
+                width: { xs: 270, sm: 280, md: 280 },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mb: 0.75,
+                px: 1,
+                py: 0.5,
+                borderRadius: "999px",
+                // backgroundColor: "rgba(255,255,255,0.9)",
+                // boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+              }}
             >
-              <IconButton
-                size="small"
-                onClick={() => onEdit(product)}
-                sx={{
-                  bgcolor: "rgba(255,255,255,0.9)",
-                  color: "#2e7d32",
-                  mr: 0.5,
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                  "&:hover": {
-                    bgcolor: "#2e7d32",
-                    color: "#fff",
-                  },
-                }}
-              >
-                <EditIcon fontSize="small" />
-              </IconButton>
+              {/* LEFT: BIDDING */}
+              <Box display="flex" alignItems="center" gap={0.5}>
+                <Typography
+                  variant="caption"
+                  sx={{ fontWeight: 600, color: "text.secondary" }}
+                >
+                  Bidding
+                </Typography>
 
-              <IconButton
-                size="small"
-                onClick={() => onDelete(product.id)}
-                sx={{
-                  bgcolor: "rgba(255,255,255,0.9)",
-                  color: "#d32f2f",
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                  "&:hover": {
-                    bgcolor: "#d32f2f",
-                    color: "#fff",
-                  },
-                }}
-              >
-                <DeleteIcon fontSize="small" />
-              </IconButton>
+                <Switch
+                  size="small"
+                  color="success"
+                  checked={!product.isDepreciating}
+                  onChange={(e) =>
+                    onToggleBidding(
+                      product.id,
+                      e.target.checked ? false : true
+                    )
+                  }
+                />
+              </Box>
+
+              {/* RIGHT: ACTIONS */}
+              <Box display="flex" alignItems="center" gap={0.5}>
+                <IconButton
+                  size="small"
+                  onClick={() => onEdit(product)}
+                  sx={{
+                    bgcolor: "#e8f5e9",
+                    color: "#2e7d32",
+                    "&:hover": {
+                      bgcolor: "#2e7d32",
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+
+                <IconButton
+                  size="small"
+                  onClick={() => onDelete(product.id)}
+                  sx={{
+                    bgcolor: "#fdecea",
+                    color: "#d32f2f",
+                    "&:hover": {
+                      bgcolor: "#d32f2f",
+                      color: "#fff",
+                    },
+                  }}
+                >
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </Box>
             </Box>
 
-            {/* 🔶 CHANGE 2: PRODUCT CARD BELOW */}
+            {/* PRODUCT CARD */}
             <ProductCard product={product} />
           </Box>
         ))}
