@@ -2,7 +2,7 @@ import {
   Box,
   ToggleButton,
   ToggleButtonGroup,
-  Typography
+  Typography,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import {
@@ -12,12 +12,10 @@ import {
 } from "../../../services/productService";
 import { useNavigate } from "react-router-dom";
 import ListingsGrid from "./listingGrid";
-// import ListingsMobileSlider from "./ListingsMobileSlider";
 import EditProductDialog from "./editProductDialog/EditProductDialog";
 import ConfirmDialog from "./confirmationDialog";
 
 const ListingsTabs = ({ sellerId }) => {
-  // const isMobile = useMediaQuery("(max-width:600px)");
   const navigate = useNavigate();
   const [tab, setTab] = useState("selling");
   const [products, setProducts] = useState([]);
@@ -47,10 +45,19 @@ const ListingsTabs = ({ sellerId }) => {
     setEditProduct(null);
   };
 
+  // 🔥 NEW: Toggle bidding handler
+  const handleToggleBidding = async (productId, isDepreciating) => {
+    await updateProduct(productId, { isDepreciating });
+
+    setProducts((prev) =>
+      prev.map((p) => (p.id === productId ? { ...p, isDepreciating } : p)),
+    );
+  };
+
   return (
     <>
       {/* Tabs */}
-      <Box mt={4} display="flex" justifyContent="center" >
+      <Box mt={4} display="flex" justifyContent="center">
         <ToggleButtonGroup
           value={tab}
           exclusive
@@ -60,7 +67,6 @@ const ListingsTabs = ({ sellerId }) => {
             p: 0.5,
             borderRadius: "999px",
             gap: 1.5,
-            // boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
             "& .MuiToggleButton-root": {
               border: "none",
               px: 3,
@@ -68,11 +74,8 @@ const ListingsTabs = ({ sellerId }) => {
               borderRadius: "999px !important",
               fontWeight: 600,
               textTransform: "none",
-              transition: "all 0.3s ease",
               color: "#333",
-              "&:hover": {
-                bgcolor: "#e0f2f1",
-              },
+              "&:hover": { bgcolor: "#e0f2f1" },
             },
             "& .Mui-selected": {
               color: "#fff !important",
@@ -83,7 +86,7 @@ const ListingsTabs = ({ sellerId }) => {
         >
           <ToggleButton value="selling">🟢 Selling</ToggleButton>
           <ToggleButton value="sold">🟠 Sold</ToggleButton>
-          <ToggleButton value="add" onClick={() => navigate("/sell-item")}>
+          <ToggleButton value="add" onClick={() => navigate("/how-to-sell")}>
             ➕ Add Product
           </ToggleButton>
         </ToggleButtonGroup>
@@ -104,6 +107,7 @@ const ListingsTabs = ({ sellerId }) => {
             products={products}
             onEdit={setEditProduct}
             onDelete={setDeleteProductId}
+            onToggleBidding={handleToggleBidding}
           />
         )}
       </Box>
@@ -119,7 +123,7 @@ const ListingsTabs = ({ sellerId }) => {
       <ConfirmDialog
         open={!!deleteProductId}
         title="Delete Product?"
-        description="Are you sure you want to permanently delete this product? This action cannot be undone and all associated data will be removed."
+        description="Are you sure you want to permanently delete this product? This action cannot be undone."
         onCancel={() => setDeleteProductId(null)}
         onConfirm={handleDelete}
       />
