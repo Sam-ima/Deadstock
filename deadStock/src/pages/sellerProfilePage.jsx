@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import ProfileInfo from "../component/profile/profileInfo";
-import ProfileHeader from "../component/Profile/ProfileHeader/profileHeader";
+import ProfileHeader from "../component/profile/ProfileHeader/profileHeader";
 
 const SellerProfilePage = () => {
   const [seller, setSeller] = useState(null);

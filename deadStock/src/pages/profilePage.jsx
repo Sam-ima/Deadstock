@@ -1,6 +1,6 @@
 import { useEffect,useState } from "react";
 import { Box, Container, Button } from "@mui/material";
-import ProfileHeader from "../component/profile/profileHeader";
+import ProfileHeader from "../component/profile/ProfileHeader/profileHeader";
 import OrdersList from "../component/profile/ordersList";
 import ProfileInfo from "../component/profile/profileInfo";
 import { auth, db } from "../firebase/firebase";
