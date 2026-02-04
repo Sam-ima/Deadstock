@@ -67,14 +67,15 @@ export const addProduct = async (productData, userId, userType) => {
       const endTime = new Date(
         startTime.getTime() + durationHours * 60 * 60 * 1000
       );
-
+      // ✅ Use currentPrice (depreciated price if direct sale was active)
+      const startingBid = productData.currentPrice || basePrice;
       auctionData = {
         status: "scheduled", // scheduled → live → ended
         startTime,
         endTime,
 
-        startingBid: basePrice,
-        highestBid: basePrice,
+        startingBid,
+        highestBid: startingBid,
         highestBidderId: null,
 
         bidCount: 0,
