@@ -3,20 +3,26 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 const REQUIRED_FIELDS = [
-  'amount',
-  'tax_amount',
-  'total_amount',
-  'transaction_uuid',
-  'product_code',
-  'product_service_charge',
-  'product_delivery_charge',
-  'success_url',
-  'failure_url',
-  'signed_field_names',
-  'signature'
+  "amount",
+  "tax_amount",
+  "total_amount",
+  "transaction_uuid",
+  "product_code",
+  "product_service_charge",
+  "product_delivery_charge",
+  "success_url",
+  "failure_url",
+  "signed_field_names",
+  "signature",
 ];
 
-export function EsewaPaymentHandler({ user, displayItems, totals, deliveryDetails, isDeliveryDetailsComplete }) {
+export function EsewaPaymentHandler({
+  user,
+  displayItems,
+  totals,
+  deliveryDetails,
+  isDeliveryDetailsComplete,
+}) {
   const [loading, setLoading] = useState(false);
 
   const extractPaymentData = (responseData) => {
@@ -26,7 +32,10 @@ export function EsewaPaymentHandler({ user, displayItems, totals, deliveryDetail
       // Data is nested in payload property
       paymentData = responseData.payload;
       console.log("Found payload in nested structure");
-    } else if (responseData.success === true || responseData.success === false) {
+    } else if (
+      responseData.success === true ||
+      responseData.success === false
+    ) {
       // Data is directly in response (with success wrapper)
       paymentData = { ...responseData };
       delete paymentData.success;
@@ -42,9 +51,9 @@ export function EsewaPaymentHandler({ user, displayItems, totals, deliveryDetail
   };
 
   const validatePaymentData = (paymentData) => {
-    const missingFields = REQUIRED_FIELDS.filter(field => {
+    const missingFields = REQUIRED_FIELDS.filter((field) => {
       const value = paymentData[field];
-      return value === undefined || value === null || value === '';
+      return value === undefined || value === null || value === "";
     });
 
     if (missingFields.length > 0) {
@@ -64,7 +73,7 @@ export function EsewaPaymentHandler({ user, displayItems, totals, deliveryDetail
     form.id = "esewaPaymentForm";
 
     // Add all required fields
-    REQUIRED_FIELDS.forEach(field => {
+    REQUIRED_FIELDS.forEach((field) => {
       const value = paymentData[field];
       const input = document.createElement("input");
       input.type = "hidden";
@@ -75,8 +84,13 @@ export function EsewaPaymentHandler({ user, displayItems, totals, deliveryDetail
 
     // Add any additional fields
     Object.keys(paymentData)
-      .filter(field => !REQUIRED_FIELDS.includes(field) && field !== 'success' && field !== 'message')
-      .forEach(field => {
+      .filter(
+        (field) =>
+          !REQUIRED_FIELDS.includes(field) &&
+          field !== "success" &&
+          field !== "message",
+      )
+      .forEach((field) => {
         const input = document.createElement("input");
         input.type = "hidden";
         input.name = field;
@@ -112,7 +126,7 @@ ${JSON.stringify(paymentData, null, 2)}
         </details>
       </div>
     `;
-    
+
     form.id = "esewaPaymentForm";
     document.body.appendChild(debugDiv);
   };
@@ -138,7 +152,7 @@ ${JSON.stringify(paymentData, null, 2)}
             totalAmount: Math.round(totals.total),
             deliveryDetails,
           }),
-        }
+        },
       );
 
       const responseText = await res.text();
@@ -167,12 +181,14 @@ ${JSON.stringify(paymentData, null, 2)}
 
       const validation = validatePaymentData(paymentData);
       if (!validation.isValid) {
-        toast.error(`Payment configuration incomplete. Missing: ${validation.missingFields.join(', ')}`);
+        toast.error(
+          `Payment configuration incomplete. Missing: ${validation.missingFields.join(", ")}`,
+        );
         setLoading(false);
         return;
       }
 
-      console.log("✅ All required fields present!");
+      // console.log("✅ All required fields present!");
 
       const form = createEsewaForm(paymentData);
       document.body.appendChild(form);
@@ -183,7 +199,6 @@ ${JSON.stringify(paymentData, null, 2)}
         console.log("Auto-submitting form to eSewa...");
         form.submit();
       }, 2000);
-
     } catch (err) {
       console.error("Payment error:", err);
       toast.error("Failed to process payment. Please try again.");
@@ -193,6 +208,6 @@ ${JSON.stringify(paymentData, null, 2)}
 
   return {
     handlePayment,
-    loading
+    loading,
   };
 }

@@ -1,5 +1,3 @@
-// components/checkout/EmptyCartState.jsx
-import React from "react";
 import { Box, Container, Typography, Button } from "@mui/material";
 import { colors } from "./Constants";
 

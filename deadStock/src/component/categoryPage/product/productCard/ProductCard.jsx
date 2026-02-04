@@ -102,7 +102,7 @@ const ProductCard = ({ product }) => {
         <Stack direction="row" alignItems="center" spacing={0.5} mb={1}>
           {renderRatingStars()}
           <Typography fontSize="0.75rem" color="text.secondary" ml={0.5}>
-            ({product.rating || 0})
+            ({product.rating || 0}) 
           </Typography>
           <Typography fontSize="0.7rem" color="text.secondary" ml={0.5}>
             • {product.reviews || 0} reviews

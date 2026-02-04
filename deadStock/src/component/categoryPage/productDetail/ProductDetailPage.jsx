@@ -41,16 +41,22 @@ const ProductDetailPage = () => {
 
   if (!product) {
     return (
-      <Container>
-        <Typography variant="h4" align="center" sx={{ mt: 4 }}>
-          Product not found
+      <Container sx={{ minHeight: "50vh" }}>
+        <Typography
+          variant="h6"
+          align="center"
+          sx={{ mt: 4, textAlign: "center" }}
+        >
+          Product not found!
         </Typography>
       </Container>
     );
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", pt: { xs: "30px", sm: "35px", md: "40px" } }}>
+    <Box
+      sx={{ minHeight: "100vh", pt: { xs: "30px", sm: "35px", md: "40px" } }}
+    >
       <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
         <Box display={{ xs: "block", md: "flex" }} gap={4}>
           <ProductImages
@@ -58,14 +64,13 @@ const ProductDetailPage = () => {
             selectedImage={selectedImage}
             setSelectedImage={setSelectedImage}
             isFavorite={isFavorite}
-            setIsFavorite={() => setIsFavorite(v => !v)}
+            setIsFavorite={() => setIsFavorite((v) => !v)}
           />
 
           <ProductInfo
             product={product}
             quantity={quantity}
             setQuantity={setQuantity}
-            
           />
         </Box>
 

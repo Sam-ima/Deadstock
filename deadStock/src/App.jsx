@@ -16,7 +16,7 @@ import { CartProvider } from "./component/categoryPage/productDetail/CartContext
 import { AuthProvider } from "./context/authContext/authContext.jsx";
 import { ProductProvider } from "./context/productContext.jsx";
 import { CategoryProvider } from "./context/categoryContext.jsx";
-
+import { SearchProvider } from "./component/Searchbar/SearchContext.jsx";
 import RootLayout from "./root_layout";
 import AuthPage from "./pages/authPage.jsx";
 import SellItem from "./pages/sellProduct";
@@ -67,16 +67,18 @@ const router = createBrowserRouter(
 function App() {
   return (
     <AuthProvider>
-      <CategoryProvider>
-        <ProductProvider>
-          {/* <CartProvider> */}
-          <Suspense fallback={<div className="loading">Loading...</div>}>
-            <RouterProvider router={router} />
-            <ToastContainer transition={Flip} />
-          </Suspense>
-          {/* </CartProvider> */}
-        </ProductProvider>
-      </CategoryProvider>
+      <SearchProvider>
+        <CategoryProvider>
+          <ProductProvider>
+            {/* <CartProvider> */}
+            <Suspense fallback={<div className="loading">Loading...</div>}>
+              <RouterProvider router={router} />
+              <ToastContainer transition={Flip} />
+            </Suspense>
+            {/* </CartProvider> */}
+          </ProductProvider>
+        </CategoryProvider>
+      </SearchProvider>
     </AuthProvider>
   );
 }
