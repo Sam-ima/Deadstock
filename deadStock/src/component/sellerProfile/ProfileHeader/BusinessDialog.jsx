@@ -7,13 +7,7 @@ import {
   TextField,
 } from "@mui/material";
 
-const BusinessDialog = ({
-  open,
-  setOpen,
-  business,
-  setBusiness,
-  onSave,
-}) => {
+const BusinessDialog = ({ open, setOpen, business, setBusiness, onSave }) => {
   const fieldLabels = {
     shopName: "Shop Name",
     phone: "Phone Number",

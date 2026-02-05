@@ -4,7 +4,7 @@ import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
 import ProfileHeader from "../component/sellerProfile/ProfileHeader/profileHeader";
-import ProfileInfo from "../component/sellerProfile/profileInfo";
+import ProfileInfo from "../component/sellerProfile/ProfileInfo/profileInfo";
 // import RecentActivity from "../component/sellerProfile/recentActivity";
 import ListingsTabs from "../component/sellerProfile/productListing/listingsTabs";
 
