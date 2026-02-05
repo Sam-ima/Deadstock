@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "../../../firebase/firebase";
-import ListingsGrid from "./listingGrid";
+import ListingsGrid from "./ProductSellAndBuyListing/listingGrid";
 import EditProductDialog from "./editProductDialog/EditProductDialog";
 import ConfirmDialog from "./confirmationDialog";
 import { getProductsBySeller, deleteProduct, updateProduct } from "../../../services/productService";

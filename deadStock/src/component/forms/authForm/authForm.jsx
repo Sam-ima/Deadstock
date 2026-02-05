@@ -128,7 +128,7 @@ export const AuthForm = ({ mode, setMode, role }) => {
         // } else {
         //   navigate("/profile");
         // }
-        navigate("/sellerProfile")
+        navigate("/Profile")
       }
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {

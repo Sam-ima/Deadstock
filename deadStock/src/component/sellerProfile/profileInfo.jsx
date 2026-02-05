@@ -36,17 +36,19 @@ const ProfileInfo = ({ buyer }) => {
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  if (!buyer) return null;
+  // if (!buyer) return null;
 
   const isBusiness =
     buyer.role === "seller" ||
+    buyer.role === "both" ||
     (buyer.role === "buyer" && buyer.buyerType === "business");
-   const isSeller = buyer.role === "seller";
+
+  const isSeller = buyer.role === "seller" || buyer.role === "both";
   const sectionStyle = {
-    p: 2,
-    mb: 3,
+    p: 1,
+    mb: 2,
     borderRadius: 3,
-    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+    // boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
   };
 
   const headerStyle = {
@@ -137,7 +139,7 @@ const ProfileInfo = ({ buyer }) => {
         <Divider sx={{ my: 1.5 }} />
 
         <List disablePadding>
-          <Stack spacing={1.5}>
+          <Stack spacing={1}>
             {/* Email */}
             <ListItem disableGutters>
               <ListItemIcon>
@@ -277,7 +279,7 @@ const ProfileInfo = ({ buyer }) => {
 
           <Divider sx={{ mb: 1 }} />
           <List>
-            {["shopName", "phone", "address", "city", "country", "panVat"].map(
+            {[ "phone", "address", "city", "country"].map(
               (field) => (
                 <ListItem key={field}>
                   {isEditingBusiness ? (
@@ -299,7 +301,7 @@ const ProfileInfo = ({ buyer }) => {
                     />
                   )}
                 </ListItem>
-              )
+              ),
             )}
 
             {isEditingBusiness && (

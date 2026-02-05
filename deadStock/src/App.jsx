@@ -46,8 +46,8 @@ const router = createBrowserRouter(
     <Route element={<RootLayout />}>
       <Route path="/" element={<LandingPage />} />
       <Route path="/auctions" element={<AuctionsPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/sellerProfile" element={<SellerProfilePage />} />
+      {/* <Route path="/profile" element={<ProfilePage />} /> */}
+      <Route path="/Profile" element={<SellerProfilePage />} />
       <Route path="/login" element={<AuthPage />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/how-to-sell" element={<HowToSell />} />
