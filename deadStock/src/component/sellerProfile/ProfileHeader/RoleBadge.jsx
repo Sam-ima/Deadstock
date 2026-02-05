@@ -1,6 +1,5 @@
 import { Typography } from "@mui/material";
 
-
 const RoleBadge = ({ buyer }) => {
   const getBadgeLabel = () => {
     if (buyer.role === "both") return "Buyer & Seller";

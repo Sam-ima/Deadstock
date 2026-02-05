@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
-import ProfileHeader from "../component/Profile/ProfileHeader/profileHeader";
-import ProfileInfo from "../component/profile/profileInfo";
+import ProfileHeader from "../component/sellerProfile/ProfileHeader/profileHeader";
+import ProfileInfo from "../component/sellerProfile/profileInfo";
 // import RecentActivity from "../component/sellerProfile/recentActivity";
 import ListingsTabs from "../component/sellerProfile/productListing/listingsTabs";
 

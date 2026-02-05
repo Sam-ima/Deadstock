@@ -78,7 +78,7 @@ const ProfileHeaderMain = ({ buyer }) => {
   };
 
   return (
-    <Box textAlign="center" mt={2}>
+    <Box textAlign="center" mt={4}>
       <AvatarUploader buyer={buyer} avatar={avatar} setAvatar={setAvatar} />
       <Typography variant="h5" mt={2} fontWeight={700}>
         {buyer.fullName}

@@ -85,11 +85,12 @@ const MobileDrawer = ({ open, onClose }) => {
   };
 
   const handleProfileNavigation = () => {
-    if (userData?.role === "seller") {
-      navigate("/sellerProfile");
-    } else {
-      navigate("/profile");
-    }
+    // if (userData?.role === "seller") {
+    //   navigate("/sellerProfile");
+    // } else {
+    //   navigate("/profile");
+    // }
+    navigate("/Profile")
     onClose();
   };
 
