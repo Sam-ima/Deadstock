@@ -2,7 +2,7 @@ import { useEffect,useState } from "react";
 import { Box, Container, Button } from "@mui/material";
 import ProfileHeaderMain from "../component/sellerProfile/ProfileHeader/profileHeader";
 import ordersList from "../component/Profile/OrdersList";
-import ProfileInfo from "../component/sellerProfile/profileInfo";
+import ProfileInfo from "../component/sellerProfile/ProfileInfo/profileInfo";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
