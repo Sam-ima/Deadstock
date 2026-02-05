@@ -82,6 +82,9 @@ export const addProduct = async (productData, userId, userType) => {
         minBidIncrement: productData.minBidIncrement || 10,
 
         createdAt: serverTimestamp(),
+
+        winnerId: null,
+        paymentDeadline: null
       };
     }
     /* ------------------------------------------------ */
@@ -142,6 +145,21 @@ export const addProduct = async (productData, userId, userType) => {
   } catch (error) {
     console.error("Error in addProduct:", error);
     throw error;
+  }
+};
+
+export const syncAuctionStatus = async (product) => {
+  if (product.saleType !== "auction" || !product.auction) return;
+
+  const status = resolveAuctionStatus(product);
+
+  if (status !== product.auction.status) {
+    const productRef = doc(db, "products", product.id);
+
+    await updateDoc(productRef, {
+      "auction.status": status,
+      updatedAt: serverTimestamp()
+    });
   }
 };
 
