@@ -1,5 +1,5 @@
 import { Box, Grid, Typography, Container } from "@mui/material";
-import UpcomingAuctionCard from "../card/auctionCard/upcoming_card";
+import AuctionProductCard from "../card/auctionCard/AuctionProductCard";
 import { useAuctionProducts } from "../card/auctionCard/hook/useAuctionProducts";
 
 const UpcomingAuctions = () => {
@@ -35,7 +35,7 @@ const UpcomingAuctions = () => {
             <Grid container spacing={3} justifyContent="center">
               {scheduledAuctions.map((product) => (
                 <Grid item key={product.id}>
-                  <UpcomingAuctionCard product={product} />
+                  <AuctionProductCard product={product} />
                 </Grid>
               ))}
             </Grid>
