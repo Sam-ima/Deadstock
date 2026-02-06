@@ -82,11 +82,12 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
 
   const handleProfileClick = () => {
     handleUserMenuClose();
-    if (userData?.role === "seller") {
-      navigate("/sellerProfile");
-    } else {
-      navigate("/profile");
-    }
+    // if (userData?.role === "seller") {
+    //   navigate("/sellerProfile");
+    // } else {
+    //   navigate("/profile");
+    // }
+    navigate("/Profile");
   };
 
   const handleLogout = async () => {
@@ -116,7 +117,9 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
       <SearchBar />
 
       {/* Cart icon only for buyers */}
-      {(!userData || userData?.role === "buyer") && (
+      {(!userData ||
+        userData?.role === "buyer" ||
+        userData?.role === "both") && (
         <IconButton color="inherit" onClick={onCartClick}>
           <Badge badgeContent={cartCount} color="warning">
             <ShoppingCart size={20} />
@@ -224,7 +227,7 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
             onClick={() => navigate("/login")}
             sx={{
               ml: 0,
-              px: { xs: 2, sm: 3 },        // responsive padding
+              px: { xs: 2, sm: 3 }, // responsive padding
               py: 1,
               borderRadius: "24px",
               textTransform: "none",
@@ -236,12 +239,12 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
               alignItems: "center",
               justifyContent: "center",
 
-              lineHeight: 1.2,             // prevents text overflow
-              whiteSpace: "nowrap",        // keeps text inside
+              lineHeight: 1.2, // prevents text overflow
+              whiteSpace: "nowrap", // keeps text inside
               overflow: "hidden",
 
-              minWidth: "auto",            // avoids forced width issues
-              height: "40px",              // consistent button height
+              minWidth: "auto", // avoids forced width issues
+              height: "40px", // consistent button height
 
               "&:hover": {
                 backgroundColor: "#EF6C00",

@@ -14,7 +14,9 @@ import { toast } from "react-toastify";
 const BidDialog = ({ open, onClose, product }) => {
   const [bidAmount, setBidAmount] = useState("");
 
-  const minBid = product.highestBid + 1;
+  const minBid =
+    product.auction.highestBid + product.auction.minBidIncrement;
+
   const numericBid = Number(bidAmount);
   const isBidValid = bidAmount !== "" && numericBid >= minBid;
 

@@ -25,7 +25,7 @@ const HeroSection = () => {
       return;
     }
 
-    if (user.role !== "seller") {
+    if (user.role !== "seller" && user.role !== "both") {
       toast.error("Only sellers can list products.");
       return;
     }

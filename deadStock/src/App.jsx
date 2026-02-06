@@ -25,7 +25,7 @@ import PaymentFailure from "./component/checkout/payment/PaymentFailurePage.jsx"
 import PaymentSuccess from "./component/checkout/payment/PayementSuccess.jsx";
 // Lazy pages
 const LandingPage = lazy(() => import("./pages/landingPage"));
-const AuctionsPage = lazy(() => import("./pages/auction.page"));
+const AuctionsPage = lazy(() => import("./pages/AuctionPage.jsx"));
 const ProfilePage = lazy(() => import("./pages/profilePage"));
 const SellerProfilePage = lazy(() => import("./pages/sellerProfilePage.jsx"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
@@ -46,8 +46,8 @@ const router = createBrowserRouter(
     <Route element={<RootLayout />}>
       <Route path="/" element={<LandingPage />} />
       <Route path="/auctions" element={<AuctionsPage />} />
-      <Route path="/profile" element={<ProfilePage />} />
-      <Route path="/sellerProfile" element={<SellerProfilePage />} />
+      {/* <Route path="/profile" element={<ProfilePage />} /> */}
+      <Route path="/Profile" element={<SellerProfilePage />} />
       <Route path="/login" element={<AuthPage />} />
       <Route path="/reset-password" element={<ResetPassword />} />
       <Route path="/how-to-sell" element={<HowToSell />} />

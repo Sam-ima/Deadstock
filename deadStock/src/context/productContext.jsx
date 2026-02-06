@@ -6,8 +6,11 @@ import {
   updateProduct,
   deleteProduct,
   getProductsBySeller,
-  getProductById
+  getProductById,
+  resolveAuctionStatus,
+  getDisplayPrice
 } from "../services/productService";
+import { placeBid } from "../services/bidService";
 
 const ProductContext = createContext();
 
@@ -21,7 +24,15 @@ export const ProductProvider = ({ children }) => {
     setError(null);
     try {
       const data = await getAllProducts(filters);
-      setProducts(data);
+
+      // 🆕 Decorate products with auction state
+      const enriched = data.map((product) => ({
+        ...product,
+        auctionStatus: resolveAuctionStatus(product),
+        displayPrice: getDisplayPrice(product),
+      }));
+
+      setProducts(enriched);
     } catch (err) {
       console.error("Error fetching products:", err);
       setError("Failed to load products");
@@ -61,6 +72,18 @@ export const ProductProvider = ({ children }) => {
     } catch (err) {
       console.error("Error creating product:", err);
       setError(err.message || "Failed to create product");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const bidOnProduct = async (productId, bidAmount, userId) => {
+    setLoading(true);
+    try {
+      await placeBid({ productId, bidAmount, bidderId: userId });
+      await fetchProducts();
+    } catch (err) {
       throw err;
     } finally {
       setLoading(false);
@@ -140,7 +163,8 @@ export const ProductProvider = ({ children }) => {
         updateProduct: updateProductData,
         removeProduct,
         fetchSellerProducts,
-        fetchProductById
+        fetchProductById,
+        bidOnProduct
       }}
     >
       {children}

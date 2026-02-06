@@ -2,10 +2,10 @@ import { Box, Container, Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 
-import ProductImages from "./categoryPage/productDetail/productImages";
-import ProductInfo from "./categoryPage/productDetail/productInfo";
+import ProductImages from "./categoryPage/productDetail/ProductImages";
+import ProductInfo from "./categoryPage/productDetail/ProductInfo";
 import AuctionTimer from "./auctionDetail/auctionTimer";
-import BidDialog from "./card/auction card/placeBidDialog";
+import BidDialog from "./card/auctionCard/PlaceBidDialog";
 
 import { setSelectedImage, toggleWishlist } from "../store/slice/auctionSlice";
 

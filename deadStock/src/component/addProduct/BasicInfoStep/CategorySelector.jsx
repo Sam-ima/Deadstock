@@ -20,11 +20,20 @@ const CategorySelector = ({
         <TextField
           select
           fullWidth
-          
+
           size="small"
           label="Category *"
           value={formData.categoryId || ""}
           onChange={(e) => handleChange("categoryId", e.target.value)}
+          SelectProps={{
+            MenuProps: {
+              PaperProps: {
+                style: {
+                  maxHeight: 240,   // 👈 controls dropdown height
+                },
+              },
+            },
+          }}
         >
           <MenuItem value="">Select Category</MenuItem>
           {categories.map(c => (
@@ -53,8 +62,17 @@ const CategorySelector = ({
           value={formData.subcategoryId || ""}
           onChange={(e) => handleChange("subcategoryId", e.target.value)}
           disabled={!formData.categoryId}   // ✅ FIXED
+          SelectProps={{
+            MenuProps: {
+              PaperProps: {
+                style: {
+                  maxHeight: 240,   // 👈 controls dropdown height
+                },
+              },
+            },
+          }}
         >
-          <MenuItem value="">No Subcategory</MenuItem>
+          <MenuItem value="">Select Subcategory</MenuItem>
 
           {loadingSubcategories ? (
             <MenuItem disabled>Loading...</MenuItem>

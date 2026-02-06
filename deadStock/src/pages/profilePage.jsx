@@ -1,8 +1,8 @@
 import { useEffect,useState } from "react";
 import { Box, Container, Button } from "@mui/material";
-import ProfileHeader from "../component/profile/profileHeader";
-import OrdersList from "../component/profile/ordersList";
-import ProfileInfo from "../component/profile/profileInfo";
+import ProfileHeaderMain from "../component/sellerProfile/ProfileHeader/profileHeader";
+import ordersList from "../component/Profile/OrdersList";
+import ProfileInfo from "../component/sellerProfile/ProfileInfo/profileInfo";
 import { auth, db } from "../firebase/firebase";
 import { doc, getDoc } from "firebase/firestore";
 
@@ -34,9 +34,9 @@ const ProfiePage = () => {
           paddingBottom: "2px",
         }}
       >
-        <ProfileHeader buyer={buyer}/>
+        <ProfileHeaderMain buyer={buyer}/>
         <ProfileInfo buyer={buyer}/>
-        <OrdersList />
+        <ordersList />
       </Container>
     </Box>
   );

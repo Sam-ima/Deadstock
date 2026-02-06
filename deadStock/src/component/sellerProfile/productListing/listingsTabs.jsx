@@ -1,58 +1,92 @@
-import {
-  Box,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+import { Box, ToggleButton, ToggleButtonGroup, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import {
-  getProductsBySeller,
-  deleteProduct,
-  updateProduct,
-} from "../../../services/productService";
 import { useNavigate } from "react-router-dom";
-import ListingsGrid from "./listingGrid";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "../../../firebase/firebase";
+import ListingsGrid from "./ProductSellAndBuyListing/listingGrid";
 import EditProductDialog from "./editProductDialog/EditProductDialog";
 import ConfirmDialog from "./confirmationDialog";
+import { getProductsBySeller, deleteProduct, updateProduct } from "../../../services/productService";
 
-const ListingsTabs = ({ sellerId }) => {
+const ListingsTabs = ({ user }) => {
   const navigate = useNavigate();
-  const [tab, setTab] = useState("selling");
+  const [tab, setTab] = useState("");
   const [products, setProducts] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [editProduct, setEditProduct] = useState(null);
   const [deleteProductId, setDeleteProductId] = useState(null);
 
+  // Set default tab based on role
   useEffect(() => {
-    if (!sellerId || tab === "add") return;
+    if (!user) return;
+    if (user.role === "both") setTab("selling"); // default for both
+    else if (user.role === "seller") setTab("selling");
+    else if (user.role === "buyer") setTab("orders");
+  }, [user]);
 
+  // Fetch products or orders based on tab
+  useEffect(() => {
+    if (!user || !tab) return;
     setLoading(true);
-    getProductsBySeller(sellerId, tab === "selling" ? "active" : "sold")
-      .then(setProducts)
-      .finally(() => setLoading(false));
-  }, [sellerId, tab]);
+
+    const fetchData = async () => {
+      try {
+        if (tab === "selling") {
+          const items = await getProductsBySeller(user.uid, "active");
+          setProducts(items);
+        } else if (tab === "orders") {
+          const ordersQuery = query(
+            collection(db, "orders"),
+            where("userId", "==", user.uid)
+          );
+          const snap = await getDocs(ordersQuery);
+          setOrders(snap.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [tab, user]);
 
   const handleDelete = async () => {
     await deleteProduct(deleteProductId);
-    setProducts((p) => p.filter((x) => x.id !== deleteProductId));
+    setProducts(prev => prev.filter(p => p.id !== deleteProductId));
     setDeleteProductId(null);
   };
 
   const handleUpdate = async (data) => {
     await updateProduct(data.id, data);
-    setProducts((p) => p.map((x) => (x.id === data.id ? data : x)));
+    setProducts(prev => prev.map(p => p.id === data.id ? data : p));
     setEditProduct(null);
   };
 
-  // 🔥 NEW: Toggle bidding handler
   const handleToggleBidding = async (productId, isDepreciating) => {
-    await updateProduct(productId, { isDepreciating });
-
-    setProducts((prev) =>
-      prev.map((p) => (p.id === productId ? { ...p, isDepreciating } : p)),
-    );
+    try {
+      const saleType = !isDepreciating ? "auction" : "direct";
+      await updateProduct(productId, { isDepreciating, saleType });
+      setProducts(prev =>
+        prev.map(p => p.id === productId ? { ...p, isDepreciating, saleType } : p)
+      );
+    } catch (err) {
+      console.error(err);
+    }
   };
+
+  // Configure tabs dynamically
+  const tabs = [];
+  if (user.role === "seller" || user.role === "both") {
+    tabs.push({ value: "selling", label: "🟢 Selling" });
+  }
+  if (user.role === "buyer" || user.role === "both") {
+    tabs.push({ value: "orders", label: user.role === "buyer" ? "🟡 My Orders" : "🟡 Orders as Buyer" });
+  }
+
 
   return (
     <>
@@ -84,31 +118,60 @@ const ListingsTabs = ({ sellerId }) => {
             },
           }}
         >
-          <ToggleButton value="selling">🟢 Selling</ToggleButton>
-          <ToggleButton value="sold">🟠 Sold</ToggleButton>
-          <ToggleButton value="add" onClick={() => navigate("/how-to-sell")}>
-            ➕ Add Product
-          </ToggleButton>
+          {tabs.map(t => (
+            <ToggleButton key={t.value} value={t.value}>
+              {t.label}
+            </ToggleButton>
+          ))}
+
+          {/* Add Product button for seller or both */}
+          {(user.role === "seller" || user.role === "both") && (
+            <ToggleButton
+              value="add"
+              onClick={() => navigate("/how-to-sell")}
+              sx={{
+                color: "#333",
+                fontWeight: 600,
+                "&:hover": { bgcolor: "#e0f2f1" },
+              }}
+            >
+              ➕ Add Product
+            </ToggleButton>
+          )}
         </ToggleButtonGroup>
       </Box>
 
-      {/* Content */}
+      {/* Tab Content */}
       <Box mt={4}>
-        {loading && (
-          <Typography textAlign="center">Loading products...</Typography>
+        {loading && <Typography textAlign="center">Loading...</Typography>}
+
+        {tab === "selling" && (
+          <>
+            {products.length === 0 ? (
+              <Typography textAlign="center">No products found.</Typography>
+            ) : (
+              <ListingsGrid
+                items={products}
+                onEdit={setEditProduct}
+                onDelete={setDeleteProductId}
+                onToggleBidding={handleToggleBidding}
+                mode="products"
+              />
+            )}
+          </>
         )}
 
-        {!loading && products.length === 0 && (
-          <Typography textAlign="center">No products found.</Typography>
-        )}
-
-        {!loading && products.length > 0 && (
-          <ListingsGrid
-            products={products}
-            onEdit={setEditProduct}
-            onDelete={setDeleteProductId}
-            onToggleBidding={handleToggleBidding}
-          />
+        {tab === "orders" && (
+          <>
+            {orders.length === 0 ? (
+              <Typography textAlign="center">No orders found.</Typography>
+            ) : (
+              <ListingsGrid
+                items={orders}
+                mode="orders"
+              />
+            )}
+          </>
         )}
       </Box>
 

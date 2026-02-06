@@ -2,12 +2,14 @@ import { Card } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import makeSlug from "../../../utils/slugify";
-import AuctionCardContent from "./auctionCardContent";
-import BidDialog from "./placeBidDialog";
+import AuctionCardContent from "./AuctionCardContent";
+import BidDialog from "./PlaceBidDialog";
 
 const AuctionProductCard = ({ product }) => {
   const navigate = useNavigate();
   const [openBidDialog, setOpenBidDialog] = useState(false);
+
+  if (product.saleType !== "auction" || !product.auction) return null;
 
   return (
     <>
@@ -18,9 +20,9 @@ const AuctionProductCard = ({ product }) => {
         sx={{
           width: 280,
           borderRadius: 3,
-          overflow: "hidden",
-          transition: "0.3s ease",
           cursor: "pointer",
+          overflow: "hidden",
+          transition: "0.3s",
           "&:hover": {
             transform: "translateY(-6px)",
             boxShadow: "0 16px 40px rgba(0,0,0,0.15)",

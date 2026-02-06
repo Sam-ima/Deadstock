@@ -41,15 +41,27 @@ const ProductDetailsForm = ({ formData, setFormData, errors }) => {
             required
             type="number"
             label="Stock Quantity"
-            value={formData.stock || 1}
+            value={formData.stock ?? ""}
             onChange={(e) => {
-              const value = Math.max(1, Number(e.target.value));
+              const rawValue = e.target.value;
+
+              // Allow empty input while typing
+              if (rawValue === "") {
+                handleChange("stock", "");
+                return;
+              }
+
+              const value = Math.max(1, Number(rawValue));
               handleChange("stock", value);
             }}
-            inputProps={{
-              min: 1
+            inputProps={{ min: 1 }}
+            onBlur={() => {
+              // Enforce minimum on blur
+              if (!formData.stock || formData.stock < 1) {
+                handleChange("stock", 1);
+              }
             }}
-            onWheel={(e) => e.target.blur()} // prevents scroll change
+            onWheel={(e) => e.target.blur()}
             error={!!errors?.stock}
             helperText={errors?.stock || "Minimum stock is 1"}
             InputProps={{
@@ -68,8 +80,22 @@ const ProductDetailsForm = ({ formData, setFormData, errors }) => {
             fullWidth
             type="number"
             label="Minimum Order Quantity (MOQ)"
-            value={formData.moq || 1}
-            onChange={(e) => handleChange("moq", e.target.value)}
+            value={formData.moq ?? ""}
+            onChange={(e) => {
+              const rawValue = e.target.value;
+
+              if (rawValue === "") {
+                handleChange("moq", "");
+                return;
+              }
+
+              handleChange("moq", Math.max(1, Number(rawValue)));
+            }}
+            onBlur={() => {
+              if (!formData.moq || formData.moq < 1) {
+                handleChange("moq", 1);
+              }
+            }}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -99,12 +125,12 @@ const ProductDetailsForm = ({ formData, setFormData, errors }) => {
           />
         </Grid>
 
-         {/* Manufacture Date */}
+        {/* Manufacture Date */}
         <Grid item xs={12}>
           <TextField
             fullWidth
             required
-            type="date" 
+            type="date"
             label="Manufacture Date"
             value={formData.manufacture_date || ""}
             onChange={(e) =>
