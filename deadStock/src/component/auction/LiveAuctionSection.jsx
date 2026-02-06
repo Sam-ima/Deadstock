@@ -10,14 +10,25 @@ const LiveAuctionSection = () => {
   );
 
   return (
-    <Box sx={{ width: "100%", backgroundColor: "#faf9f9ff" }}>
+    <Box sx={{ width: "100%", backgroundColor: "#ffffff" }}>
       <Box sx={{ py: { xs: 4, md: 6 } }}>
         <Container maxWidth="lg">
           {/* Heading */}
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
-              fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
-              fontWeight={800}
+              fontSize={{
+                xs: "24px",   // mobile
+                sm: "28px",   // small tablets
+                md: "32px",   // tablets / small laptop
+                lg: "40px",   // desktop
+                xl: "48px",   // large screens
+              }}
+              sx={{
+                lineHeight: 1.2, 
+                fontWeight: 800,
+                mb: 5,
+                textAlign: "center"
+              }}
             >
               🔥 Live Auctions
             </Typography>

@@ -1,5 +1,5 @@
 import { Box, Grid, Typography, Container } from "@mui/material";
-import UpcomingAuctionCard from "../card/auctionCard/upcoming_card";
+import AuctionProductCard from "../card/auctionCard/AuctionProductCard";
 import { useAuctionProducts } from "../card/auctionCard/hook/useAuctionProducts";
 
 const UpcomingAuctions = () => {
@@ -10,18 +10,29 @@ const UpcomingAuctions = () => {
   const scheduledAuctions = products.filter(
     (product) => product?.auction?.status === "scheduled"
   );
-  console.log("upcom:",scheduledAuctions)
+  console.log("upcom:", scheduledAuctions)
 
   return (
-    <Box sx={{ width: "100%", backgroundColor: "#ffffff" }}>
+    <Box sx={{ width: "100%", backgroundColor: "#faf9f9ff" }}>
       <Box sx={{ py: { xs: 4, md: 6 } }}>
         <Container maxWidth="lg">
           {/* Heading */}
           <Typography
-            fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
-            fontWeight={800}
-            mb={5}
-            textAlign="center"
+            // fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
+            fontSize={{
+              xs: "24px",   // mobile
+              sm: "28px",   // small tablets
+              md: "32px",   // tablets / small laptop
+              lg: "40px",   // desktop
+              xl: "48px",   // large screens
+            }}
+
+            sx={{
+              lineHeight: 1.2,
+              fontWeight: 800,
+              mb: 5,
+              textAlign: "center"
+            }}
           >
             Upcoming Auctions
           </Typography>
@@ -35,7 +46,7 @@ const UpcomingAuctions = () => {
             <Grid container spacing={3} justifyContent="center">
               {scheduledAuctions.map((product) => (
                 <Grid item key={product.id}>
-                  <UpcomingAuctionCard product={product} />
+                  <AuctionProductCard product={product} />
                 </Grid>
               ))}
             </Grid>

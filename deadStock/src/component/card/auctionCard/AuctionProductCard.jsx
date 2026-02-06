@@ -8,7 +8,7 @@ import BidDialog from "./PlaceBidDialog";
 const AuctionProductCard = ({ product }) => {
   const navigate = useNavigate();
   const [openBidDialog, setOpenBidDialog] = useState(false);
-  console.log("auction:", product);
+
   if (product.saleType !== "auction" || !product.auction) return null;
 
   return (
@@ -21,6 +21,7 @@ const AuctionProductCard = ({ product }) => {
           width: 280,
           borderRadius: 3,
           cursor: "pointer",
+          overflow: "hidden",
           transition: "0.3s",
           "&:hover": {
             transform: "translateY(-6px)",

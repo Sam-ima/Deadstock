@@ -1,4 +1,4 @@
-import { useState, useMemo,useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Button,
@@ -94,7 +94,7 @@ const BrowseByCategory = () => {
   if (loading) return null;
 
   return (
-    <Box sx={{ py: { xs: 3, sm: 4, md: 5 }, backgroundColor: "#f3f5f7ff" }}>
+    <Box sx={{ py: { xs: 3, sm: 4, md: 5 }, backgroundColor: "#faf9f9ff" }}>
       <Container maxWidth="lg">
         <BrowseHeader />
 

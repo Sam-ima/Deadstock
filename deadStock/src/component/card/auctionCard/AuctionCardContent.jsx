@@ -1,46 +1,88 @@
-import { Box, Typography, Stack, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Stack,
+  Button,
+  IconButton,
+  Chip,
+} from "@mui/material";
+import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import { getTimeLeft } from "./utils/auctionTime";
 
 const AuctionCardContent = ({ product, onPlaceBid }) => {
   const auction = product?.auction;
+  const images = product?.images || [];
 
-  // ✅ SAFE INITIAL STATE
-  const [timeLeft, setTimeLeft] = useState(
-    auction?.endTime ? getTimeLeft(auction.endTime) : "--"
-  );
+  const isLive = auction?.status === "live";            // ⭐ NEW
+  const isScheduled = auction?.status === "scheduled"; // ⭐ NEW
 
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [timeText, setTimeText] = useState("--");       // ⭐ RENAMED
+
+  // ⏳ Timer logic (LIVE vs UPCOMING)
   useEffect(() => {
-    // ✅ DO NOTHING IF AUCTION DOES NOT EXIST
-    if (!auction?.endTime) return;
+    if (!auction) return;
+
+    const targetTime = isLive ? auction.endTime : auction.startTime; // ⭐ NEW
+    if (!targetTime) return;
 
     const interval = setInterval(() => {
-      setTimeLeft(getTimeLeft(auction.endTime));
+      setTimeText(getTimeLeft(targetTime));
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [auction?.endTime]);
+  }, [auction, isLive]);
 
-  // ✅ EXTRA SAFETY (OPTIONAL BUT GOOD)
   if (!auction) return null;
+
+  const handleNext = (e) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev + 1) % images.length);
+  };
+
+  const handlePrev = (e) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) =>
+      prev === 0 ? images.length - 1 : prev - 1
+    );
+  };
 
   return (
     <>
-      {/* Image */}
+      {/* 🖼 Image Slider */}
       <Box sx={{ position: "relative" }}>
         <Box
           component="img"
-          src={product.images?.find(i => i.isMain)?.url}
+          src={images[currentIndex]?.url}
           alt={product.name}
-          sx={{ width: "100%", height: 180, objectFit: "cover" }}
+          sx={{
+            width: "100%",
+            height: 180,
+            objectFit: "cover",
+          }}
         />
 
-        {/* Timer */}
+        {/* ⭐ STATUS BADGE */}
+        <Chip
+          label={isLive ? "LIVE" : "UPCOMING"}             // ⭐ NEW
+          size="small"
+          sx={{
+            position: "absolute",
+            top: 10,
+            left: 10,
+            bgcolor: isLive ? "#d32f2f" : "#ed6c02",
+            color: "#fff",
+            fontWeight: 700,
+          }}
+        />
+
+        {/* ⏳ TIMER */}
         <Box
           sx={{
             position: "absolute",
-            top: 12,
-            right: 12,
+            top: 10,
+            right: 10,
             px: 1.5,
             py: 0.5,
             borderRadius: 20,
@@ -50,39 +92,82 @@ const AuctionCardContent = ({ product, onPlaceBid }) => {
             fontWeight: 600,
           }}
         >
-          ⏳ {timeLeft}
+          {isLive ? "Ends In:" : "Starts In:"} ⏳ {timeText} {/* ⭐ UPDATED */}
         </Box>
+
+        {/* ⬅➡ Image Controls */}
+        {images.length > 1 && (
+          <>
+            <IconButton
+              size="small"
+              onClick={handlePrev}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: 8,
+                transform: "translateY(-50%)",
+                bgcolor: "rgba(0,0,0,0.5)",
+                color: "#fff",
+              }}
+            >
+              <ArrowBackIos fontSize="inherit" />
+            </IconButton>
+
+            <IconButton
+              size="small"
+              onClick={handleNext}
+              sx={{
+                position: "absolute",
+                top: "50%",
+                right: 8,
+                transform: "translateY(-50%)",
+                bgcolor: "rgba(0,0,0,0.5)",
+                color: "#fff",
+              }}
+            >
+              <ArrowForwardIos fontSize="inherit" />
+            </IconButton>
+          </>
+        )}
       </Box>
 
-      {/* Content */}
+      {/* 📦 Content */}
       <Box sx={{ p: 2 }}>
-        <Typography fontWeight={700}>{product.name}</Typography>
+        <Typography fontWeight={700} noWrap>
+          {product.name}
+        </Typography>
 
-        <Stack spacing={0.5} mt={1}>
+        <Stack spacing={0.6} mt={1}>
           <Typography fontSize="0.85rem">
-            Highest Bid: <b>Rs. {auction.highestBid}</b>
+            {isLive ? "Highest Bid:" : "Starting Price:"}{" "}
+            <b>
+              Rs. {isLive ? auction.highestBid : auction.startingBid}
+            </b> {/* ⭐ UPDATED */}
           </Typography>
 
           <Typography fontSize="0.8rem" color="text.secondary">
-            Bids: {auction.bidCount}
+            Available Stock: <b>{product.availableStock}</b>
           </Typography>
         </Stack>
 
-        <Button
-          fullWidth
-          variant="contained"
-          onClick={(e) => {
-            e.stopPropagation();
-            onPlaceBid();
-          }}
-          sx={{
-            mt: 2,
-            background: "#194638",
-            "&:hover": { background: "#163b30" },
-          }}
-        >
-          Place Bid
-        </Button>
+        {/* ⭐ PLACE BID ONLY FOR LIVE */}
+        {isLive && (
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPlaceBid();
+            }}
+            sx={{
+              mt: 2,
+              background: "#194638",
+              "&:hover": { background: "#163b30" },
+            }}
+          >
+            Place Bid
+          </Button>
+        )}
       </Box>
     </>
   );
