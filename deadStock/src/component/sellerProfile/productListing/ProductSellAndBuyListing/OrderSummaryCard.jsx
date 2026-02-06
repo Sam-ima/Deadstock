@@ -2,7 +2,7 @@ import { Box, Typography, Button, Divider } from "@mui/material";
 import { useState } from "react";
 import ProductCard from "../../../categoryPage/product/productCard/ProductCard";
 
-const CARD_HEIGHT = 350;
+const CARD_HEIGHT = 300;
 const ITEMS_COLLAPSED_HEIGHT = 50;
 
 const OrderSummaryCard = ({ order, productsMap }) => {
@@ -23,26 +23,21 @@ const OrderSummaryCard = ({ order, productsMap }) => {
       }}
     >
       {/* Header */}
-      <Box mb={1}>
-        <Typography variant="caption" color="text.secondary">
-          Ordered At
-        </Typography>
-        <Typography variant="body2" >
-          {order.createdAt?.toDate().toLocaleString()}
+      <Box>
+        <Typography variant="body2" color="text.secondary">
+          Ordered At : {order.createdAt?.toDate().toLocaleString()}
         </Typography>
       </Box>
 
-      <Divider />
-
       {/* Payment Info */}
-      <Box mt={1}>
-        <Typography variant="body2">
-          <strong>Payment:</strong> {order.paymentMethod}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.1 }}>
+        <Typography variant="body2" color="text.secondary">
+          Payment: {order.paymentMethod}
         </Typography>
-        <Typography variant="body2">
-          <strong>Status:</strong> {order.paymentStatus}
+        <Typography variant="body2" color="text.secondary">
+          Status: {order.paymentStatus}
         </Typography>
-        <Typography variant="body2" fontWeight={600} mt={0.5}>
+        <Typography variant="body2" fontWeight={600}>
           Total: Rs. {order.totalAmount}
         </Typography>
       </Box>
