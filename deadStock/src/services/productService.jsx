@@ -62,7 +62,10 @@ export const addProduct = async (productData, userId, userType) => {
       const startTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
       // ⌛ Seller-defined duration (default 2 hours)
-      const durationHours = Number(productData.auctionDuration || 2);
+      const durationHours =
+        Number.isFinite(Number(productData.auctionDuration))
+          ? Number(productData.auctionDuration)
+          : 2;
 
       const endTime = new Date(
         startTime.getTime() + durationHours * 60 * 60 * 1000

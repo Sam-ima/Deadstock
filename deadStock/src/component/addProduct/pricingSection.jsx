@@ -61,8 +61,16 @@ const PricingStep = ({
         ...prev,
         saleType: "auction",
         isDepreciating: false,
-        auctionDuration: prev.auctionDuration || 2,
-        minBidIncrement: prev.minBidIncrement || 10
+        auctionDuration:
+          Number.isFinite(Number(prev.auctionDuration))
+            ? Number(prev.auctionDuration)
+            : 2,
+
+        minBidIncrement:
+        Number.isFinite(Number(prev.minBidIncrement))
+          ? Number(prev.minBidIncrement)
+          : 10
+
       }));
     } else {
       setFormData(prev => ({
@@ -164,8 +172,8 @@ const PricingStep = ({
                   p: 3,
                   borderRadius: 2,
                   border: `2px solid ${formData.saleType === "direct"
-                      ? "#22c55e"
-                      : "#e5e7eb"
+                    ? "#22c55e"
+                    : "#e5e7eb"
                     }`,
                   bgcolor:
                     formData.saleType === "direct"
@@ -194,8 +202,8 @@ const PricingStep = ({
                   p: 3,
                   borderRadius: 2,
                   border: `2px solid ${formData.saleType === "auction"
-                      ? "#22c55e"
-                      : "#e5e7eb"
+                    ? "#22c55e"
+                    : "#e5e7eb"
                     }`,
                   bgcolor:
                     formData.saleType === "auction"
