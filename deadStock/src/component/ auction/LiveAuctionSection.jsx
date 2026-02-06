@@ -1,39 +1,49 @@
-import { Box, Typography, Grid } from "@mui/material";
-import AuctionProductCard from "../card/auction card/AuctionProductCard";
-import { useAuctionProducts } from "../card/auction card/hook/useAuctionProducts";
+import { Box, Typography, Grid, Container } from "@mui/material";
+import AuctionProductCard from "../card/auctionCard/AuctionProductCard";
+import { useAuctionProducts } from "../card/auctionCard/hook/useAuctionProducts";
 
 const LiveAuctionSection = () => {
-  // ✅ FILTER ONLY LIVE AUCTIONS
-  const liveAuctions = useAuctionProducts().filter(
+  const { products, loading } = useAuctionProducts();
+
+  const liveAuctions = products.filter(
     (product) => product?.auction?.status === "live"
   );
 
-  // ✅ DO NOT RENDER SECTION IF NO LIVE AUCTIONS
-  if (liveAuctions.length === 0) return null;
-
   return (
-    <Box sx={{ py: { xs: 4, md: 6 }, background: "#ece8e8" }}>
-      {/* Heading */}
-      <Box sx={{ textAlign: "center", mb: 6 }}>
-        <Typography
-          fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
-          fontWeight={800}
-        >
-          🔥 Live Auctions
-        </Typography>
-        <Typography color="text.secondary" mt={1}>
-          Compete with others and place your highest bid
-        </Typography>
-      </Box>
+    <Box sx={{ width: "100%", backgroundColor: "#faf9f9ff" }}>
+      <Box sx={{ py: { xs: 4, md: 6 } }}>
+        <Container maxWidth="lg">
+          {/* Heading */}
+          <Box sx={{ textAlign: "center", mb: 6 }}>
+            <Typography
+              fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
+              fontWeight={800}
+            >
+              🔥 Live Auctions
+            </Typography>
+            <Typography color="text.secondary" mt={1}>
+              Compete with others and place your highest bid
+            </Typography>
+          </Box>
 
-      {/* Cards */}
-      <Grid container spacing={4} justifyContent="center">
-        {liveAuctions.map((product) => (
-          <Grid item key={product.id}>
-            <AuctionProductCard product={product} />
-          </Grid>
-        ))}
-      </Grid>
+          {/* Content */}
+          {loading ? (
+            <Typography textAlign="center">Loading auctions...</Typography>
+          ) : liveAuctions.length > 0 ? (
+            <Grid container spacing={4} justifyContent="center">
+              {liveAuctions.map((product) => (
+                <Grid item key={product.id}>
+                  <AuctionProductCard product={product} />
+                </Grid>
+              ))}
+            </Grid>
+          ) : (
+            <Typography textAlign="center" color="text.secondary">
+              No live auctions available
+            </Typography>
+          )}
+        </Container>
+      </Box>
     </Box>
   );
 };

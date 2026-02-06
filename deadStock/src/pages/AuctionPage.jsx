@@ -7,18 +7,16 @@ import UpcomingAuctions from "../component/ auction/UpcomingAuctions";
 
 const AuctionsPage = () => {
   return (
-    <Container
-    maxWidth="lg"
+    <Box
       sx={{
-        mb: 0,
-        paddingTop: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
-        paddingBottom: "0px",
+        minHeight: "60vh",
+        pt: { xs: "50px", sm: "50px", md: "50px", lg: "60px" },
       }}
     >
       <LiveAuctionSection />
       <BiddingSection />
       <UpcomingAuctions />
-    </Container>
+    </Box>
   );
 };
 
