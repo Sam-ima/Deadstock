@@ -19,7 +19,9 @@ const DrawerAuthSection = ({ onClose }) => {
 
       const docSnap = await getDoc(doc(db, "users", currentUser.uid));
       setUserData(
-        docSnap.exists() ? docSnap.data() : { fullName: "User", role: "buyer" },
+        docSnap.exists()
+          ? docSnap.data()
+          : { fullName: "User", role: "buyer", photoURL: null },
       );
     });
   }, []);
@@ -30,6 +32,7 @@ const DrawerAuthSection = ({ onClose }) => {
     navigate("/");
   };
 
+  // Compute initials fallback
   const initials =
     userData?.fullName
       ?.split(" ")
@@ -58,12 +61,24 @@ const DrawerAuthSection = ({ onClose }) => {
   return (
     <Box p={2}>
       <Box display="flex" gap={2} alignItems="center">
-        <Avatar sx={{ width: 48, height: 48 }}>{initials}</Avatar>
+        {userData?.photoURL ? (
+          <Avatar
+            src={userData.photoURL}
+            alt={userData.fullName || user.email}
+            sx={{ width: 48, height: 48 }}
+          />
+        ) : (
+          <Avatar sx={{ width: 48, height: 48 }}>{initials}</Avatar>
+        )}
 
         <Box>
           <Typography fontWeight="bold">{userData?.fullName}</Typography>
           <Typography variant="caption">
-            {userData?.role === "seller" ? "Seller Account" : "Buyer Account"}
+            {userData?.role === "both"
+              ? "Seller & Buyer"
+              : userData?.role === "seller"
+                ? "Seller "
+                : "Buyer "}
           </Typography>
         </Box>
       </Box>
