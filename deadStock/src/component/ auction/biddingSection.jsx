@@ -1,8 +1,12 @@
 import { Grid, Typography, Box, Container } from "@mui/material";
-import AuctionProductCard from "../card/auction card/bidding_card";
-import { biddingItems } from "../data/bidding_data";
+import AuctionProductCard from "../card/auction card/AuctionCardContent";
+import { useAuctionProducts } from "../card/auction card/hook/useAuctionProducts";
 
 const BiddingSection = () => {
+  const biddingItems = useAuctionProducts().filter(
+    (product) => product?.auction?.status === "ending_soon"
+  );
+
   return (
     <Box
       sx={{
@@ -18,7 +22,8 @@ const BiddingSection = () => {
         {/* Heading */}
         <Typography
           variant="h4"
-          fontWeight={700}
+          fontWeight={800}
+          fontSize={{ xs: "1.6rem", sm:"1.8rem", md: "2.4rem" }}
           textAlign="center"
           mb={4}
         >

@@ -1,13 +1,24 @@
 import { Box, Typography, Grid } from "@mui/material";
-import AuctionProductCard from "../card/auction card/bidding_card";
-import liveAuctionData from "../data/live_auction_data";
+import AuctionProductCard from "../card/auction card/AuctionProductCard";
+import { useAuctionProducts } from "../card/auction card/hook/useAuctionProducts";
 
 const LiveAuctionSection = () => {
+  // ✅ FILTER ONLY LIVE AUCTIONS
+  const liveAuctions = useAuctionProducts().filter(
+    (product) => product?.auction?.status === "live"
+  );
+
+  // ✅ DO NOT RENDER SECTION IF NO LIVE AUCTIONS
+  if (liveAuctions.length === 0) return null;
+
   return (
-    <Box sx={{ py: 8,  background: "#fff" }}>
+    <Box sx={{ py: { xs: 4, md: 6 }, background: "#ece8e8" }}>
       {/* Heading */}
       <Box sx={{ textAlign: "center", mb: 6 }}>
-        <Typography fontSize={{ xs: "1.8rem", md: "2.4rem" }} fontWeight={800}>
+        <Typography
+          fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
+          fontWeight={800}
+        >
           🔥 Live Auctions
         </Typography>
         <Typography color="text.secondary" mt={1}>
@@ -17,7 +28,7 @@ const LiveAuctionSection = () => {
 
       {/* Cards */}
       <Grid container spacing={4} justifyContent="center">
-        {liveAuctionData.map((product) => (
+        {liveAuctions.map((product) => (
           <Grid item key={product.id}>
             <AuctionProductCard product={product} />
           </Grid>
