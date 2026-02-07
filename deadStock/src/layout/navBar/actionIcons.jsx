@@ -13,9 +13,7 @@ import {
   Divider,
 } from "@mui/material";
 import {
-  Search,
   ShoppingCart,
-  User,
   Menu as MenuIcon,
   LogOut,
   Store,
@@ -159,7 +157,7 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
 
           <Menu
             anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
+            open={Boolean(anchorEl) && !isMobile}
             onClose={handleUserMenuClose}
             disableScrollLock
             anchorOrigin={{
@@ -187,27 +185,12 @@ const ActionIcons = ({ isMobile, onMenuClick, onCartClick }) => {
               <Typography variant="subtitle2" fontWeight="bold">
                 {userData?.fullName || user.email}
               </Typography>
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0.5,
-                  mt: 0.5,
-                }}
-              >
-                {userData?.role === "seller" ? (
-                  <>
-                    <Store size={12} />
-                    Seller Account
-                  </>
-                ) : (
-                  <>
-                    <ShoppingBag size={12} />
-                    Buyer Account
-                  </>
-                )}
+              <Typography variant="caption">
+                {userData?.role === "both"
+                  ? "Seller & Buyer"
+                  : userData?.role === "seller"
+                    ? "Seller "
+                    : "Buyer "}
               </Typography>
             </MenuItem>
 

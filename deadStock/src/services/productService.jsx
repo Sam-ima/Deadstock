@@ -20,6 +20,56 @@ const productsRef = collection(db, "products");
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
+export const toggleBidding = async (product, auctionConfig) => {
+  const productRef = doc(db, "products", product.id);
+
+  // Enable auction (first time)
+  if (product.saleType !== "auction") {
+    if (!auctionConfig?.durationHours || !auctionConfig?.minBidIncrement) {
+      throw new Error("Duration and minimum increment required to start auction.");
+    }
+
+    const now = new Date();
+    const startTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    const endTime = new Date(
+      startTime.getTime() + auctionConfig.durationHours * 60 * 60 * 1000
+    );
+
+    const startingBid = product.currentPrice || product.basePrice;
+
+    const auction = {
+      status: "scheduled",
+      startTime,
+      endTime,
+      durationHours: auctionConfig.durationHours,
+      minBidIncrement: auctionConfig.minBidIncrement,
+      startingBid,
+      highestBid: startingBid,
+      highestBidderId: null,
+      bidCount: 0,
+      createdAt: serverTimestamp(),
+      winnerId: null,
+      paymentDeadline: null,
+    };
+
+    await updateDoc(productRef, {
+      saleType: "auction",
+      isDepreciating: false,
+      auction,
+      updatedAt: serverTimestamp(),
+    });
+    return;
+  }
+
+  // Disable auction → back to direct sale
+  await updateDoc(productRef, {
+    saleType: "direct",
+    isDepreciating: true,
+    updatedAt: serverTimestamp(),
+  });
+};
+
+
 /* CREATE Product with dynamic fields - SAFE VERSION */
 export const addProduct = async (productData, userId, userType) => {
   if (!productData || typeof productData !== "object") {
@@ -62,13 +112,12 @@ export const addProduct = async (productData, userId, userType) => {
       const startTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
       // ⌛ Seller-defined duration (default 2 hours)
-      const durationHours =
-        Number.isFinite(Number(productData.auctionDuration))
-          ? Number(productData.auctionDuration)
-          : 2;
+      const durationHours = Number.isFinite(Number(productData.auctionDuration))
+        ? Number(productData.auctionDuration)
+        : 2;
 
       const endTime = new Date(
-        startTime.getTime() + durationHours * 60 * 60 * 1000
+        startTime.getTime() + durationHours * 60 * 60 * 1000,
       );
       // ✅ Use currentPrice (depreciated price if direct sale was active)
       const startingBid = productData.currentPrice || basePrice;
@@ -87,7 +136,7 @@ export const addProduct = async (productData, userId, userType) => {
         createdAt: serverTimestamp(),
 
         winnerId: null,
-        paymentDeadline: null
+        paymentDeadline: null,
       };
     }
     /* ------------------------------------------------ */
@@ -161,7 +210,7 @@ export const syncAuctionStatus = async (product) => {
     
     await updateDoc(productRef, {
       "auction.status": status,
-      updatedAt: serverTimestamp()
+      updatedAt: serverTimestamp(),
     });
   }
 };
@@ -207,7 +256,7 @@ const uploadProductImages = async (images, userId, productId = "") => {
 
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        { method: "POST", body: formData }
+        { method: "POST", body: formData },
       );
 
       const data = await response.json();
@@ -456,7 +505,7 @@ export const getProductsBySeller = async (sellerId, status = "active") => {
     let q = query(
       productsRef,
       where("sellerId", "==", sellerId),
-      where("status", "==", status)
+      where("status", "==", status),
     );
 
     const snapshot = await getDocs(q);
@@ -484,7 +533,7 @@ export const getProductsByCategory = async (categoryId, limit = 20) => {
       productsRef,
       where("categoryId", "==", categoryId),
       where("status", "==", "active"),
-      orderBy("createdAt", "desc")
+      orderBy("createdAt", "desc"),
     );
 
     if (limit) {
@@ -529,7 +578,7 @@ export const updateProductImages = async (productId, userId, newImages) => {
     const uploadedImages = await uploadProductImages(
       newImages,
       userId,
-      productId
+      productId,
     );
 
     // Get current product
@@ -556,7 +605,7 @@ export const removeProductImage = async (productId, imageIndex) => {
   try {
     const product = await getProductById(productId);
     const updatedImages = product.images.filter(
-      (_, index) => index !== imageIndex
+      (_, index) => index !== imageIndex,
     );
 
     await updateProduct(productId, {
