@@ -11,11 +11,11 @@ const FooterLinks = () => {
         Home
       </Link>
       <Link href="/auctions" underline="hover" color="inherit">
-        Live Auctions
+        Auction
       </Link>
-      <Link href="/upcoming" underline="hover" color="inherit">
+      {/* <Link href="/upcoming" underline="hover" color="inherit">
         Upcoming Auctions
-      </Link>
+      </Link> */}
       <Link href="/contact" underline="hover" color="inherit">
         Contact Us
       </Link>

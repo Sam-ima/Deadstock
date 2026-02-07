@@ -14,7 +14,7 @@ const AuctionsPage = () => {
       }}
     >
       <LiveAuctionSection />
-      <BiddingSection />
+      {/* <BiddingSection /> */}
       <UpcomingAuctions />
     </Box>
   );

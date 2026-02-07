@@ -10,7 +10,7 @@ const LiveAuctionSection = () => {
   );
 
   return (
-    <Box sx={{ width: "100%", backgroundColor: "#ffffff" }}>
+    <Box sx={{ width: "100%", backgroundColor: "#faf9f9ff" }}>
       <Box sx={{ py: { xs: 4, md: 6 } }}>
         <Container maxWidth="lg">
           {/* Heading */}

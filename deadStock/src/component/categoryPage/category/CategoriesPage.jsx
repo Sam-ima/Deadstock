@@ -39,20 +39,27 @@ const CategoriesPage = () => {
     ? subcategories[activeCategory.id] || []
     : [];
 
+  // ✅ FILTER ONLY DIRECT SALE PRODUCTS
   const filteredProducts = useMemo(() => {
     if (!activeCategory) return [];
 
     if (!activeSubcategory) {
-      return products.filter((p) => p.categoryId === activeCategory.id);
+      return products.filter(
+        (p) =>
+          p.saleType === "direct" &&
+          p.categoryId === activeCategory.id,
+      );
     }
 
     return products.filter(
       (p) =>
+        p.saleType === "direct" &&
         p.categoryId === activeCategory.id &&
         p.subcategoryId === activeSubcategory.id,
     );
   }, [products, activeCategory, activeSubcategory]);
 
+  // ✅ SEARCH ALSO LIMITED TO DIRECT SALE
   const searchedProducts = useMemo(() => {
     if (!query.trim()) return null;
 
@@ -60,11 +67,15 @@ const CategoriesPage = () => {
 
     return products.filter(
       (p) =>
-        p.title?.toLowerCase().includes(q) ||
-        p.name?.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q),
+        p.saleType === "direct" &&
+        (
+          p.title?.toLowerCase().includes(q) ||
+          p.name?.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q)
+        ),
     );
   }, [query, products]);
+
   const productsToShow = query.trim() ? searchedProducts : filteredProducts;
 
   const scroll = (direction) => {

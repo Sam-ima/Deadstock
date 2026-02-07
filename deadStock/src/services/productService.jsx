@@ -158,7 +158,7 @@ export const syncAuctionStatus = async (product) => {
 
   if (status !== product.auction.status) {
     const productRef = doc(db, "products", product.id);
-
+    
     await updateDoc(productRef, {
       "auction.status": status,
       updatedAt: serverTimestamp()
