@@ -2,9 +2,9 @@ import { Box, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-const HeroActions = () => {
-
-  const navigate=useNavigate();
+const HeroActions = ({ saleType }) => {
+  const navigate = useNavigate();
+  const isAuction = saleType === "auction";
 
   return (
     <Box
@@ -19,7 +19,9 @@ const HeroActions = () => {
       <Button
         variant="contained"
         endIcon={<ArrowForwardIcon />}
-        onClick={()=>navigate("/auctions")}
+        onClick={() =>
+          navigate(isAuction ? "/auctions" : "/category/electronics")
+        }
         sx={{
           background: "linear-gradient(135deg, #0b3d2e 0%, #145a43 100%)",
           color: "#fff",
@@ -28,16 +30,14 @@ const HeroActions = () => {
           borderRadius: "30px",
           textTransform: "capitalize",
           fontSize: "1rem",
-          cursor:"pointer",
           width: { xs: "100%", sm: "auto" },
           "&:hover": {
             background: "#101111ff",
           },
         }}
       >
-        View Bidding Products
+        {isAuction ? "View Bidding Products" : "Shop Products"}
       </Button>
-
     </Box>
   );
 };
