@@ -5,7 +5,7 @@ import CategoryHeaderChips from "./CategoryHeaderChips";
 
 const CategoryBanner = ({ category, products, activeSubcategory }) => {
   const bannerImage = getCategoryImage(category.name);
-
+  console.log("Banner image for category", category.name, ":", bannerImage);
   return (
     <Box sx={{ position: "relative", width: "100%", overflow: "hidden", mb: { xs: 2, sm: 3, md: 4 } }}>
       <Box
