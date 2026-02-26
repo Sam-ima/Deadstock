@@ -10,7 +10,7 @@ import {
 
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { syncAllAuctionStatuses } from "./services/auctionStatusScheduler.jsx";
+import { syncAllAuctionStatuses , fixEndedAuctions } from "./services/auctionStatusScheduler.jsx";
 
 // Context Providers
 import { CartProvider } from "./component/categoryPage/productDetail/CartContext.jsx";
@@ -69,6 +69,7 @@ function App() {
   useEffect(() => {
     // Run immediately
     syncAllAuctionStatuses();
+    fixEndedAuctions();
 
     // Run every 1 minute
     const interval = setInterval(() => {

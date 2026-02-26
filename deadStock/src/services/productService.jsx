@@ -201,18 +201,30 @@ export const addProduct = async (productData, userId, userType) => {
 };
 
 export const syncAuctionStatus = async (product) => {
-  if (product.saleType !== "auction" || !product.auction) return;
+  if (!product.auction) return;
 
   const status = resolveAuctionStatus(product);
 
+  const productRef = doc(db, "products", product.id);
+
+  const updateData = {};
+
+  // update auction status
   if (status !== product.auction.status) {
-    const productRef = doc(db, "products", product.id);
-    
-    await updateDoc(productRef, {
-      "auction.status": status,
-      updatedAt: serverTimestamp(),
-    });
+    updateData["auction.status"] = status;
   }
+
+  // ⭐ auction finished → convert sale type
+  if (status === "ended") {
+    updateData.saleType = "direct";
+    updateData.isDepreciating = true;
+  }
+
+  if (Object.keys(updateData).length === 0) return;
+
+  updateData.updatedAt = serverTimestamp();
+
+  await updateDoc(productRef, updateData);
 };
 
 export const resolveAuctionStatus = (product) => {

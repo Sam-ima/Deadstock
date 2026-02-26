@@ -49,6 +49,7 @@ export const syncAllAuctionStatuses = async () => {
       // ✅ REQUIREMENT: enable depreciation when auction ends
       if (newStatus === "ended") {
         updateData.isDepreciating = true;
+        updateData.saleType = "direct";
       }
 
       updates.push(updateDoc(productRef, updateData));
@@ -59,5 +60,29 @@ export const syncAllAuctionStatuses = async () => {
     console.log("Auction status sync completed");
   } catch (error) {
     console.error("Auction sync failed:", error);
+  }
+};
+
+export const fixEndedAuctions = async () => {
+  try {
+    const q = query(
+      productsRef,
+      where("saleType", "==", "auction"),
+      where("auction.status", "==", "ended")
+    );
+    const snapshot = await getDocs(q);
+
+    const updates = snapshot.docs.map((docSnap) =>
+      updateDoc(doc(db, "products", docSnap.id), {
+        saleType: "direct",
+        isDepreciating: true,
+        updatedAt: serverTimestamp(),
+      })
+    );
+
+    await Promise.all(updates);
+    console.log(`Fixed ${snapshot.docs.length} stuck auction(s)`);
+  } catch (error) {
+    console.error("Fix failed:", error);
   }
 };
