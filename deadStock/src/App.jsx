@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense , useEffect} from "react";
 import "./global.css";
 
 import {
@@ -10,6 +10,7 @@ import {
 
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { syncAllAuctionStatuses } from "./services/auctionStatusScheduler.jsx";
 
 // Context Providers
 import { CartProvider } from "./component/categoryPage/productDetail/CartContext.jsx";
@@ -65,6 +66,17 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  useEffect(() => {
+    // Run immediately
+    syncAllAuctionStatuses();
+
+    // Run every 1 minute
+    const interval = setInterval(() => {
+      syncAllAuctionStatuses();
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <AuthProvider>
       <SearchProvider>
