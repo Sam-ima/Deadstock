@@ -18,13 +18,13 @@ export const placeBid = async ({
     const productSnap = await tx.get(productRef);
 
     if (!productSnap.exists()) {
-      throw "Product not found";
+      throw new Error("Product not found");
     }
 
     const product = productSnap.data();
 
     if (product.saleType !== "auction") {
-      throw "Not an auction";
+      throw new Error("Not an auction");
     }
 
     // Auction must be live
@@ -33,7 +33,7 @@ export const placeBid = async ({
     const end = product.auction.endTime.toDate();
 
     if (now < start || now > end) {
-      throw "Auction not live";
+      throw new Error("Auction not live");
     }
 
     const minBid =
@@ -41,10 +41,10 @@ export const placeBid = async ({
       product.auction.minBidIncrement;
 
     if (bidAmount < minBid) {
-      throw "Bid too low";
+      throw new Error("Bid too low");
     }
 
-    // Update auction data
+    // 🔥 Update auction data
     tx.update(productRef, {
       "auction.highestBid": bidAmount,
       "auction.highestBidderId": bidderId,
@@ -52,8 +52,10 @@ export const placeBid = async ({
       updatedAt: serverTimestamp()
     });
 
-    // Record bid
-    tx.add(bidsRef, {
+    // ✅ FIX: Create new doc reference manually
+    const newBidRef = doc(bidsRef); // auto ID
+
+    tx.set(newBidRef, {
       productId,
       bidderId,
       bidAmount,
