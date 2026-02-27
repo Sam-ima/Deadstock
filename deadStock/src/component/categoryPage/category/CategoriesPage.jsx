@@ -6,6 +6,7 @@ import { useSearch } from "../../Searchbar/SearchContext";
 import { useCategories } from "../../../context/categoryContext";
 import { useProducts } from "../../../context/productContext";
 import { getCategoryIcon } from "./utils/categoryIcons";
+import { getCategoryColor } from "./categoryContent/CategoryImages";
 
 import CategoriesSidebar from "./CategoriesSidebar";
 import CategoryContent from "./CategoryContent";
@@ -25,7 +26,7 @@ const CategoriesPage = () => {
 
   const activeCategory = useMemo(
     () => categories.find((c) => c.slug === slug),
-    [categories, slug],
+    [categories, slug]
   );
 
   useEffect(() => {
@@ -47,7 +48,7 @@ const CategoriesPage = () => {
       return products.filter(
         (p) =>
           p.saleType === "direct" &&
-          p.categoryId === activeCategory.id,
+          p.categoryId === activeCategory.id
       );
     }
 
@@ -55,7 +56,7 @@ const CategoriesPage = () => {
       (p) =>
         p.saleType === "direct" &&
         p.categoryId === activeCategory.id &&
-        p.subcategoryId === activeSubcategory.id,
+        p.subcategoryId === activeSubcategory.id
     );
   }, [products, activeCategory, activeSubcategory]);
 
@@ -72,7 +73,7 @@ const CategoriesPage = () => {
           p.title?.toLowerCase().includes(q) ||
           p.name?.toLowerCase().includes(q) ||
           p.description?.toLowerCase().includes(q)
-        ),
+        )
     );
   }, [query, products]);
 
@@ -85,7 +86,9 @@ const CategoriesPage = () => {
       const newScrollLeft =
         container.scrollLeft +
         (direction === "left" ? -scrollAmount : scrollAmount);
+
       container.scrollTo({ left: newScrollLeft, behavior: "smooth" });
+
       setTimeout(updateArrowVisibility, 100);
     }
   };
@@ -95,13 +98,15 @@ const CategoriesPage = () => {
     if (container) {
       setShowLeftArrow(container.scrollLeft > 0);
       setShowRightArrow(
-        container.scrollLeft < container.scrollWidth - container.clientWidth,
+        container.scrollLeft <
+        container.scrollWidth - container.clientWidth
       );
     }
   };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
       {/* SLIDEABLE CATEGORIES BAR */}
       <Box
         sx={{
@@ -176,59 +181,73 @@ const CategoriesPage = () => {
             px: 2,
           }}
         >
-          {categories.map((category) => (
-            <Box
-              key={category.id}
-              onClick={() => navigate(`/category/${category.slug}`)}
-              sx={{
-                flex: "0 0 auto",
-                display: "flex",
-                alignItems: "center",
-                gap: 1.5,
-                px: { xs: 1, sm: 2, md: 2 },
-                py: { xs: 0.5, md: 0.8 },
-                borderRadius: "12px",
-                backgroundColor:
-                  category.slug === slug ? category.color + "15" : "white",
-                border:
-                  category.slug === slug
-                    ? `2px solid ${category.color}`
-                    : "1px solid #e0e0e0",
-                cursor: "pointer",
-                minWidth: 150,
-              }}
-            >
+          {categories.map((category) => {
+            const categoryColor = getCategoryColor(category.name);
+
+            return (
               <Box
+                key={category.id}
+                onClick={() => navigate(`/category/${category.slug}`)}
                 sx={{
-                  width: 36,
-                  height: 36,
-                  borderRadius: "50%",
+                  flex: "0 0 auto",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center",
+                  gap: 1.5,
+                  px: { xs: 1, sm: 2, md: 2 },
+                  py: { xs: 0.5, md: 0.8 },
+                  borderRadius: "12px",
                   backgroundColor:
-                    category.slug === slug ? category.color + "30" : "#f0f0f0",
-                  color: category.slug === slug ? category.color : "#666",
+                    category.slug === slug
+                      ? categoryColor + "15"
+                      : "white",
+                  border:
+                    category.slug === slug
+                      ? `2px solid ${categoryColor}`
+                      : "1px solid #e0e0e0",
+                  cursor: "pointer",
+                  minWidth: 150,
                 }}
               >
-                {getCategoryIcon(category)}
-              </Box>
+                <Box
+                  sx={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    backgroundColor:
+                      category.slug === slug
+                        ? categoryColor + "30"
+                        : "#f0f0f0",
+                    color:
+                      category.slug === slug
+                        ? categoryColor
+                        : "#666",
+                  }}
+                >
+                  {getCategoryIcon(category)}
+                </Box>
 
-              <Typography
-                fontWeight={600}
-                sx={{
-                  fontSize: { xs: "0.85rem", sm: "0.88rem", md: "0.9rem" },
-                  color:
-                    category.slug === slug ? category.color : "text.primary",
-                }}
-              >
-                {category.name}
-              </Typography>
-            </Box>
-          ))}
+                <Typography
+                  fontWeight={600}
+                  sx={{
+                    fontSize: { xs: "0.85rem", sm: "0.88rem", md: "0.9rem" },
+                    color:
+                      category.slug === slug
+                        ? categoryColor
+                        : "text.primary",
+                  }}
+                >
+                  {category.name}
+                </Typography>
+              </Box>
+            );
+          })}
         </Box>
       </Box>
 
+      {/* MAIN CONTENT */}
       <Box sx={{ display: "flex", flex: 1, minHeight: 0 }}>
         <CategoriesSidebar
           category={activeCategory}
