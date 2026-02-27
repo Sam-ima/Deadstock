@@ -15,7 +15,7 @@ const AuctionProductCard = ({ product }) => {
     <>
       <Card
         onClick={() =>
-          navigate(`/product/${product.id}/${makeSlug(product.name)}`)
+          navigate(`/auction/${product.id}/${makeSlug(product.name)}`)
         }
         sx={{
           width: 280,
