@@ -1,5 +1,5 @@
 // src/pages/product/components/tabs/SpecificationsTab.jsx
-import { Grid, Card, CardContent, Typography } from "@mui/material";
+import { Grid, Card, CardContent, Typography, capitalize } from "@mui/material";
 
 const SpecificationsTab = ({ product }) => (
   <Grid container spacing={2}>
@@ -9,14 +9,21 @@ const SpecificationsTab = ({ product }) => (
           <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
             <Typography
               variant="caption"
-              color="text.secondary"
-              sx={{ fontSize: { xs: "0.7rem", sm: "0.8rem" } }}
+              // color="text.secondary"
+              sx={{
+                fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                fontWeight:600,
+                textTransform: "capitalize"
+              }}
             >
               {key}
             </Typography>
             <Typography
               fontWeight={500}
-              sx={{ fontSize: { xs: "0.85rem", sm: "0.95rem" } }}
+              sx={{
+                fontSize: { xs: "0.85rem", sm: "0.95rem" },
+                textTransform: "capitalize"
+              }}
             >
               {value}
             </Typography>
