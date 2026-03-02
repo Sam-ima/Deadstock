@@ -19,7 +19,7 @@ const CategoryHeaderChips = ({ category, activeSubcategory, products }) => {
             fontSize: { xs: "12px", sm: "14px", md: "16px" },
           }}
         >
-          {activeSubcategory.name}
+          {activeSubcategory.name}  
         </Box>
         <Typography
           sx={{

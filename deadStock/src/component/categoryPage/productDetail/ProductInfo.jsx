@@ -32,6 +32,7 @@ const ProductInfo = ({ product, quantity, setQuantity, isAuction = false }) => {
             lg: "40px",
             xl: "48px",
           },
+          textTransform:"capitalize"
         }}
       >
         {product.name}

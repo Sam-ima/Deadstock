@@ -73,6 +73,7 @@ const CategoriesSidebar = ({
               "&:hover": {
                 backgroundColor: "#F1F8E9",
               },
+              textTransform:"capitalize"
             }}
           >
             {sub.name}

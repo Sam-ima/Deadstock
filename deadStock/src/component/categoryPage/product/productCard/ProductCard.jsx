@@ -69,6 +69,7 @@ const ProductCard = ({ product }) => {
           fontWeight={600}
           sx={{
             lineHeight: 1.3,
+            textTransform:"capitalize",
             fontSize: { xs: "16px", md: "18px", lg: "20px" },
             height: { xs: 28, sm: 30, md: 32 },
             overflow: "hidden",
