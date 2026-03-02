@@ -3,14 +3,10 @@ import { Box, Typography, Stack, Paper } from "@mui/material";
 
 const pad = (n) => String(n).padStart(2, "0");
 
-/**
- * Safely converts a Firestore Timestamp OR a plain JS Date/string to a JS Date.
- * Firestore Timestamps have a .toDate() method.
- */
 const toJsDate = (value) => {
   if (!value) return null;
-  if (typeof value.toDate === "function") return value.toDate(); // Firestore Timestamp
-  return new Date(value); // fallback
+  if (typeof value.toDate === "function") return value.toDate();
+  return new Date(value);
 };
 
 const getTimeLeft = (targetDate) => {
@@ -67,11 +63,10 @@ const Colon = () => (
   </Typography>
 );
 
-const AuctionCountdown = ({ product, status }) => {
-  // Pick the target date based on status
-  const rawTarget =
-    status === "upcoming" ? product?.startTime : product?.endTime;
-
+// Now receives `auction` (the sub-object) instead of `product`
+const AuctionCountdown = ({ auction, status }) => {
+  // "upcoming" → count down to startTime; "live" → count down to endTime
+  const rawTarget = status === "upcoming" ? auction?.startTime : auction?.endTime;
   const targetDate = toJsDate(rawTarget);
 
   const [timeLeft, setTimeLeft] = useState(() => getTimeLeft(targetDate));
@@ -94,8 +89,7 @@ const AuctionCountdown = ({ product, status }) => {
     );
   }
 
-  const label =
-    status === "upcoming" ? "Auction starts in" : "⏱ Auction ends in";
+  const label = status === "upcoming" ? "Auction starts in" : "⏱ Auction ends in";
   const labelColor = status === "live" ? "error.main" : "warning.dark";
 
   return (

@@ -20,7 +20,7 @@ const statusConfig = {
       />
     ),
   },
-  upcoming: {
+  scheduled: {
     label: "Upcoming Auction",
     color: "warning",
     icon: <AccessTimeIcon sx={{ fontSize: 14 }} />,

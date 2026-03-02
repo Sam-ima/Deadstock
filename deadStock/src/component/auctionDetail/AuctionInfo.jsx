@@ -1,59 +1,54 @@
-import { Box, Typography, Stack, Rating, Divider } from "@mui/material";
-import AuctionStatusBadge from "./AuctionStatusBadge";
+import { Box, Typography, Divider, Chip } from "@mui/material";
 import AuctionCountdown from "./AuctionCountDown";
 import AuctionBidSection from "./AuctionBidSection";
 import AuctionMetaInfo from "./AuctionMetaInfo";
 
-/**
- * All auction fields live at the ROOT of the product document:
- *   product.status        → "live" | "upcoming" | "ended"
- *   product.startTime     → Firestore Timestamp
- *   product.endTime       → Firestore Timestamp
- *   product.highestBid    → number
- *   product.startingBid   → number
- *   product.bidCount      → number
- *   product.minBidIncrement → number
- *   product.floorPrice    → number
- *   product.paymentDeadline → null | Timestamp
- *   product.highestBidderId → string
- *   product.winnerId      → null | string
- */
+const toJsDate = (value) => {
+  if (!value) return null;
+  if (typeof value.toDate === "function") return value.toDate();
+  return new Date(value);
+};
+
+const getAuctionStatus = (product) => {
+  const now = Date.now();
+  const start = toJsDate(product?.auction?.startTime)?.getTime();
+  const end = toJsDate(product?.auction?.endTime)?.getTime();
+  if (!start || !end) return "ended";
+  if (now < start) return "upcoming";
+  if (now >= start && now < end) return "live";
+  return "ended";
+};
+
 const AuctionInfo = ({ product }) => {
-  const status = product?.status; // "live" | "upcoming" | "ended"
+  if (!product?.auction) return null;
+
+  const status = getAuctionStatus(product);
 
   return (
-    <Box
-      flex={1}
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        p: { xs: 2, sm: 3, md: 4 },
-      }}
-    >
-      <AuctionStatusBadge status={status} />
-
-      <Typography
-        variant="h5"
-        fontWeight="bold"
-        sx={{ fontSize: { xs: "22px", sm: "26px", md: "32px", lg: "38px" }, lineHeight: 1.2 }}
-      >
-        {product.name}
+    <Box sx={{ flex: 1, maxWidth: 480, width: "100%" }}>
+      <Typography variant="h5" fontWeight="bold" mb={1}>
+        {product?.name}
       </Typography>
 
-      <Stack direction="row" spacing={1} alignItems="center">
-        <Rating value={product.rating || 0} precision={0.5} readOnly size="small" />
-        <Typography color="text.secondary" variant="body2">
-          {product.rating || 0} ({product.reviews || 0} reviews) • {product.sold || 0} sold
-        </Typography>
-      </Stack>
+      <Chip
+        label={status.toUpperCase()}
+        color={
+          status === "live" ? "error" : status === "upcoming" ? "warning" : "default"
+        }
+        size="small"
+        sx={{ fontWeight: 600, mb: 2 }}
+      />
 
-      <Divider />
-      <AuctionCountdown product={product} status={status} />
-      <Divider />
-      <AuctionBidSection product={product} status={status} />
-      <Divider />
-      <AuctionMetaInfo product={product} />
+      {/* Pass the auction sub-object so children read from the right place */}
+      <AuctionCountdown auction={product.auction} status={status} />
+
+      <Divider sx={{ my: 3 }} />
+
+      <AuctionBidSection auction={product.auction} status={status} />
+
+      <Divider sx={{ my: 3 }} />
+
+      <AuctionMetaInfo product={product} auction={product.auction} />
     </Box>
   );
 };

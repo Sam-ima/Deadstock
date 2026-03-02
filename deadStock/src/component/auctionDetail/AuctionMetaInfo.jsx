@@ -5,9 +5,6 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import PriceCheckIcon from "@mui/icons-material/PriceCheck";
 import PaymentIcon from "@mui/icons-material/Payment";
 
-/**
- * Safely converts Firestore Timestamp or string/Date to a JS Date.
- */
 const toJsDate = (value) => {
   if (!value) return null;
   if (typeof value.toDate === "function") return value.toDate();
@@ -18,12 +15,8 @@ const formatDateTime = (value) => {
   const date = toJsDate(value);
   if (!date || isNaN(date)) return "N/A";
   return date.toLocaleString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
+    month: "short", day: "numeric", year: "numeric",
+    hour: "2-digit", minute: "2-digit", hour12: true,
   });
 };
 
@@ -34,47 +27,28 @@ const MetaRow = ({ icon, label, value, highlight }) => (
     </Box>
     <Box>
       <Typography
-        variant="caption"
-        color="text.secondary"
+        variant="caption" color="text.secondary"
         sx={{ textTransform: "uppercase", letterSpacing: 0.5, fontSize: "0.68rem", display: "block" }}
       >
         {label}
       </Typography>
-      <Typography
-        variant="body2"
-        fontWeight={highlight ? 600 : 400}
-        color={highlight ? "error.main" : "text.primary"}
-      >
+      <Typography variant="body2" fontWeight={highlight ? 600 : 400} color={highlight ? "error.main" : "text.primary"}>
         {value}
       </Typography>
     </Box>
   </Stack>
 );
 
-/**
- * Reads from product root:
- *   product.startTime         → Firestore Timestamp
- *   product.endTime           → Firestore Timestamp
- *   product.paymentDeadline   → null | Timestamp
- *   product.floorPrice        → number
- *   product.stock             → number
- *   product.availableStock    → number
- */
-const AuctionMetaInfo = ({ product }) => {
+// Now receives both `product` (for stock/floorPrice) and `auction` (for times)
+const AuctionMetaInfo = ({ product, auction }) => {
   const stock = product?.stock ?? product?.availableStock ?? 0;
+  const floorPrice = auction?.floorPrice ?? product?.floorPrice;
 
   return (
     <Box>
       <Typography
-        variant="body2"
-        fontWeight={600}
-        mb={1.5}
-        sx={{
-          textTransform: "uppercase",
-          letterSpacing: 0.5,
-          fontSize: "0.75rem",
-          color: "text.secondary",
-        }}
+        variant="body2" fontWeight={600} mb={1.5}
+        sx={{ textTransform: "uppercase", letterSpacing: 0.5, fontSize: "0.75rem", color: "text.secondary" }}
       >
         Auction Details
       </Typography>
@@ -83,28 +57,28 @@ const AuctionMetaInfo = ({ product }) => {
         <MetaRow
           icon={<EventIcon fontSize="small" />}
           label="Start Time"
-          value={formatDateTime(product?.startTime)}
+          value={formatDateTime(auction?.startTime)}
         />
         <MetaRow
           icon={<EventAvailableIcon fontSize="small" />}
           label="End Time"
-          value={formatDateTime(product?.endTime)}
+          value={formatDateTime(auction?.endTime)}
           highlight
         />
-        {product?.paymentDeadline && (
+        {auction?.paymentDeadline && (
           <MetaRow
             icon={<PaymentIcon fontSize="small" />}
             label="Payment Deadline"
-            value={formatDateTime(product.paymentDeadline)}
+            value={formatDateTime(auction.paymentDeadline)}
           />
         )}
-        {product?.floorPrice != null && (
+        {/* {floorPrice != null && (
           <MetaRow
             icon={<PriceCheckIcon fontSize="small" />}
             label="Floor / Reserve Price"
-            value={`Rs.${product.floorPrice}`}
+            value={`Rs.${floorPrice}`}
           />
-        )}
+        )} */}
         <MetaRow
           icon={<InventoryIcon fontSize="small" />}
           label="Stock Available"
