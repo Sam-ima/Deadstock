@@ -32,6 +32,7 @@ const CATEGORY_IMAGES = {
 ========================= */
 const CATEGORY_COLORS = {
   electronics: "#2196F3",
+  arts: "#123456",
   automotive: "#9C27B0",
   "book and media": "#607D8B",
   collectibles: "#ff9800",
@@ -50,18 +51,69 @@ const FALLBACK_IMAGES = [fallback1, fallback2];
 const FALLBACK_COLOR = "#9e9e9e";
 
 /* =========================
+   NORMALIZE STRING
+========================= */
+const normalizeString = (str = "") => {
+  return str
+    .toLowerCase()
+    .replace(/&/g, "and")          // convert & → and
+    .replace(/[^a-z0-9\s]/g, "")   // remove special chars
+    .trim();
+};
+
+/* =========================
+   WORD-BASED MATCH HELPER
+========================= */
+const findBestMatchKey = (name = "") => {
+  const normalizedInput = normalizeString(name);
+
+  if (!normalizedInput) return null;
+
+  const inputWords = normalizedInput.split(" ");
+
+  const keys = Object.keys(CATEGORY_IMAGES);
+
+  for (let key of keys) {
+    const normalizedKey = normalizeString(key);
+    const keyWords = normalizedKey.split(" ");
+
+    // If ANY word matches
+    const hasMatch = inputWords.some(word =>
+      keyWords.includes(word)
+    );
+
+    if (hasMatch) {
+      return key;
+    }
+  }
+
+  return null;
+};
+
+/* =========================
    IMAGE HELPER
 ========================= */
 export const getCategoryImage = (name = "") => {
-  const key = name.toLowerCase().trim();
-  if (CATEGORY_IMAGES[key]) return CATEGORY_IMAGES[key];
-  return FALLBACK_IMAGES[Math.floor(Math.random() * FALLBACK_IMAGES.length)];
+  const matchedKey = findBestMatchKey(name);
+
+  if (matchedKey && CATEGORY_IMAGES[matchedKey]) {
+    return CATEGORY_IMAGES[matchedKey];
+  }
+
+  return FALLBACK_IMAGES[
+    Math.floor(Math.random() * FALLBACK_IMAGES.length)
+  ];
 };
 
 /* =========================
    COLOR HELPER
 ========================= */
 export const getCategoryColor = (name = "") => {
-  const key = name.toLowerCase().trim();
-  return CATEGORY_COLORS[key] || FALLBACK_COLOR;
+  const matchedKey = findBestMatchKey(name);
+
+  if (matchedKey && CATEGORY_COLORS[matchedKey]) {
+    return CATEGORY_COLORS[matchedKey];
+  }
+
+  return FALLBACK_COLOR;
 };
