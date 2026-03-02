@@ -10,75 +10,6 @@ import { db } from "../../../../../firebase/firebase";
 import ReviewCard from "./ReviewCard";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 
-// /* ── Rating summary bar ── */
-// const RatingSummary = ({ reviews }) => {
-//   if (!reviews.length) return null;
-
-//   const avg = reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-//   const counts = [5, 4, 3, 2, 1].map((star) => ({
-//     star,
-//     count: reviews.filter((r) => r.rating === star).length,
-//   }));
-
-//   return (
-//     <Box
-//       sx={{
-//         bgcolor: "grey.50",
-//         border: "1px solid",
-//         borderColor: "grey.200",
-//         borderRadius: 3,
-//         p: 3,
-//         mb: 3,
-//       }}
-//     >
-//       <Stack direction={{ xs: "column", sm: "row" }} spacing={4} alignItems="center">
-//         {/* Average score */}
-//         <Box textAlign="center" sx={{ minWidth: 100 }}>
-//           <Typography variant="h2" fontWeight={800} lineHeight={1}>
-//             {avg.toFixed(1)}
-//           </Typography>
-//           <Rating value={avg} readOnly precision={0.1} size="small" sx={{ mt: 0.5 }} />
-//           <Typography variant="caption" color="text.secondary">
-//             {reviews.length} review{reviews.length !== 1 ? "s" : ""}
-//           </Typography>
-//         </Box>
-
-//         <Divider orientation="vertical" flexItem sx={{ display: { xs: "none", sm: "block" } }} />
-
-//         {/* Per-star bars */}
-//         <Stack spacing={0.8} sx={{ flex: 1, width: "100%" }}>
-//           {counts.map(({ star, count }) => (
-//             <Stack key={star} direction="row" alignItems="center" spacing={1.5}>
-//               <Typography variant="caption" fontWeight={600} sx={{ minWidth: 10 }}>
-//                 {star}
-//               </Typography>
-//               <LinearProgress
-//                 variant="determinate"
-//                 value={reviews.length ? (count / reviews.length) * 100 : 0}
-//                 sx={{
-//                   flex: 1,
-//                   height: 8,
-//                   borderRadius: 4,
-//                   bgcolor: "grey.200",
-//                   "& .MuiLinearProgress-bar": {
-//                     borderRadius: 4,
-//                     bgcolor:
-//                       star >= 4 ? "success.main" :
-//                       star === 3 ? "warning.main" : "error.main",
-//                   },
-//                 }}
-//               />
-//               <Typography variant="caption" color="text.secondary" sx={{ minWidth: 16 }}>
-//                 {count}
-//               </Typography>
-//             </Stack>
-//           ))}
-//         </Stack>
-//       </Stack>
-//     </Box>
-//   );
-// };
-
 /* ── Main list ── */
 const ReviewList = ({ productId, onWriteReview }) => {
   const [reviews, setReviews]       = useState([]);
@@ -177,7 +108,6 @@ const ReviewList = ({ productId, onWriteReview }) => {
 
   return (
     <Box>
-      {/* <RatingSummary reviews={reviews} /> */}
 
       {reviews.length === 0 ? (
         <Box textAlign="center" py={6}>

@@ -1,7 +1,16 @@
 import {
-  Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, Rating, TextField, Stack, Typography, Box,
-  LinearProgress, IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Rating,
+  TextField,
+  Stack,
+  Typography,
+  Box,
+  LinearProgress,
+  IconButton,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star";
@@ -29,6 +38,12 @@ const ReviewDialog = ({ open, onClose, product }) => {
   const activeRating = hover !== -1 ? hover : rating;
   const charLimit = 500;
 
+  const getRatingLabel = (value) => {
+    if (!value) return "";
+    const rounded = Math.floor(value); // 3.5 → 3
+    return RATING_LABELS[rounded] || "";
+  };
+
   const handleClose = () => {
     if (submitting) return;
     setRating(0);
@@ -52,10 +67,11 @@ const ReviewDialog = ({ open, onClose, product }) => {
         productId: product.id,
         userId: user.uid,
         userName: user.displayName || user.name || user.email,
-        rating,
+        rating, // now supports decimals (e.g. 3.5)
         comment: comment.trim(),
         createdAt: serverTimestamp(),
       });
+
       handleClose();
     } catch (err) {
       console.error("Error submitting review:", err.message);
@@ -90,24 +106,35 @@ const ReviewDialog = ({ open, onClose, product }) => {
             <Typography variant="body2" fontWeight={600} mb={1}>
               Your Rating <span style={{ color: "red" }}>*</span>
             </Typography>
+
             <Stack direction="row" alignItems="center" spacing={2}>
               <Rating
                 value={rating}
-                onChange={(_, v) => { setRating(v); setError(""); }}
+                precision={0.5}   // ✅ Allows 0.5 ratings
+                onChange={(_, v) => {
+                  setRating(v);
+                  setError("");
+                }}
                 onChangeActive={(_, v) => setHover(v)}
                 size="large"
-                emptyIcon={<StarIcon style={{ opacity: 0.35 }} fontSize="inherit" />}
+                emptyIcon={
+                  <StarIcon style={{ opacity: 0.35 }} fontSize="inherit" />
+                }
               />
+
               {activeRating > 0 && (
                 <Typography
                   variant="body2"
                   fontWeight={600}
                   color={
-                    activeRating >= 4 ? "success.main" :
-                    activeRating >= 3 ? "warning.main" : "error.main"
+                    activeRating >= 4
+                      ? "success.main"
+                      : activeRating >= 3
+                      ? "warning.main"
+                      : "error.main"
                   }
                 >
-                  {RATING_LABELS[activeRating]}
+                  {activeRating} {getRatingLabel(activeRating)}
                 </Typography>
               )}
             </Stack>
@@ -133,7 +160,14 @@ const ReviewDialog = ({ open, onClose, product }) => {
               error={!!error && !comment.trim()}
             />
             <Stack direction="row" justifyContent="flex-end" mt={0.5}>
-              <Typography variant="caption" color={comment.length > charLimit * 0.9 ? "warning.main" : "text.disabled"}>
+              <Typography
+                variant="caption"
+                color={
+                  comment.length > charLimit * 0.9
+                    ? "warning.main"
+                    : "text.disabled"
+                }
+              >
                 {comment.length}/{charLimit}
               </Typography>
             </Stack>
