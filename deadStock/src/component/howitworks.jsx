@@ -24,7 +24,7 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <Box sx={{ py: { xs: 3, sm: 4, md: 5 }, backgroundColor: "#f3f5f7ff" }}>
+    <Box sx={{ py: { xs: 3, sm: 4, md: 5 }, backgroundColor: "#faf9f9ff" }}>
       <Typography
         variant="h4"
         fontWeight={700}

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense , useEffect} from "react";
 import "./global.css";
 
 import {
@@ -10,6 +10,7 @@ import {
 
 import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { syncAllAuctionStatuses , fixEndedAuctions } from "./services/auctionStatusScheduler.jsx";
 
 // Context Providers
 import { CartProvider } from "./component/categoryPage/productDetail/CartContext.jsx";
@@ -29,7 +30,7 @@ const AuctionsPage = lazy(() => import("./pages/AuctionPage.jsx"));
 const ProfilePage = lazy(() => import("./pages/profilePage"));
 const SellerProfilePage = lazy(() => import("./pages/sellerProfilePage.jsx"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
-const AuctionDetailPage = lazy(() => import("./pages/auctionDetailPage.jsx"));
+const AuctionDetailPage = lazy(() => import("./pages/AuctionDetailPage.jsx"));
 const CheckoutPage = lazy(() => import("./pages/checkout.page.jsx"));
 
 const ProductDescriptionPage = lazy(
@@ -55,7 +56,7 @@ const router = createBrowserRouter(
       <Route path="/category" element={<CategoryPage />} />
       <Route path="/category/:slug" element={<CategoryPage />} />
       <Route path="/product/:slug" element={<ProductDescriptionPage />} />
-      <Route path="/product/:id/:title" element={<AuctionDetailPage />} />
+      <Route path="/auction/:id/:title" element={<AuctionDetailPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
@@ -65,6 +66,18 @@ const router = createBrowserRouter(
 );
 
 function App() {
+  useEffect(() => {
+    // Run immediately
+    syncAllAuctionStatuses();
+    fixEndedAuctions();
+
+    // Run every 1 minute
+    const interval = setInterval(() => {
+      syncAllAuctionStatuses();
+    }, 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, []);
   return (
     <AuthProvider>
       <SearchProvider>

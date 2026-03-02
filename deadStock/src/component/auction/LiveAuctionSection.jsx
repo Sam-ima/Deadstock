@@ -1,13 +1,21 @@
 import { Box, Typography, Grid, Container } from "@mui/material";
 import AuctionProductCard from "../card/auctionCard/AuctionProductCard";
 import { useAuctionProducts } from "../card/auctionCard/hook/useAuctionProducts";
+import { useSearch } from "../Searchbar/SearchContext";
 
 const LiveAuctionSection = () => {
+  const { query } = useSearch();
   const { products, loading } = useAuctionProducts();
 
-  const liveAuctions = products.filter(
-    (product) => product?.auction?.status === "live"
-  );
+  const liveAuctions = products.filter((product) => {
+    const isLive = product?.auction?.status === "live";
+
+    const searchText = `${product?.name || ""}`.toLowerCase();
+
+    const matchesSearch = searchText.includes(query?.toLowerCase().trim());
+
+    return isLive && matchesSearch;
+  });
 
   return (
     <Box sx={{ width: "100%", backgroundColor: "#faf9f9ff" }}>
@@ -16,8 +24,19 @@ const LiveAuctionSection = () => {
           {/* Heading */}
           <Box sx={{ textAlign: "center", mb: 6 }}>
             <Typography
-              fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
-              fontWeight={800}
+              fontSize={{
+                xs: "24px", // mobile
+                sm: "28px", // small tablets
+                md: "32px", // tablets / small laptop
+                lg: "40px", // desktop
+                xl: "48px", // large screens
+              }}
+              sx={{
+                lineHeight: 1.2,
+                fontWeight: 800,
+                mb: 5,
+                textAlign: "center",
+              }}
             >
               🔥 Live Auctions
             </Typography>

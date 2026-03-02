@@ -1,7 +1,10 @@
 // src/pages/categories/components/CategoryHeaderChips.jsx
 import { Box, Typography } from "@mui/material";
+import { getCategoryColor } from "./CategoryImages";
 
 const CategoryHeaderChips = ({ category, activeSubcategory, products }) => {
+  const categoryColor = getCategoryColor(category?.name);
+
   if (activeSubcategory) {
     return (
       <>
@@ -10,13 +13,13 @@ const CategoryHeaderChips = ({ category, activeSubcategory, products }) => {
             px: 3,
             py: 1,
             borderRadius: "20px",
-            backgroundColor: category.color,
+            backgroundColor: categoryColor,
             color: "white",
             fontWeight: 700,
             fontSize: { xs: "12px", sm: "14px", md: "16px" },
           }}
         >
-          {activeSubcategory.name}
+          {activeSubcategory.name}  
         </Box>
         <Typography
           sx={{
@@ -37,7 +40,7 @@ const CategoryHeaderChips = ({ category, activeSubcategory, products }) => {
         px: 4,
         py: 1.5,
         borderRadius: "20px",
-        backgroundColor: category.color,
+        backgroundColor: categoryColor,
         color: "white",
         fontWeight: 700,
         fontSize: { xs: "12px", sm: "14px", md: "16px" },

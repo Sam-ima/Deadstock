@@ -11,6 +11,7 @@ import {
   Alert,
   Paper
 } from "@mui/material";
+
 import {
   DollarSign,
   TrendingDown,
@@ -229,7 +230,7 @@ const PricingStep = ({
         {/* 🆕 Auction Fields */}
         {formData.saleType === "auction" && (
           <>
-            <Grid item xs={12} md={6}>
+            {/* <Grid item xs={12} md={6}>
               <TextField
                 select
                 fullWidth
@@ -254,9 +255,8 @@ const PricingStep = ({
                 <option value={8}>8 Hours</option>
                 <option value={24}>24 Hours</option>
               </TextField>
-            </Grid>
-
-
+            </Grid> */}
+            
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth

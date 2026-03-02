@@ -7,28 +7,101 @@ import {
   Box,
   Button,
   Stack,
+  Divider,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
+// ⭐ NEW: import bid service
+import { placeBid } from "../../../services/bidService";
+
+// ⭐ NEW: import auth context (adjust path if needed)
+import { useAuth } from "../../../context/authContext/authContext";
+
 const BidDialog = ({ open, onClose, product }) => {
+  const auction = product?.auction;
+
   const [bidAmount, setBidAmount] = useState("");
+  const [error, setError] = useState("");
+
+  // ⭐ NEW: loading state
+  const [loading, setLoading] = useState(false);
+
+  // ⭐ NEW: get logged-in user
+  const { user } = useAuth();
+
+  const isLive = auction?.status === "live";
 
   const minBid =
-    product.auction.highestBid + product.auction.minBidIncrement;
+    auction?.highestBid + auction?.minBidIncrement;
 
   const numericBid = Number(bidAmount);
-  const isBidValid = bidAmount !== "" && numericBid >= minBid;
+  const isBidValid =
+    bidAmount !== "" &&
+    !isNaN(numericBid) &&
+    numericBid >= minBid;
 
-  const handleSubmit = () => {
+  useEffect(() => {
+    if (!open) {
+      setBidAmount("");
+      setError("");
+      setLoading(false); // ⭐ NEW
+    }
+  }, [open]);
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+
+    if (value < 0) return;
+
+    setBidAmount(value);
+
+    if (value !== "" && Number(value) < minBid) {
+      setError(`Minimum allowed bid is Rs. ${minBid}`);
+    } else {
+      setError("");
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!isLive) {
+      toast.error("Auction is not live yet.");
+      return;
+    }
+
+    if (!user?.uid) {
+      toast.error("Please login to place a bid.");
+      return;
+    }
+
     if (!isBidValid) return;
 
-    toast.success("Bid Placed Successfully!");
-    // 👉 API / WebSocket logic here
+    try {
+      setLoading(true); // ⭐ NEW
 
-    setBidAmount("");
-    onClose();
+      // ⭐ NEW: call Firestore transaction
+      await placeBid({
+        productId: product.id,
+        bidderId: user.uid,
+        bidAmount: numericBid,
+      });
+
+      toast.success("Bid placed successfully!");
+      onClose();
+    } catch (err) {
+      console.error(err);
+
+      toast.error(
+        typeof err === "string"
+          ? err
+          : err.message || "Failed to place bid"
+      );
+    } finally {
+      setLoading(false); // ⭐ NEW
+    }
   };
+
+  if (!auction) return null;
 
   return (
     <Dialog
@@ -44,7 +117,7 @@ const BidDialog = ({ open, onClose, product }) => {
         },
       }}
     >
-      {/* Header */}
+      {/* 🟢 HEADER */}
       <Box
         sx={{
           px: 3,
@@ -53,47 +126,64 @@ const BidDialog = ({ open, onClose, product }) => {
           color: "#fff",
         }}
       >
-        <Typography fontSize="1.1rem" fontWeight={700}>
+        <Typography fontSize="1.15rem" fontWeight={700}>
           Place Your Bid
         </Typography>
+
         <Typography fontSize="0.8rem" sx={{ opacity: 0.9 }}>
-          Minimum bid: ${minBid}
+          {product.name}
         </Typography>
       </Box>
 
-      {/* Content */}
+      {/* 📦 CONTENT */}
       <DialogContent sx={{ px: 3, pt: 3 }}>
-        <Stack spacing={2}>
+        <Stack spacing={2.2}>
+          {/* Auction Info */}
           <Box
             sx={{
-              p: 1.5,
+              p: 2,
               borderRadius: 2,
               background: "rgba(25,70,56,0.08)",
             }}
           >
-            <Typography fontSize="0.8rem" color="text.secondary">
-              Current Highest Bid
-            </Typography>
-            <Typography fontWeight={700} fontSize="1.1rem">
-              ${product.highestBid}
-            </Typography>
+            <Stack spacing={0.5}>
+              <Typography fontSize="0.75rem" color="text.secondary">
+                Current Highest Bid
+              </Typography>
+              <Typography fontWeight={700} fontSize="1.1rem">
+                Rs. {auction.highestBid}
+              </Typography>
+
+              <Divider sx={{ my: 1 }} />
+
+              <Typography fontSize="0.75rem" color="text.secondary">
+                Minimum Increment
+              </Typography>
+              <Typography fontWeight={600}>
+                + Rs. {auction.minBidIncrement}
+              </Typography>
+            </Stack>
           </Box>
 
+          <Typography fontSize="0.8rem" color="text.secondary">
+            Available Stock: <b>{product.availableStock}</b>
+          </Typography>
+
+          {/* Bid Input */}
           <TextField
             autoFocus
             fullWidth
             type="number"
             label="Your Bid Amount"
             value={bidAmount}
-            onChange={(e) => setBidAmount(e.target.value)}
-            inputProps={{ min: minBid }}
-            placeholder={`Min $${minBid}`}
-            error={bidAmount !== "" && !isBidValid}
-            helperText={
-              bidAmount !== "" && !isBidValid
-                ? `Bid must be at least $${minBid}`
-                : " "
-            }
+            onChange={handleChange}
+            inputProps={{
+              min: minBid,
+              step: auction.minBidIncrement,
+            }}
+            placeholder={`Minimum Rs. ${minBid}`}
+            error={Boolean(error)}
+            helperText={error || " "}
             sx={{
               "& .MuiOutlinedInput-root": {
                 borderRadius: 2,
@@ -103,7 +193,7 @@ const BidDialog = ({ open, onClose, product }) => {
         </Stack>
       </DialogContent>
 
-      {/* Actions */}
+      {/* 🔘 ACTIONS */}
       <DialogActions sx={{ px: 3, pb: 3 }}>
         <Button
           onClick={onClose}
@@ -112,6 +202,7 @@ const BidDialog = ({ open, onClose, product }) => {
             borderRadius: 2,
             color: "text.secondary",
           }}
+          disabled={loading} // ⭐ NEW
         >
           Cancel
         </Button>
@@ -119,7 +210,7 @@ const BidDialog = ({ open, onClose, product }) => {
         <Button
           variant="contained"
           onClick={handleSubmit}
-          disabled={!isBidValid}
+          disabled={!isBidValid || !isLive || loading} // ⭐ NEW
           sx={{
             px: 3,
             borderRadius: 2,
@@ -131,9 +222,13 @@ const BidDialog = ({ open, onClose, product }) => {
             "&:hover": {
               background: "linear-gradient(135deg, #163b30, #276b4d)",
             },
+            "&:disabled": {
+              background: "#cfcfcf",
+              boxShadow: "none",
+            },
           }}
         >
-          Submit Bid
+          {loading ? "Placing..." : "Place Bid"} {/* ⭐ NEW */}
         </Button>
       </DialogActions>
     </Dialog>

@@ -8,7 +8,7 @@ const DescriptionTab = ({ product }) => {
       <Typography
         variant="h6"
         gutterBottom
-        sx={{ fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" } }}
+        sx={{ fontSize: { xs: "1rem", sm: "1.25rem", md: "1.5rem" },fontWeight:600, }}
       >
         Product Description
         {product.moq > 1 && (
