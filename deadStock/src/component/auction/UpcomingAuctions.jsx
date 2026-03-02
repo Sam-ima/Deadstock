@@ -1,43 +1,46 @@
 import { Box, Grid, Typography, Container } from "@mui/material";
 import AuctionProductCard from "../card/auctionCard/AuctionProductCard";
 import { useAuctionProducts } from "../card/auctionCard/hook/useAuctionProducts";
+import { useSearch } from "../Searchbar/SearchContext";
 
 const UpcomingAuctions = () => {
-  // ✅ Get products from Firestore
+  const { query } = useSearch();
   const { products, loading } = useAuctionProducts();
 
-  // ✅ Filter only scheduled auctions
-  const scheduledAuctions = products.filter(
-    (product) => product?.auction?.status === "scheduled"
-  );
-  console.log("upcom:", scheduledAuctions)
+  const scheduledAuctions = products.filter((product) => {
+    const isScheduled = product?.auction?.status === "scheduled";
+
+    const searchText = `${product?.name || ""}`.toLowerCase();
+
+    const matchesSearch = searchText.includes(
+      query?.toLowerCase().trim()
+    );
+
+    return isScheduled && matchesSearch;
+  });
 
   return (
     <Box sx={{ width: "100%", backgroundColor: "#ffffff" }}>
       <Box sx={{ py: { xs: 4, md: 6 } }}>
         <Container maxWidth="lg">
-          {/* Heading */}
           <Typography
-            // fontSize={{ xs: "1.6rem", sm: "1.8rem", md: "2.4rem" }}
             fontSize={{
-              xs: "24px",   // mobile
-              sm: "28px",   // small tablets
-              md: "32px",   // tablets / small laptop
-              lg: "40px",   // desktop
-              xl: "48px",   // large screens
+              xs: "24px",
+              sm: "28px",
+              md: "32px",
+              lg: "40px",
+              xl: "48px",
             }}
-
             sx={{
               lineHeight: 1.2,
               fontWeight: 800,
               mb: 5,
-              textAlign: "center"
+              textAlign: "center",
             }}
           >
             Upcoming Auctions
           </Typography>
 
-          {/* Content */}
           {loading ? (
             <Typography textAlign="center">
               Loading upcoming auctions...
@@ -52,7 +55,7 @@ const UpcomingAuctions = () => {
             </Grid>
           ) : (
             <Typography textAlign="center" color="text.secondary">
-              No upcoming auctions available
+              No upcoming auctions found
             </Typography>
           )}
         </Container>
