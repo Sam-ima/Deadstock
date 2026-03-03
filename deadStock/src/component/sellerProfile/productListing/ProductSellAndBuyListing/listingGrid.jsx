@@ -15,7 +15,7 @@ const ListingsGrid = ({
   productsMap = {},
 }) => {
   const theme = useTheme();
-  const {query}=useSearch()
+  const { query } = useSearch();
   const isXs = useMediaQuery(theme.breakpoints.down("sm"));
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
