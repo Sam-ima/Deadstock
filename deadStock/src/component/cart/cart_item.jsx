@@ -23,6 +23,7 @@ const CartDrawerItem = ({
   onDecrease,
   onRemove,
 }) => {
+  
   const qty = toNumber(item.quantity);
   const unitPrice = getUnitPrice(item);
   const total = getItemTotal(item);
