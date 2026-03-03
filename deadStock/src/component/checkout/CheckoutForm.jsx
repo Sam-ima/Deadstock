@@ -1,9 +1,4 @@
-import {
-  Paper,
-  Button,
-  Box,
-  CircularProgress,
-} from "@mui/material";
+import { Paper, Button, Box, CircularProgress } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { colors } from "./Constants";
 import ProgressBar from "./ProgressBar";
@@ -23,7 +18,9 @@ const CheckoutForm = ({
   onPayment,
   onPaymentMethodChange,
   deliveryDetails,
-  setDeliveryDetails,
+  // setDeliveryDetails,
+  errors,
+  handleChange,
 }) => {
   return (
     <Paper
@@ -49,7 +46,8 @@ const CheckoutForm = ({
         <ShippingStep
           user={user}
           deliveryDetails={deliveryDetails}
-          setDeliveryDetails={setDeliveryDetails}
+          errors={errors}
+          handleChange={handleChange}
         />
       )}
       {activeStep === 2 && (

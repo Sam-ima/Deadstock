@@ -6,16 +6,9 @@ import { SHIPPING_FIELDS } from "./shippingFields";
 import ShippingFieldGroup from "./ShippingFIeldGroup";
 
 const ShippingStep = React.memo(
-  ({ user, deliveryDetails, setDeliveryDetails, errors = {} }) => {
+  ({ user, deliveryDetails, errors = {}, handleChange }) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
-    const handleFieldChange = (fieldId, value) => {
-      setDeliveryDetails((prev) => ({
-        ...prev,
-        [fieldId]: value,
-      }));
-    };
 
     const fieldValues = {
       ...deliveryDetails,
@@ -51,7 +44,7 @@ const ShippingStep = React.memo(
             <ShippingFieldGroup
               fields={[SHIPPING_FIELDS.find((f) => f.id === "fullName")]}
               values={fieldValues}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               errors={errors}
               isRowItem={true}
             />
@@ -60,7 +53,7 @@ const ShippingStep = React.memo(
             <ShippingFieldGroup
               fields={[SHIPPING_FIELDS.find((f) => f.id === "email")]}
               values={fieldValues}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               errors={errors}
               isRowItem={true}
             />
@@ -79,7 +72,7 @@ const ShippingStep = React.memo(
             <ShippingFieldGroup
               fields={[SHIPPING_FIELDS.find((f) => f.id === "address")]}
               values={fieldValues}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               errors={errors}
               isRowItem={true}
             />
@@ -88,7 +81,7 @@ const ShippingStep = React.memo(
             <ShippingFieldGroup
               fields={[SHIPPING_FIELDS.find((f) => f.id === "phone")]}
               values={fieldValues}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               errors={errors}
               isRowItem={true}
             />
@@ -108,7 +101,7 @@ const ShippingStep = React.memo(
             <ShippingFieldGroup
               fields={[SHIPPING_FIELDS.find((f) => f.id === "city")]}
               values={fieldValues}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               errors={errors}
               isRowItem={true}
             />
@@ -117,7 +110,7 @@ const ShippingStep = React.memo(
             <ShippingFieldGroup
               fields={[SHIPPING_FIELDS.find((f) => f.id === "zip")]}
               values={fieldValues}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               errors={errors}
               isRowItem={true}
             />
@@ -136,7 +129,7 @@ const ShippingStep = React.memo(
             <ShippingFieldGroup
               fields={[SHIPPING_FIELDS.find((f) => f.id === "state")]}
               values={fieldValues}
-              onChange={handleFieldChange}
+              onChange={handleChange}
               errors={errors}
               isRowItem={true}
             />
