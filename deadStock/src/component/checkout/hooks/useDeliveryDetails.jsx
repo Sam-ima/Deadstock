@@ -6,8 +6,7 @@ const initialDeliveryDetails = {
   city: "",
   state: "",
   zip: "",
-  phone: "",
-  email: "", // ✅ added
+  phone: ""
 };
 
 const NEPAL_PHONE_REGEX = /^(?:\+977|977)?9[6-8]\d{8}$/;
@@ -37,7 +36,7 @@ export function useDeliveryDetails() {
   const validateField = (id, value) => {
     let message = "";
 
-    if (!value.trim()) {
+    if (!value) {
       message = "This field is required";
     }
 
@@ -45,7 +44,7 @@ export function useDeliveryDetails() {
       message = "Enter valid Nepal phone number";
     }
 
-    if (id === "email" && value && !isEmailValid(value)) {
+    if (id === "email"  && !isEmailValid(value)) {
       message = "Enter valid email address";
     }
 
@@ -74,7 +73,7 @@ export function useDeliveryDetails() {
     const newErrors = {};
 
     Object.entries(deliveryDetails).forEach(([key, value]) => {
-      if (!value.trim()) {
+      if (!value) {
         newErrors[key] = "This field is required";
       }
     });

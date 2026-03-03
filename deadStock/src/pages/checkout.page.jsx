@@ -53,10 +53,7 @@ function CheckoutPage() {
       toast.error("Select eSewa.");
       return;
     }
-    if (!isDeliveryDetailsComplete()) {
-      toast.error("Complete delivery details.");
-      return;
-    }
+  
     handlePayment();
   };
 
