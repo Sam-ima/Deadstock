@@ -27,8 +27,8 @@ import PaymentSuccess from "./component/checkout/payment/PayementSuccess.jsx";
 // Lazy pages
 const LandingPage = lazy(() => import("./pages/landingPage"));
 const AuctionsPage = lazy(() => import("./pages/AuctionPage.jsx"));
-const ProfilePage = lazy(() => import("./pages/profilePage"));
-const SellerProfilePage = lazy(() => import("./pages/sellerProfilePage.jsx"));
+// const ProfilePage = lazy(() => import("./pages/profilePage"));
+const SellerProfilePage = lazy(() => import("./pages/ProfilePage.jsx"));
 const CategoryPage = lazy(() => import("./pages/categoryPage.jsx"));
 const AuctionDetailPage = lazy(() => import("./pages/AuctionDetailPage.jsx"));
 const CheckoutPage = lazy(() => import("./pages/checkout.page.jsx"));

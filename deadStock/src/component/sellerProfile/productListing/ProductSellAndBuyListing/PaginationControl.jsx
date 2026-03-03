@@ -4,7 +4,7 @@ const PaginationControl = ({ page, totalPages, onChange }) => {
   if (totalPages <= 1) return null;
 
   return (
-    <Box mt={4} display="flex" justifyContent="center">
+    <Box mt={1} display="flex" justifyContent="center">
       <Pagination
         count={totalPages}
         page={page}
