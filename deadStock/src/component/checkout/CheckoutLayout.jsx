@@ -1,7 +1,7 @@
 import { Box, Container, Typography, Paper } from "@mui/material";
 import UserEmailDisplay from "./UserEmailDispay";
 import CheckoutForm from "./CheckoutForm";
-import OrderSummary from "./orderSummary";
+import OrderSummary from "./OrderSummary";
 import { colors } from "./Constants";
 
 const CheckoutLayout = ({
