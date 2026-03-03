@@ -1,4 +1,3 @@
-// components/checkout/steps/constants/ShippingFields.js - Updated with better organization
 export const SHIPPING_FIELDS = [
   {
     id: "fullName",
@@ -47,7 +46,7 @@ export const SHIPPING_FIELDS = [
     placeholder: "",
     icon: "📮",
     fullWidth: true,
-    required: true,
+    // required: true,
     autoComplete: "postal-code",
     category: "location",
     pattern: "[0-9]*"

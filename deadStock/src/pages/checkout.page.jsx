@@ -19,7 +19,7 @@ function CheckoutPage() {
   const { paymentStatus, paymentError, orderId } = usePaymentStatus();
   const { directPurchaseItem, displayItems, totals, hasItems } =
     useCheckoutItems();
-  const { deliveryDetails, setDeliveryDetails, isDeliveryDetailsComplete } =
+  const { deliveryDetails, handleChange, errors, isDeliveryDetailsComplete } =
     useDeliveryDetails();
   const isPaymentMethodSelected = paymentMethod === "esewa";
 
@@ -100,7 +100,8 @@ function CheckoutPage() {
       onPayment={handlePaymentWithValidation}
       onPaymentMethodChange={handlePaymentMethodChange}
       deliveryDetails={deliveryDetails}
-      setDeliveryDetails={setDeliveryDetails}
+      errors={errors}
+      handleChange={handleChange}
     />
   );
 }
