@@ -125,23 +125,6 @@ const OrderSummaryCard = ({ order, productsMap }) => {
                 border: "1px solid #f0f0f0",
               }}
             >
-              {/* Product Image */}
-              {/* <Box
-                component="img"
-                src={
-                  product?.image ||
-                  "https://via.placeholder.com/60x60?text=Product"
-                }
-                alt={orderItem.name}
-                sx={{
-                  width: 55,
-                  height: 55,
-                  objectFit: "cover",
-                  borderRadius: 2,
-                  border: "1px solid #e0e0e0",
-                }}
-              /> */}
-
               {/* Product Info */}
               <Box sx={{ flexGrow: 1 }}>
                 <Typography
