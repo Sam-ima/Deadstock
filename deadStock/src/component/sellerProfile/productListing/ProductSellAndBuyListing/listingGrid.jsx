@@ -1,6 +1,6 @@
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 import { useState, useEffect, useMemo } from "react";
-
+import { useSearch } from "../../../Searchbar/SearchContext";
 import ProductCard from "../../../categoryPage/product/productCard/ProductCard";
 import SellingActions from "./SellingActions";
 import OrderSummaryCard from "./OrderSummaryCard";
@@ -15,6 +15,7 @@ const ListingsGrid = ({
   productsMap = {},
 }) => {
   const theme = useTheme();
+  const {query}=useSearch()
   const isXs = useMediaQuery(theme.breakpoints.down("sm"));
   const isSm = useMediaQuery(theme.breakpoints.between("sm", "md"));
 
@@ -23,8 +24,42 @@ const ListingsGrid = ({
 
   useEffect(() => setPage(1), [items, PER_PAGE]);
 
-  const totalPages = Math.ceil(items.length / PER_PAGE);
-  const visibleItems = items.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  const filteredItems = useMemo(() => {
+    if (!query) return items;
+
+    const lowerQuery = query.toLowerCase();
+
+    if (mode === "products") {
+      return items.filter((item) =>
+        item.name?.toLowerCase().includes(lowerQuery),
+      );
+    }
+
+    if (mode === "orders") {
+      return items.filter((order) => {
+        // Match payment method or status
+        const paymentMatch =
+          order.paymentMethod?.toLowerCase().includes(lowerQuery) ||
+          order.paymentStatus?.toLowerCase().includes(lowerQuery);
+
+        // Match product names inside order
+        const productMatch = order.items.some((orderItem) =>
+          orderItem.name?.toLowerCase().includes(lowerQuery),
+        );
+
+        return paymentMatch || productMatch;
+      });
+    }
+
+    return items;
+  }, [items, query, mode]);
+
+  const totalPages = Math.ceil(filteredItems.length / PER_PAGE);
+
+  const visibleItems = filteredItems.slice(
+    (page - 1) * PER_PAGE,
+    page * PER_PAGE,
+  );
 
   return (
     <>
@@ -35,7 +70,7 @@ const ListingsGrid = ({
           sm: "repeat(2, 1fr)",
           md: "repeat(3, 1fr)",
         }}
-          justifyItems="center"   // ✅ THIS centers the cards
+        justifyItems="center" // ✅ THIS centers the cards
         gap={{ xs: 2, sm: 3, md: 4 }}
         sx={{
           backgroundColor: "#fafafa",
