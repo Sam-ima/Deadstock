@@ -165,7 +165,7 @@ const ListingsTabs = ({ user }) => {
       </Box>
 
       {/* Tab Content */}
-      <Box mt={4}>
+      <Box >
         {loading && <Typography textAlign="center">Loading...</Typography>}
 
         {tab === "selling" && (

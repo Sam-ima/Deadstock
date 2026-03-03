@@ -35,8 +35,15 @@ const ListingsGrid = ({
           sm: "repeat(2, 1fr)",
           md: "repeat(3, 1fr)",
         }}
+          justifyItems="center"   // ✅ THIS centers the cards
         gap={{ xs: 2, sm: 3, md: 4 }}
-        sx={{ backgroundColor: "#fafafa", p: 2 }}
+        sx={{
+          backgroundColor: "#fafafa",
+          p: 1,
+          m: 0,
+          width: "100%",
+          boxSizing: "border-box",
+        }}
       >
         {visibleItems.map((item) => (
           <Box

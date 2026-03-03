@@ -68,10 +68,9 @@ const ProductCard = ({ product }) => {
         <Typography
           fontWeight={600}
           sx={{
-            lineHeight: 1.3,
+            lineHeight: 1,
             textTransform:"capitalize",
             fontSize: { xs: "16px", md: "18px", lg: "20px" },
-            height: { xs: 28, sm: 30, md: 32 },
             overflow: "hidden",
             display: "-webkit-box",
             WebkitLineClamp: 2,
