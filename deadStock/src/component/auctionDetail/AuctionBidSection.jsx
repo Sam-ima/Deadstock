@@ -4,12 +4,16 @@ import {
 } from "@mui/material";
 import GavelIcon from "@mui/icons-material/Gavel";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import { placeBid } from "../../services/bidService";
+import { useAuth } from "../../context/authContext/authContext";
 
 // Now receives `auction` (the sub-object) instead of `product`
 const AuctionBidSection = ({ auction, status }) => {
   const [bidAmount, setBidAmount] = useState("");
   const [bidError, setBidError] = useState("");
   const [bidSuccess, setBidSuccess] = useState(false);
+
+  const { user } = useAuth();
 
   const startingBid = auction?.startingBid ?? 0;
   const highestBid = auction?.highestBid ?? startingBid;
@@ -18,20 +22,42 @@ const AuctionBidSection = ({ auction, status }) => {
 
   const minNextBid = highestBid + minIncrement;
 
-  const handleBid = () => {
+  const handleBid = async () => {
     const amount = parseFloat(bidAmount);
+
     if (!amount || isNaN(amount)) {
       setBidError("Please enter a valid bid amount.");
       return;
     }
+
     if (amount < minNextBid) {
       setBidError(`Your bid must be at least Rs.${minNextBid}`);
       return;
     }
-    setBidError("");
-    setBidSuccess(true);
-    // TODO: wire up your bid service
-    // await placeBid(auctionId, amount);
+
+    if (!user?.uid) {
+      setBidError("Please login to place a bid.");
+      return;
+    }
+
+    try {
+      // 🔥 Call same Firestore transaction used in BidDialog
+      await placeBid({
+        productId: auction.productId, // make sure auction contains this
+        bidderId: user.uid,
+        bidAmount: amount,
+      });
+
+      setBidError("");
+      setBidSuccess(true);
+    } catch (err) {
+      console.error(err);
+      setBidError(
+        typeof err === "string"
+          ? err
+          : err.message || "Failed to place bid"
+      );
+    }
   };
 
   return (
