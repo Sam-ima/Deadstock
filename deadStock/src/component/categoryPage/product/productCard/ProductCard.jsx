@@ -1,6 +1,5 @@
 import { Box, Typography, Chip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useSearch } from "../../../Searchbar/SearchContext";
 import ProductImageCarousel from "./ProductImageCarousel";
 import ProductPrice from "./ProductPrice";
 import ProductStock from "./ProductStock";
@@ -8,7 +7,7 @@ import { resolveProductImages } from "./utils/ProductImages";
 import ProductRating from "./ProductRating";
 
 const ProductCard = ({ product }) => {
-  const{query}=useSearch();
+  
   const navigate = useNavigate();
 
   const images = product.images?.length
