@@ -1,4 +1,3 @@
-// CartDrawer.jsx
 import { Box, Slide, Typography } from "@mui/material";
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -52,7 +51,7 @@ const CartDrawer = ({ open, onClose }) => {
           sx={{
             position: "fixed",
             inset: 0,
-            background: "rgba(0,0,0,0.3)",
+            background: "rgba(0,0,0,0.25)",
             zIndex: 1199,
           }}
         />
@@ -64,25 +63,16 @@ const CartDrawer = ({ open, onClose }) => {
             position: "fixed",
             top: { xs: 56, sm: 64 },
             right: 0,
-            width: {
-              xs: "85vw", // Not full screen on mobile
-              sm: 450,
-              md: 500,
-            },
-            maxWidth: { xs: 350 }, // optional max width for very small screens
-            height: {
-              xs: "calc(100vh - 56px)", // mobile
-              sm: "calc(100vh - 64px)", // tablet/desktop
-            },
-            backgroundColor: "#1a3b2d",
+            width: { xs: "85vw", sm: 450, md: 500 },
+            height: { xs: "calc(100vh - 56px)", sm: "calc(100vh - 64px)" },
+            backgroundColor: "#FFFFFF",
             zIndex: 1200,
-            borderTopLeftRadius: { xs: 12, sm: 20 },
-            borderBottomLeftRadius: { xs: 12, sm: 20 },
+            borderTopLeftRadius: { xs: 18, sm: 24 },
+            borderBottomLeftRadius: { xs: 18, sm: 24 },
             display: "flex",
             flexDirection: "column",
-            color: "#FFF",
-            boxShadow: "-5px 0 25px rgba(0,0,0,0.2)",
-            transition: "transform 0.3s ease-in-out",
+            color: "#111827",
+            boxShadow: "-8px 0 30px rgba(0,0,0,0.15)",
           }}
         >
           <CartDrawerHeader
@@ -97,20 +87,23 @@ const CartDrawer = ({ open, onClose }) => {
               flex: 1,
               overflowY: "auto",
               px: { xs: 2, sm: 3 },
-              py: { xs: 1, sm: 2 },
+              py: { xs: 1.5, sm: 2 },
+              backgroundColor: "#F9FAFB",
               '&::-webkit-scrollbar': { width: '6px' },
-              '&::-webkit-scrollbar-track': { background: 'rgba(255,255,255,0.1)', borderRadius: '3px' },
-              '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.3)', borderRadius: '3px', '&:hover': { background: 'rgba(255,255,255,0.4)' } },
+              '&::-webkit-scrollbar-thumb': {
+                background: '#D1D5DB',
+                borderRadius: '4px',
+              },
             }}
           >
             {!user ? (
               <CartDrawerEmpty onClose={onClose} />
             ) : cartItemsArray.length === 0 ? (
-              <Box sx={{ textAlign: "center", mt: 4, color: "#FFF", px: 2 }}>
-                <Typography variant="h6" sx={{ fontSize: { xs: '1.1rem', sm: '1.25rem' }, mb: 1 }}>
+              <Box sx={{ textAlign: "center", mt: 4, px: 2 }}>
+                <Typography variant="h6" sx={{ mb: 1 }}>
                   Your cart is empty
                 </Typography>
-                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", fontSize: { xs: '0.9rem', sm: '1rem' } }}>
+                <Typography variant="body2" color="text.secondary">
                   Add some products to get started!
                 </Typography>
               </Box>
@@ -146,7 +139,6 @@ const CartDrawer = ({ open, onClose }) => {
 };
 
 export default CartDrawer;
-
 
 
 // import {

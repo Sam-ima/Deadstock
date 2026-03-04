@@ -32,57 +32,57 @@ const CartDrawerItem = ({
   return (
     <Card
       sx={{
-        mb: { xs: 1.5, sm: 2 },
-        p: { xs: 1.5, sm: 2 },
-        backgroundColor: "#194638ff",
-        color: "#FFFFFF",
-        borderRadius: { xs: '10px', sm: '12px' },
+        mb: 2,
+        p: 2.5,
+        background: "rgba(245, 255, 250, 0.85)", // soft white-green
+        color: "#1F2937",
+        borderRadius: 3,
+        border: "1px solid rgba(34,197,94,0.2)",
+        backdropFilter: "blur(6px)",
         transition: "all 0.3s ease",
-        "&:hover": { 
-          transform: { xs: 'none', sm: 'scale(1.02)' },
-          backgroundColor: { xs: '#194638ff', sm: '#1e4f40' },
+
+        "&:hover": {
+          transform: "translateY(-3px)",
+          background: "rgba(220, 252, 231, 0.95)",
+          boxShadow: "0 10px 20px rgba(34,197,94,0.25)",
         },
-        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
       }}
     >
       {/* Product Name and Price */}
-      <Box 
-        sx={{ 
-          display: "flex", 
-          justifyContent: "space-between", 
-          alignItems: "flex-start", 
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
           mb: 1,
           gap: 1,
         }}
       >
-        <Typography 
-          fontWeight={700} 
-          sx={{ 
+        <Typography
+          fontWeight={700}
+          sx={{
             flex: 1,
-            fontSize: { 
-              xs: '0.95rem', 
-              sm: '1rem',
-              md: '1.05rem' 
-            },
+            fontSize: { xs: "0.95rem", sm: "1rem", md: "1.05rem" },
             lineHeight: 1.3,
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            display: '-webkit-box',
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            display: "-webkit-box",
             WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
+            WebkitBoxOrient: "vertical",
           }}
         >
           {displayName}
         </Typography>
-        <Typography 
+
+        <Typography
           variant="body2"
-          sx={{ 
-            color: "#90BE6D", 
+          sx={{
+            color: "#22C55E", // greenish
             ml: 1,
-            fontSize: { xs: '0.9rem', sm: '1rem' },
-            fontWeight: 600,
+            fontSize: { xs: "0.9rem", sm: "1rem" },
+            fontWeight: 700,
             flexShrink: 0,
-            whiteSpace: 'nowrap',
+            whiteSpace: "nowrap",
           }}
         >
           Rs.{formatPrice(total)}
@@ -94,11 +94,12 @@ const CartDrawerItem = ({
         <Typography
           variant="caption"
           sx={{
-            color: "#90EE90",
+            color: "#10B981", // darker green
             fontStyle: "italic",
             display: "block",
             mb: 1,
-            fontSize: { xs: '0.7rem', sm: '0.75rem' },
+            fontSize: { xs: "0.7rem", sm: "0.75rem" },
+            letterSpacing: 0.3,
           }}
         >
           ✓ Bulk order discount applied
@@ -106,56 +107,55 @@ const CartDrawerItem = ({
       )}
 
       {/* Price Breakdown */}
-      <Typography 
-        variant="body2" 
-        sx={{ 
-          mb: 2, 
-          color: "rgba(255,255,255,0.8)",
-          fontSize: { xs: '0.8rem', sm: '0.9rem' },
-          display: 'flex',
-          alignItems: 'center',
+      <Typography
+        variant="body2"
+        sx={{
+          mb: 2,
+          color: "rgba(31,41,55,0.8)", // soft gray-black
+          fontSize: { xs: "0.8rem", sm: "0.9rem" },
+          display: "flex",
+          alignItems: "center",
           gap: 0.5,
-          flexWrap: 'wrap',
+          flexWrap: "wrap",
         }}
       >
         <Box component="span">Rs.{formatPrice(unitPrice)}</Box>
         <Box component="span">×</Box>
         <Box component="span">{qty}</Box>
         <Box component="span">=</Box>
-        <Box component="span" sx={{ fontWeight: 600 }}>
+        <Box component="span" sx={{ fontWeight: 600, color: "#047857" }}>
           Rs.{formatPrice(total)}
         </Box>
       </Typography>
 
       {/* Quantity Controls and Remove Button */}
-      <Stack 
-        direction="row" 
-        justifyContent="space-between" 
+      <Stack
+        direction="row"
+        justifyContent="space-between"
         alignItems="center"
         sx={{ mt: 1 }}
       >
         {/* Quantity Controls */}
-        <Stack 
-          direction="row" 
-          spacing={1} 
+        <Stack
+          direction="row"
+          spacing={1}
           alignItems="center"
-          sx={{
-            flex: 1,
-          }}
+          sx={{ flex: 1 }}
         >
           <IconButton
             size="small"
-            sx={{ 
-              color: "#FFFFFF", 
-              border: "1px solid rgba(255,255,255,0.3)",
-              backgroundColor: "rgba(255,255,255,0.1)",
+            sx={{
+              color: "#047857",
+              border: "1px solid rgba(4,120,87,0.2)",
+              backgroundColor: "rgba(220,252,231,0.4)",
               width: { xs: 28, sm: 32 },
               height: { xs: 28, sm: 32 },
-              '&:hover': {
-                backgroundColor: "rgba(255,255,255,0.2)",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                backgroundColor: "rgba(16,185,129,0.25)",
               },
-              '&:active': {
-                transform: 'scale(0.95)',
+              "&:active": {
+                transform: "scale(0.95)",
               },
             }}
             onClick={() => onDecrease(cartItemId, qty)}
@@ -163,12 +163,13 @@ const CartDrawerItem = ({
             <RemoveIcon fontSize="small" />
           </IconButton>
 
-          <Typography 
-            sx={{ 
-              minWidth: { xs: 25, sm: 30 }, 
-              textAlign: "center", 
+          <Typography
+            sx={{
+              minWidth: { xs: 25, sm: 30 },
+              textAlign: "center",
               fontWeight: 600,
-              fontSize: { xs: '0.9rem', sm: '1rem' }
+              fontSize: { xs: "0.9rem", sm: "1rem" },
+              color: "#065F46",
             }}
           >
             {qty}
@@ -176,17 +177,18 @@ const CartDrawerItem = ({
 
           <IconButton
             size="small"
-            sx={{ 
-              color: "#FFFFFF", 
-              border: "1px solid rgba(255,255,255,0.3)",
-              backgroundColor: "rgba(255,255,255,0.1)",
+            sx={{
+              color: "#047857",
+              border: "1px solid rgba(4,120,87,0.2)",
+              backgroundColor: "rgba(220,252,231,0.4)",
               width: { xs: 28, sm: 32 },
               height: { xs: 28, sm: 32 },
-              '&:hover': {
-                backgroundColor: "rgba(255,255,255,0.2)",
+              transition: "all 0.2s ease",
+              "&:hover": {
+                backgroundColor: "rgba(16,185,129,0.25)",
               },
-              '&:active': {
-                transform: 'scale(0.95)',
+              "&:active": {
+                transform: "scale(0.95)",
               },
             }}
             onClick={() => onIncrease(cartItemId, qty)}
@@ -198,16 +200,17 @@ const CartDrawerItem = ({
         {/* Remove Button */}
         <IconButton
           size="small"
-          sx={{ 
-            color: "#FF6B6B",
-            backgroundColor: "rgba(255,107,107,0.1)",
+          sx={{
+            color: "#DC2626",
+            backgroundColor: "rgba(248,113,113,0.1)",
             width: { xs: 28, sm: 32 },
             height: { xs: 28, sm: 32 },
-            '&:hover': {
-              backgroundColor: "rgba(255,107,107,0.2)",
+            transition: "all 0.2s ease",
+            "&:hover": {
+              backgroundColor: "rgba(248,113,113,0.2)",
             },
-            '&:active': {
-              transform: 'scale(0.95)',
+            "&:active": {
+              transform: "scale(0.95)",
             },
             ml: 2,
           }}

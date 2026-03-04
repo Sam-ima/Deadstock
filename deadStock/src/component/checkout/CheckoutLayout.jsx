@@ -1,7 +1,7 @@
 import { Box, Container, Typography, Paper } from "@mui/material";
 import UserEmailDisplay from "./UserEmailDispay";
 import CheckoutForm from "./CheckoutForm";
-import OrderSummary from "./orderSummary";
+import OrderSummary from "./OrderSummary";
 import { colors } from "./Constants";
 
 const CheckoutLayout = ({
@@ -18,6 +18,8 @@ const CheckoutLayout = ({
   onPaymentMethodChange,
   deliveryDetails,
   setDeliveryDetails,
+  errors,
+  handleChange,
 }) => {
   return (
     <Box
@@ -79,7 +81,9 @@ const CheckoutLayout = ({
               onPayment={onPayment}
               onPaymentMethodChange={onPaymentMethodChange}
               deliveryDetails={deliveryDetails}
-              setDeliveryDetails={setDeliveryDetails}
+              // setDeliveryDetails={setDeliveryDetails}
+              errors={errors}
+              handleChange={handleChange}
             />
           </Box>
 

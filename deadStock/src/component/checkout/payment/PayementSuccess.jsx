@@ -1,26 +1,40 @@
+// PaymentSuccess.jsx
 import { Box, Container, Typography, Button, Stack } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { colors } from "../Constants";
 
-const PaymentSuccess = ({  orderId }) => {
+const PaymentSuccess = ({ orderId }) => {
   return (
     <Box
       sx={{
         minHeight: "100vh",
-        bgcolor: colors.bg,
-        color: colors.textPrimary,
+        bgcolor: "rgba(245, 255, 250, 0.95)", // soft white-green background
+        color: "#1F2937",
         py: { xs: 4, md: 8 },
+        display: "flex",
+        alignItems: "center",
       }}
     >
       <Container maxWidth="md">
-        <Box sx={{ textAlign: "center", py: 6 }}>
+        <Box
+          sx={{
+            textAlign: "center",
+            py: { xs: 4, md: 6 },
+            px: { xs: 2, md: 0 },
+            background: "rgba(255, 255, 255, 0.85)",
+            borderRadius: 3,
+            boxShadow: "0 10px 25px rgba(34,197,94,0.15)",
+            backdropFilter: "blur(6px)",
+          }}
+        >
           <CheckCircleIcon
-            sx={{ fontSize: 80, color: colors.success, mb: 3 }}
+            sx={{ fontSize: 80, color: "#22C55E", mb: 3 }}
           />
+          
           <Typography
             variant="h4"
             fontWeight={700}
-            color={colors.success}
+            color="#16A34A" // brighter green
             gutterBottom
           >
             Payment Successful! 🎉
@@ -28,22 +42,23 @@ const PaymentSuccess = ({  orderId }) => {
           
           <Typography
             variant="body1"
-            color={colors.textSecondary}
-            sx={{ mb: 3, maxWidth: 500, mx: "auto" }}
+            color="#374151" // dark gray
+            sx={{ mb: 3, maxWidth: 500, mx: "auto", lineHeight: 1.6 }}
           >
-            Your order has been confirmed and is being processed. 
+            Your order has been confirmed and is being processed.
           </Typography>
           
           {orderId && (
             <Typography
               variant="caption"
-              color={colors.textSecondary}
               sx={{
                 display: "inline-block",
-                bgcolor: colors.bgDark,
+                bgcolor: "#DCFCE7", // light green background
+                color: "#065F46", // deep green text
                 px: 2,
                 py: 1,
                 borderRadius: 1,
+                fontWeight: 600,
                 mb: 4,
               }}
             >
@@ -57,16 +72,20 @@ const PaymentSuccess = ({  orderId }) => {
             justifyContent="center"
             sx={{ mt: 4 }}
           >
+            {/* View Order Button (optional, uncomment if needed) */}
             {/* <Button
               variant="contained"
               onClick={() => (window.location.href = "/orders")}
               sx={{
-                background: colors.primaryGradient,
-                color: colors.textLight,
+                background: "linear-gradient(90deg, #22C55E, #16A34A)",
+                color: "#F9FAFB",
                 px: 5,
                 py: 1.5,
                 borderRadius: 2,
                 fontWeight: 700,
+                '&:hover': {
+                  opacity: 0.9,
+                },
               }}
             >
               View Order
@@ -76,16 +95,16 @@ const PaymentSuccess = ({  orderId }) => {
               variant="outlined"
               onClick={() => (window.location.href = "/")}
               sx={{
-                borderColor: colors.border,
-                color: colors.textPrimary,
+                borderColor: "#22C55E",
+                color: "#065F46",
                 px: 5,
                 py: 1.5,
                 borderRadius: 2,
                 fontWeight: 700,
                 '&:hover': {
-                  borderColor: colors.primary,
-                  bgcolor: colors.bgLight,
-                }
+                  borderColor: "#16A34A",
+                  bgcolor: "rgba(220,252,231,0.6)",
+                },
               }}
             >
               Continue Shopping
@@ -94,7 +113,7 @@ const PaymentSuccess = ({  orderId }) => {
           
           <Typography
             variant="caption"
-            color={colors.textSecondary}
+            color="#4B5563" // medium gray
             sx={{ mt: 4, display: "block" }}
           >
             You will receive tracking information once your order ships.

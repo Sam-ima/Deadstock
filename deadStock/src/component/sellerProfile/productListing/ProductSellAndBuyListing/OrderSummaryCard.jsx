@@ -1,52 +1,102 @@
-import { Box, Typography, Button, Divider } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Divider,
+  Chip,
+  Stack,
+  Avatar,
+} from "@mui/material";
 import { useState } from "react";
+import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import ProductCard from "../../../categoryPage/product/productCard/ProductCard";
 
-const CARD_HEIGHT = 300;
-const ITEMS_COLLAPSED_HEIGHT = 50;
+const CARD_HEIGHT = 380;
+const ITEMS_COLLAPSED_HEIGHT = 120;
 
 const OrderSummaryCard = ({ order, productsMap }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const formattedDate = order.createdAt
+    ? order.createdAt.toDate().toLocaleString()
+    : "N/A";
+
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case "paid":
+        return "success";
+      case "pending":
+        return "warning";
+      case "failed":
+        return "error";
+      default:
+        return "default";
+    }
+  };
+
   return (
     <Box
       sx={{
-        width: { xs: 270, sm: 280, md: 280 },
+        width: { xs: 290, sm: 320, md: 330 },
         height: CARD_HEIGHT,
         p: 2,
         display: "flex",
         flexDirection: "column",
-        borderRadius: 3,
-        border: "1px solid #e0e0e0",
-        backgroundColor: "#fff",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+        borderRadius: 4,
+        background: "linear-gradient(145deg, #ffffff, #f9f9f9)",
+        boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+        transition: "0.3s",
+        "&:hover": {
+          transform: "translateY(-5px)",
+          boxShadow: "0 14px 30px rgba(0,0,0,0.12)",
+        },
       }}
     >
       {/* Header */}
-      <Box>
-        <Typography variant="body2" color="text.secondary">
-          Ordered At : {order.createdAt?.toDate().toLocaleString()}
-        </Typography>
-      </Box>
+      <Stack direction="row" spacing={1} alignItems="center">
+        <Avatar sx={{ bgcolor: "#f57c00" }}>
+          <ShoppingBagOutlinedIcon />
+        </Avatar>
+        <Box>
+          <Typography variant="subtitle2" fontWeight={600}>
+            Order Summary
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {formattedDate}
+          </Typography>
+        </Box>
+      </Stack>
+
+      <Divider sx={{ my: 1.5 }} />
 
       {/* Payment Info */}
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 0.1 }}>
+      <Stack spacing={0.5}>
         <Typography variant="body2" color="text.secondary">
-          Payment: {order.paymentMethod}
+          Payment Method: <b>{order.paymentMethod}</b>
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Status: {order.paymentStatus}
-        </Typography>
-        <Typography variant="body2" fontWeight={600}>
+
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <Typography variant="body2" color="text.secondary">
+            Status:
+          </Typography>
+          <Chip
+            label={order.paymentStatus}
+            size="small"
+            color={getStatusColor(order.paymentStatus)}
+          />
+        </Stack>
+
+        <Typography variant="body1" fontWeight={700} color="#2e7d32">
           Total: Rs. {order.totalAmount}
         </Typography>
-      </Box>
+      </Stack>
 
-      <Divider sx={{ my: 1 }} />
+      <Divider sx={{ my: 1.5 }} />
 
-      {/* Items */}
-      <Typography variant="body2" fontWeight={600} mb={0.5}>
-        Products
+      {/* Products */}
+      <Typography variant="subtitle2" fontWeight={600} mb={1}>
+        Ordered Products
       </Typography>
 
       <Box
@@ -54,45 +104,91 @@ const OrderSummaryCard = ({ order, productsMap }) => {
           flexGrow: 1,
           overflowY: expanded ? "auto" : "hidden",
           maxHeight: expanded ? "none" : ITEMS_COLLAPSED_HEIGHT,
+          transition: "all 0.3s ease",
           pr: 0.5,
         }}
       >
-        {order.items.map((orderItem, idx) => (
-          <Box key={idx} mb={1}>
-            {productsMap[orderItem.productId] ? (
-              <ProductCard product={productsMap[orderItem.productId]} />
-            ) : (
-              <Typography variant="body2">
-                {orderItem.quantity} × {orderItem.name} @ Rs.{orderItem.price}
+        {order.items.map((orderItem, idx) => {
+          const product = productsMap[orderItem.productId];
+
+          return (
+            <Box
+              key={idx}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1.5,
+                p: 1,
+                mb: 1,
+                borderRadius: 2,
+                backgroundColor: "#fafafa",
+                border: "1px solid #f0f0f0",
+              }}
+            >
+              {/* Product Info */}
+              <Box sx={{ flexGrow: 1 }}>
+                <Typography
+                  variant="body2"
+                  fontWeight={600}
+                  sx={{
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {orderItem.name}
+                </Typography>
+
+                <Typography variant="caption" color="text.secondary">
+                  Qty: {orderItem.quantity}
+                </Typography>
+
+                <Typography variant="caption" color="text.secondary" display="block">
+                  Price: Rs. {orderItem.price}
+                </Typography>
+              </Box>
+
+              {/* Subtotal */}
+              <Typography variant="body2" fontWeight={600}>
+                Rs. {orderItem.quantity * orderItem.price}
               </Typography>
-            )}
-          </Box>
-        ))}
+            </Box>
+          );
+        })}
       </Box>
 
-      {/* View More / Less */}
-      {order.items.length > 3 && (
+      {order.items.length > 2 && (
         <Button
           size="small"
           onClick={() => setExpanded((prev) => !prev)}
-          sx={{ mt: 0.5, alignSelf: "center", textTransform: "none" }}
+          sx={{
+            mt: 0.5,
+            alignSelf: "center",
+            textTransform: "none",
+            fontWeight: 600,
+          }}
         >
-          {expanded ? "View less" : "View more"}
+          {expanded ? "View Less ▲" : "View More ▼"}
         </Button>
       )}
 
-      <Divider sx={{ my: 1 }} />
+      <Divider sx={{ my: 1.5 }} />
 
-      {/* Delivery */}
-      <Box>
-        <Typography variant="caption" color="text.secondary">
-          Delivery Address
-        </Typography>
-        <Typography variant="body2">
-          {order.deliveryDetails?.address}, {order.deliveryDetails?.city},{" "}
-          {order.deliveryDetails?.state}, {order.deliveryDetails?.zip}
-        </Typography>
-      </Box>
+      {/* Delivery Section */}
+      <Stack direction="row" spacing={1} alignItems="flex-start">
+        <LocationOnOutlinedIcon sx={{ fontSize: 18, color: "#f57c00" }} />
+        <Box>
+          <Typography variant="caption" color="text.secondary">
+            Delivery Address
+          </Typography>
+          <Typography variant="body2">
+            {order.deliveryDetails?.address},{" "}
+            {order.deliveryDetails?.city},{" "}
+            {order.deliveryDetails?.state},{" "}
+            {order.deliveryDetails?.zip}
+          </Typography>
+        </Box>
+      </Stack>
     </Box>
   );
 };
