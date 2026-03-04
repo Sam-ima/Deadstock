@@ -25,7 +25,6 @@ export const ProductProvider = ({ children }) => {
     try {
       const data = await getAllProducts(filters);
 
-      // 🆕 Decorate products with auction state
       const enriched = data.map((product) => ({
         ...product,
         auctionStatus: resolveAuctionStatus(product),
@@ -41,7 +40,7 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
-  // ✅ UPDATED: No image handling here
+  // ✅ FIXED: normalize auctionDuration before sending to service
   const createProduct = async (productData, userId, userType) => {
     setLoading(true);
     setError(null);
@@ -60,13 +59,21 @@ export const ProductProvider = ({ children }) => {
         throw new Error("User ID is required");
       }
 
+      // 🔥 NORMALIZE auctionDuration (because <select> sends string)
+      const normalizedData = {
+        ...productData,
+        auctionDuration: productData.auctionDuration
+          ? Number(productData.auctionDuration)
+          : productData.auctionDuration,
+      };
+
       const newProduct = await addProduct(
-        productData,
+        normalizedData,
         userId,
         userType || "B2C"
       );
 
-      await fetchProducts(); // Refresh list
+      await fetchProducts();
       return newProduct;
 
     } catch (err) {
