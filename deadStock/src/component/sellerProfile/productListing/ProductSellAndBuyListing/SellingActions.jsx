@@ -79,9 +79,13 @@ const AuctionDialog = ({
   minIncrement,
   setMinIncrement,
   onStartAuction,
+  isUpdateMode = false,
 }) => (
   <Dialog open={open} onClose={onClose}>
-    <DialogTitle>Set Auction Details</DialogTitle>
+    <DialogTitle>
+      {isUpdateMode ? "Update Auction" : "Set Auction Details"}
+    </DialogTitle>
+
     <DialogContent
       sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}
     >
@@ -111,18 +115,16 @@ const AuctionDialog = ({
 
     <DialogActions>
       <Button onClick={onClose}>Cancel</Button>
+
       <Button
         variant="contained"
         onClick={onStartAuction}
         sx={{
-          bgcolor: "linear-gradient(135deg, #2e7d32, #ff8f00)",
+          background: "linear-gradient(135deg, #2e7d32, #ff8f00)",
           color: "#fff",
-          "&:hover": {
-            bgcolor: "linear-gradient(135deg, #1b5e20, #ff6f00)",
-          },
         }}
       >
-        Start Auction
+        {isUpdateMode ? "Update Auction" : "Start Auction"}
       </Button>
     </DialogActions>
   </Dialog>
@@ -131,19 +133,30 @@ const AuctionDialog = ({
 // ================= Main Component =================
 const SellingActions = ({ item, onEdit, onDelete, onToggleBidding }) => {
   const isAuctionStarted = item.saleType === "auction";
+
   const [isAuction, setIsAuction] = useState(isAuctionStarted);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(
-    item.auctionDuration || "",
+    item.auctionDuration || ""
   );
-  const [minIncrement, setMinIncrement] = useState(item.minBidIncrement ?? 10);
+  const [minIncrement, setMinIncrement] = useState(
+    item.minBidIncrement ?? 10
+  );
 
+  // ================= Toggle Switch =================
   const handleToggleSwitch = () => {
-    if (!isAuction) setDialogOpen(true); // open dialog when enabling
-    setIsAuction(!isAuction);
+    if (isAuctionStarted) {
+      // disable auction
+      handleDisableAuction();
+      return;
+    }
+
+    // enable auction
+    setDialogOpen(true);
   };
 
-  const handleStartAuction = async () => {
+  // ================= Start / Update Auction =================
+  const handleStartOrUpdateAuction = async () => {
     if (!selectedDuration || !minIncrement)
       return toast.error("Select duration and increment");
 
@@ -151,12 +164,34 @@ const SellingActions = ({ item, onEdit, onDelete, onToggleBidding }) => {
       await onToggleBidding(item, {
         durationHours: Number(selectedDuration),
         minBidIncrement: Number(minIncrement),
+        action: isAuctionStarted ? "update" : "start",
       });
 
-      toast.success("Auction started successfully!");
+      toast.success(
+        isAuctionStarted
+          ? "Auction updated successfully!"
+          : "Auction started successfully!"
+      );
+
+      setIsAuction(true);
       setDialogOpen(false);
     } catch (err) {
-      toast.error("Failed to start auction!");
+      toast.error("Operation failed!");
+      console.error(err);
+    }
+  };
+
+  // ================= Disable Auction =================
+  const handleDisableAuction = async () => {
+    try {
+      await onToggleBidding(item, {
+        action: "disable",
+      });
+
+      toast.success("Auction disabled successfully!");
+      setIsAuction(false);
+    } catch (err) {
+      toast.error("Failed to disable auction!");
       console.error(err);
     }
   };
@@ -179,15 +214,16 @@ const SellingActions = ({ item, onEdit, onDelete, onToggleBidding }) => {
         <AuctionToggle
           isAuction={isAuction}
           onToggle={handleToggleSwitch}
-          disabled={isAuctionStarted}
+          disabled={false} // now allow interaction
         />
+
         <ActionButtons
           onEdit={() => onEdit(item)}
           onDelete={() => onDelete(item.id)}
         />
       </Box>
 
-      {isAuctionStarted && (
+      {isAuction && (
         <Typography variant="body2" color="success.main">
           Auction is active ⏳
         </Typography>
@@ -200,7 +236,8 @@ const SellingActions = ({ item, onEdit, onDelete, onToggleBidding }) => {
         setDuration={setSelectedDuration}
         minIncrement={minIncrement}
         setMinIncrement={setMinIncrement}
-        onStartAuction={handleStartAuction}
+        onStartAuction={handleStartOrUpdateAuction}
+        isUpdateMode={isAuctionStarted}
       />
     </Box>
   );

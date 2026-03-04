@@ -44,7 +44,11 @@ const AuctionInfo = ({ product }) => {
 
       <Divider sx={{ my: 3 }} />
 
-      <AuctionBidSection auction={product.auction} status={status} />
+      <AuctionBidSection
+        auction={product.auction}
+        status={status}
+        productId={product.id}
+      />
 
       <Divider sx={{ my: 3 }} />
 

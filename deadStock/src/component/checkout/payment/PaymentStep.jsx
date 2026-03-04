@@ -18,10 +18,10 @@ import { colors } from "../Constants";
 import EsewaLogo from "../../../assets/esewa-logo.png";
 import InfoIcon from "@mui/icons-material/Info";
 
-const PaymentStep = ({ 
-  paymentMethod, 
+const PaymentStep = ({
+  paymentMethod,
   onPaymentMethodChange,
-  showValidation = true 
+  showValidation = true,
 }) => {
   const [businessPurchase, setBusinessPurchase] = React.useState(false);
   const [showEsewaInfo, setShowEsewaInfo] = React.useState(false);
@@ -41,8 +41,8 @@ const PaymentStep = ({
     <Box>
       {/* Validation Alert */}
       {showValidation && !paymentMethod && (
-        <Alert 
-          severity="warning" 
+        <Alert
+          severity="warning"
           sx={{ mb: 3, borderRadius: 2 }}
           icon={<InfoIcon />}
         >
@@ -83,7 +83,6 @@ const PaymentStep = ({
       <Collapse in={showEsewaInfo && paymentMethod === "esewa"}>
         <Box
           sx={{
-            mt: 3,
             p: 3,
             bgcolor: colors.successLight,
             borderRadius: 3,
@@ -95,16 +94,21 @@ const PaymentStep = ({
           </Typography>
           <Typography variant="body2" color={colors.textSecondary}>
             You will be redirected to <strong>eSewa</strong> to complete your
-            payment securely. Make sure you have sufficient balance in your eSewa account.
+            payment securely. Make sure you have sufficient balance in your
+            eSewa account.
           </Typography>
-          
+
           <Box sx={{ mt: 2 }}>
             <Typography variant="caption" fontWeight={600}>
               How it works:
             </Typography>
             <ul style={{ margin: "8px 0", paddingLeft: "20px" }}>
-              <li style={{ marginBottom: "4px" }}>Click "Pay Now" to proceed to eSewa</li>
-              <li style={{ marginBottom: "4px" }}>Login to your eSewa account</li>
+              <li style={{ marginBottom: "4px" }}>
+                Click "Pay Now" to proceed to eSewa
+              </li>
+              <li style={{ marginBottom: "4px" }}>
+                Login to your eSewa account
+              </li>
               <li style={{ marginBottom: "4px" }}>Confirm the payment</li>
               <li>You'll be redirected back to see your order confirmation</li>
             </ul>
@@ -113,31 +117,13 @@ const PaymentStep = ({
       </Collapse>
 
       {/* Business Invoice Checkbox */}
-      <Box
-        
-      >
-        <FormControlLabel
-          control={
-            <Checkbox
-              checked={businessPurchase}
-              onChange={handleBusinessPurchaseChange}
-              required
-              sx={{
-                color: colors.primary,
-                "&.Mui-checked": {
-                  color: colors.primary,
-                },
-              }}
-            />
-          }
-          label="This is a business purchase (Required for invoice)"
-          sx={{ color: colors.textPrimary }}
-        />
-        
+      <Box>
+
         <Collapse in={businessPurchase}>
           <Box sx={{ mt: 2 }}>
             <Typography variant="caption" color={colors.textSecondary}>
-              Please ensure your business details are correctly filled in the shipping section.
+              Please ensure your business details are correctly filled in the
+              shipping section.
             </Typography>
           </Box>
         </Collapse>
@@ -145,10 +131,7 @@ const PaymentStep = ({
 
       {/* Step Completion Indicator */}
       {paymentMethod === "esewa" && businessPurchase && (
-        <Alert 
-          severity="success" 
-          sx={{ mt: 3, borderRadius: 2 }}
-        >
+        <Alert severity="success" sx={{ mt: 3, borderRadius: 2 }}>
           ✓ Payment method selected and ready to proceed
         </Alert>
       )}
@@ -156,12 +139,7 @@ const PaymentStep = ({
   );
 };
 
-const PaymentOption = ({ 
-  value, 
-  paymentMethod, 
-  label, 
-  description
-}) => (
+const PaymentOption = ({ value, paymentMethod, label, description }) => (
   <Card
     variant="outlined"
     onClick={() => {}} // Handled by RadioGroup
@@ -181,18 +159,16 @@ const PaymentOption = ({
       position: "relative",
     }}
   >
-  
-    
     <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
       <Box sx={{ display: "flex", alignItems: "center" }}>
-        <Radio 
-          value={value} 
-          sx={{ 
+        <Radio
+          value={value}
+          sx={{
             color: colors.primary,
             "&.Mui-checked": {
               color: colors.primary,
-            }
-          }} 
+            },
+          }}
         />
 
         <Box
@@ -208,11 +184,11 @@ const PaymentOption = ({
             flexShrink: 0,
           }}
         >
-          <img 
-            src={EsewaLogo} 
-            alt="eSewa" 
-            loading="lazy" 
-            style={{ width: 35, height: 35 }} 
+          <img
+            src={EsewaLogo}
+            alt="eSewa"
+            loading="lazy"
+            style={{ width: 35, height: 35 }}
           />
         </Box>
 

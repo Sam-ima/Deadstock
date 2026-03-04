@@ -11,27 +11,23 @@ import CartDrawerItem from "../component/cart/cart_item";
 import CartDrawerFooter from "../component/cart/cart_footer";
 import CartDrawerEmpty from "../component/cart/cart_drawer_empty";
 import { toNumber, getItemTotal } from "../component/cart/cart_utils";
-
+import { usePaymentStatus } from "../component/checkout/hooks/usePaymentStatus";
 const CartDrawer = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const { user } = useAuth();
-
+  const { paymentStatus, orderId } = usePaymentStatus();
+  
   const cartItems = useSelector((state) =>
     user ? state.cart.items || {} : {}
   );
 
-  const cartItemsArray = Object.values(cartItems).sort((a, b) => {
-    const dateA = new Date(a.addedAt || a.updatedAt || 0);
-    const dateB = new Date(b.addedAt || b.updatedAt || 0);
-    return dateB - dateA;
-  });
-
-  useEffect(() => {
-    if (open) {
-      console.log("🔐 User logged in:", !!user);
-      console.log("📦 Cart Items:", cartItemsArray.length);
-    }
-  }, [open, cartItemsArray, user]);
+  const cartItemsArray = Object.values(cartItems);
+  // useEffect(() => {
+  //   if (open) {
+  //     console.log("🔐 User logged in:", !!user);
+  //     console.log("📦 Cart Items:", cartItemsArray.length);
+  //   }
+  // }, [open, cartItemsArray, user]);
 
   const totalItems = cartItemsArray.reduce(
     (sum, item) => sum + toNumber(item.quantity),
@@ -42,7 +38,15 @@ const CartDrawer = ({ open, onClose }) => {
     (sum, item) => sum + getItemTotal(item),
     0
   );
-
+ useEffect(() => {
+    if (paymentStatus === "success" && cartItemsArray.length > 0) {
+      cartItemsArray.forEach((item) => {
+        // Remove only items that were in the purchased order
+        // If you store orderId per cart item, you can filter here
+        dispatch(removeItem(item.cartItemId || item.id));
+      });
+    }
+  }, [paymentStatus, cartItemsArray, dispatch]);
   return (
     <>
       {open && (
