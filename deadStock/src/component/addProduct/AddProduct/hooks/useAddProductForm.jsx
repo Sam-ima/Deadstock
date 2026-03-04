@@ -128,17 +128,26 @@ export const useAddProductForm = ({ user, createProduct, navigate }) => {
         status,
         saleType: formData.saleType,
         images: uploadedImages,
-
-        manufacture_date: formData.manufacture_date, // ✅ REQUIRED FIELD
+        manufacture_date: formData.manufacture_date,
 
         ...(specifications.length && { specifications: specsObj }),
-        ...(features.length && { features: features.filter((f) => f.trim()) }),
+        ...(features.length && {
+          features: features.filter((f) => f.trim())
+        }),
 
         moq: Number(b2bFields.moq) || 1,
         requiresB2BVerification: Boolean(
           b2bFields.requiresB2BVerification
-        )
+        ),
+
+        // 🔥 THIS IS THE FIX (ONLY ADD THIS BLOCK)
+        ...(formData.saleType === "auction" && {
+          auctionDuration: Number(formData.auctionDuration),
+          minBidIncrement: Number(formData.minBidIncrement) || 10
+        })
       };
+
+      console.log("Submitting productData:", productData);
 
       await createProduct(
         productData,
@@ -153,6 +162,7 @@ export const useAddProductForm = ({ user, createProduct, navigate }) => {
       );
 
       setTimeout(() => navigate("/"), 2000);
+
     } catch (err) {
       showError(err.message || "Failed to save product");
     } finally {
