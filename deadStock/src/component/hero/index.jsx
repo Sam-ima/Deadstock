@@ -12,30 +12,27 @@ const Hero = () => {
       try {
         const products = await getAllProducts();
 
-        // Count auction products
-        const auctionProducts = products.filter(
-          (p) => p.saleType === "auction",
+        // ✅ Check if ANY product has auction.status === "live"
+        const hasLiveAuction = products.some(
+          (p) => p.saleType === "auction" && p.auction?.status === "live"
         );
 
-        // 🔑 DECISION BASED ON LENGTH
-        if (auctionProducts.length > 0) {
-          setSaleType("auction");
-        } else {
-          setSaleType("direct");
-        }
+        setSaleType(hasLiveAuction ? "auction" : "direct");
+
       } catch (error) {
         console.error("Failed to load products", error);
-        setSaleType("direct"); // safe fallback
+        setSaleType("direct");
       }
     };
 
     loadProducts();
   }, []);
+
   return (
     <Box
       sx={{
         position: "relative",
-        minHeight: { xs: "30vh", sm: "40vh", md: "80vh", lg: "80vh" },
+        minHeight: { xs: "30vh", sm: "40vh", md: "50vh", lg: "80vh" },
         display: "flex",
         alignItems: "center",
         bgcolor: "#fff",
