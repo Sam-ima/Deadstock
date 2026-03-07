@@ -30,7 +30,7 @@ const ActionFooter = ({
       }}
     >
       {/* Save Draft */}
-      <Button
+      {/* <Button
         variant="outlined"
         onClick={onSaveDraft}
         disabled={loading}
@@ -42,7 +42,7 @@ const ActionFooter = ({
         }}
       >
         Save as Draft
-      </Button>
+      </Button> */}
 
       {/* Navigation Buttons */}
       <Box
