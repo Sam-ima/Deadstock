@@ -20,7 +20,7 @@ import { reserveProductStock } from "../../cart/cart_utils";
 
 const ActionButtons = ({ product, quantity }) => {
   const cartCtx = useContext(CartContext);
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,17 +34,17 @@ const ActionButtons = ({ product, quantity }) => {
   /* ----------------------------------------
      1️⃣ LOGIN CHECK
   ---------------------------------------- */
-  const requireLogin = (action) => {
-    if (loading) return true;
+  // const requireLogin = (action) => {
+  //   if (loading) return true;
 
-    if (!user) {
-      setActionType(action);
-      setShowSellerPrompt(true);
-      return true;
-    }
+  //   if (!user) {
+  //     setActionType(action);
+  //     setShowSellerPrompt(true);
+  //     return true;
+  //   }
 
-    return false;
-  };
+  //   return false;
+  // };
 
   /* ----------------------------------------
      2️⃣ PRICE LOGIC
@@ -94,6 +94,7 @@ const ActionButtons = ({ product, quantity }) => {
           ? product.lastDepreciatedAt.toMillis()
           : null,
       };
+      const stableKey = `${product.id}_${unitPrice}`;
 
       const cartItem = {
         product: sanitizedProduct,
@@ -104,7 +105,7 @@ const ActionButtons = ({ product, quantity }) => {
         id: product.id,
         name: product.name,
         price: product.price,
-        cartItemId: `${product.id}_${unitPrice}_${Date.now()}`,
+        cartItemId: stableKey, // ✅ matches the key Redux will use
       };
 
       if (type === "add") {
@@ -170,9 +171,10 @@ const ActionButtons = ({ product, quantity }) => {
           onClick={() => handleAction("add")}
           disabled={isOutOfStock || loadingStock}
           sx={{
-            flex: 1,
+            // flex: 1,
             backgroundColor: "#194638",
             "&:hover": { backgroundColor: "#163c2e" },
+            fontSize: "0.85rem",
           }}
         >
           {loadingStock ? "Reserving..." : "Add to Cart"}
@@ -185,7 +187,7 @@ const ActionButtons = ({ product, quantity }) => {
           onClick={() => handleAction("buy")}
           disabled={isOutOfStock || loadingStock}
           sx={{
-            flex: 1,
+            // flex: 1,
             borderColor: "#ED6C02",
             color: "#ED6C02",
             "&:hover": {

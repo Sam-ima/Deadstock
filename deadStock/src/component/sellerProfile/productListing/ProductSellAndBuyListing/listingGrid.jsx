@@ -25,33 +25,49 @@ const ListingsGrid = ({
   useEffect(() => setPage(1), [items, PER_PAGE]);
 
   const filteredItems = useMemo(() => {
-    if (!query) return items;
+    let result = items;
 
-    const lowerQuery = query.toLowerCase();
+    // ✅ Filter by search query
+    if (query) {
+      const lowerQuery = query.toLowerCase();
 
-    if (mode === "products") {
-      return items.filter((item) =>
-        item.name?.toLowerCase().includes(lowerQuery),
-      );
-    }
-
-    if (mode === "orders") {
-      return items.filter((order) => {
-        // Match payment method or status
-        const paymentMatch =
-          order.paymentMethod?.toLowerCase().includes(lowerQuery) ||
-          order.paymentStatus?.toLowerCase().includes(lowerQuery);
-
-        // Match product names inside order
-        const productMatch = order.items.some((orderItem) =>
-          orderItem.name?.toLowerCase().includes(lowerQuery),
+      if (mode === "products") {
+        result = result.filter((item) =>
+          item.name?.toLowerCase().includes(lowerQuery),
         );
+      }
 
-        return paymentMatch || productMatch;
-      });
+      if (mode === "orders") {
+        result = result.filter((order) => {
+          const paymentMatch =
+            order.paymentMethod?.toLowerCase().includes(lowerQuery) ||
+            order.paymentStatus?.toLowerCase().includes(lowerQuery);
+
+          const productMatch = order.items.some((orderItem) =>
+            orderItem.name?.toLowerCase().includes(lowerQuery),
+          );
+
+          return paymentMatch || productMatch;
+        });
+      }
     }
 
-    return items;
+    // ✅ Sort by latest first
+    return [...result].sort((a, b) => {
+      const dateA =
+        a.createdAt?.toDate?.() ?? // Firestore Timestamp
+        new Date(a.createdAt?.seconds * 1000) ?? // Firestore Timestamp as plain object
+        new Date(a.createdAt) ?? // ISO string / ms number
+        0;
+
+      const dateB =
+        b.createdAt?.toDate?.() ??
+        new Date(b.createdAt?.seconds * 1000) ??
+        new Date(b.createdAt) ??
+        0;
+
+      return dateB - dateA; // descending — latest first
+    });
   }, [items, query, mode]);
 
   const totalPages = Math.ceil(filteredItems.length / PER_PAGE);
