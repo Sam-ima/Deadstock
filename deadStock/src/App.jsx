@@ -12,8 +12,6 @@ import { ToastContainer, Flip } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { syncAllAuctionStatuses , fixEndedAuctions } from "./services/auctionStatusScheduler.jsx";
 
-// Context Providers
-import { CartProvider } from "./component/categoryPage/productDetail/CartContext.jsx";
 import { AuthProvider } from "./context/authContext/authContext.jsx";
 import { ProductProvider } from "./context/productContext.jsx";
 import { CategoryProvider } from "./context/categoryContext.jsx";
@@ -35,6 +33,9 @@ const CheckoutPage = lazy(() => import("./pages/checkout.page.jsx"));
 
 const ProductDescriptionPage = lazy(
   () => import("./pages/productDescriptionPage.jsx"),
+);
+const AuctionCheckoutPage = lazy(
+  () => import("./component/auctionCheckout/AuctionCheckoutPage.jsx"),
 );
 const ResetPassword = lazy(
   () => import("./component/forms/passwordReset/resetPassword.jsx"),
@@ -61,6 +62,7 @@ const router = createBrowserRouter(
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/payment-success" element={<PaymentSuccess />} />
       <Route path="/payment-failed" element={<PaymentFailure />} />
+      <Route path="/auctionCheckout/:productId" element={<AuctionCheckoutPage />} />
     </Route>,
   ),
 );
