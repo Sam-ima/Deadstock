@@ -1,38 +1,48 @@
 // src/pages/AddProduct/components/ReviewStep.jsx
-import React from "react";
 import {
   Box,
   Grid,
   Typography,
   Paper,
   Chip,
-  Divider,
   Alert,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
-  Stack
+  Stack,
 } from "@mui/material";
 import {
   CheckCircle,
   DollarSign,
-  Package,
   Image as ImageIcon,
   List,
   Layers,
-  Tag
+  Tag,
 } from "lucide-react";
 
-const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB2BUser }) => {
+const ReviewStep = ({
+  formData,
+  images,
+  specifications,
+  features,
+  b2bFields,
+  isB2BUser,
+}) => {
+  // console.log("image", images);
   const formatPrice = (price) => {
     return `$${Number(price).toFixed(2)}`;
   };
 
   return (
     <Box>
-      <Typography variant="h5" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <Typography
+        variant="h5"
+        fontWeight={600}
+        gutterBottom
+        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+      >
         <CheckCircle size={24} /> Review & Publish
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
@@ -40,17 +50,23 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
       </Typography>
 
       <Alert severity="info" sx={{ mb: 4 }}>
-        Please review all information carefully. Once published, you can edit the product from your dashboard.
+        Please review all information carefully. Once published, you can edit
+        the product from your dashboard.
       </Alert>
 
       <Grid container spacing={3}>
         {/* Basic Information */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 2, height: "100%" }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              variant="h6"
+              fontWeight={600}
+              gutterBottom
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
               <Tag size={20} /> Basic Information
             </Typography>
-            
+
             <TableContainer>
               <Table size="small">
                 <TableBody>
@@ -62,23 +78,35 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
                     <TableCell sx={{ fontWeight: 600 }}>Description</TableCell>
                     <TableCell>
                       {formData.description || (
-                        <Typography variant="body2" color="text.secondary" fontStyle="italic">
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          fontStyle="italic"
+                        >
                           No description provided
                         </Typography>
                       )}
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 600 }}>Stock Quantity</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>
+                      Stock Quantity
+                    </TableCell>
                     <TableCell>{formData.stock} units</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell sx={{ fontWeight: 600 }}>Sale Type</TableCell>
                     <TableCell>
                       <Chip
-                        label={formData.saleType === "direct" ? "Direct Purchase" : "Auction/Bidding"}
+                        label={
+                          formData.saleType === "direct"
+                            ? "Direct Purchase"
+                            : "Auction/Bidding"
+                        }
                         size="small"
-                        color={formData.saleType === "direct" ? "success" : "primary"}
+                        color={
+                          formData.saleType === "direct" ? "success" : "primary"
+                        }
                       />
                     </TableCell>
                   </TableRow>
@@ -91,10 +119,15 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
         {/* Pricing */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 2, height: "100%" }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              variant="h6"
+              fontWeight={600}
+              gutterBottom
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
               <DollarSign size={20} /> Pricing
             </Typography>
-            
+
             <TableContainer>
               <Table size="small">
                 <TableBody>
@@ -103,7 +136,9 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
                     <TableCell>{formatPrice(formData.basePrice)}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell sx={{ fontWeight: 600 }}>Minimum Price</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>
+                      Minimum Price
+                    </TableCell>
                     <TableCell>{formatPrice(formData.floorPrice)}</TableCell>
                   </TableRow>
                   {isB2BUser && (
@@ -113,13 +148,19 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
                         <TableCell>{b2bFields.moq} units</TableCell>
                       </TableRow>
                       <TableRow>
-                        <TableCell sx={{ fontWeight: 600 }}>Bulk Discount</TableCell>
+                        <TableCell sx={{ fontWeight: 600 }}>
+                          Bulk Discount
+                        </TableCell>
                         <TableCell>{b2bFields.bulkDiscount}%</TableCell>
                       </TableRow>
                       {b2bFields.bulkPrice && (
                         <TableRow>
-                          <TableCell sx={{ fontWeight: 600 }}>Bulk Price</TableCell>
-                          <TableCell>{formatPrice(b2bFields.bulkPrice)}</TableCell>
+                          <TableCell sx={{ fontWeight: 600 }}>
+                            Bulk Price
+                          </TableCell>
+                          <TableCell>
+                            {formatPrice(b2bFields.bulkPrice)}
+                          </TableCell>
                         </TableRow>
                       )}
                     </>
@@ -133,24 +174,31 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
         {/* Images */}
         <Grid item xs={12}>
           <Paper sx={{ p: 3, borderRadius: 2 }}>
-            <Typography variant="h6" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              variant="h6"
+              fontWeight={600}
+              gutterBottom
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
               <ImageIcon size={20} /> Images ({images.length})
             </Typography>
-            
+
             {images.length > 0 ? (
               <Grid container spacing={2} sx={{ mt: 2 }}>
                 {images.slice(0, 4).map((img, index) => (
                   <Grid item xs={6} sm={3} md={2} key={index}>
                     <Box
                       component="img"
-                      src={img.url}
+                      src={img.preview}
                       alt={`Preview ${index + 1}`}
                       sx={{
                         width: "100%",
                         height: 100,
                         objectFit: "cover",
                         borderRadius: 2,
-                        border: img.isMain ? "3px solid #22c55e" : "1px solid #e5e7eb"
+                        border: img.isMain
+                          ? "3px solid #22c55e"
+                          : "1px solid #e5e7eb",
                       }}
                     />
                   </Grid>
@@ -166,7 +214,7 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
                         justifyContent: "center",
                         bgcolor: "grey.100",
                         borderRadius: 2,
-                        border: "1px dashed #ccc"
+                        border: "1px dashed #ccc",
                       }}
                     >
                       <Typography variant="h6" color="text.secondary">
@@ -186,13 +234,25 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
         {specifications.length > 0 && (
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 3, borderRadius: 2, height: "100%" }}>
-              <Typography variant="h6" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography
+                variant="h6"
+                fontWeight={600}
+                gutterBottom
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              >
                 <Layers size={20} /> Specifications ({specifications.length})
               </Typography>
-              
+
               <Stack spacing={1} sx={{ mt: 2 }}>
                 {specifications.slice(0, 5).map((spec, index) => (
-                  <Box key={index} sx={{ display: "flex", justifyContent: "space-between", py: 1 }}>
+                  <Box
+                    key={index}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      py: 1,
+                    }}
+                  >
                     <Typography variant="body2" color="text.secondary">
                       {spec.key}:
                     </Typography>
@@ -215,19 +275,29 @@ const ReviewStep = ({ formData, images, specifications, features, b2bFields, isB
         {features.length > 0 && (
           <Grid item xs={12} md={6}>
             <Paper sx={{ p: 3, borderRadius: 2, height: "100%" }}>
-              <Typography variant="h6" fontWeight={600} gutterBottom sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Typography
+                variant="h6"
+                fontWeight={600}
+                gutterBottom
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
+              >
                 <List size={20} /> Features ({features.length})
               </Typography>
-              
+
               <Stack spacing={1} sx={{ mt: 2 }}>
                 {features.slice(0, 5).map((feature, index) => (
-                  <Box key={index} sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
-                    <Typography variant="body2" color="primary" sx={{ mt: 0.3 }}>
+                  <Box
+                    key={index}
+                    sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}
+                  >
+                    <Typography
+                      variant="body2"
+                      color="primary"
+                      sx={{ mt: 0.3 }}
+                    >
                       •
                     </Typography>
-                    <Typography variant="body2">
-                      {feature}
-                    </Typography>
+                    <Typography variant="body2">{feature}</Typography>
                   </Box>
                 ))}
                 {features.length > 5 && (
