@@ -41,6 +41,7 @@ export const toggleBidding = async (product, auctionConfig) => {
     // ✅ 24h delay
     const startTime = new Date(
       now.getTime() + 24 * 60 * 60 * 1000
+      // now.getTime() +  60* 1000
     );
 
     const endTime = new Date(
