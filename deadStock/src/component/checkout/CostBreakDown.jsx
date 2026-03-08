@@ -16,7 +16,7 @@ const CostBreakdown = ({ totals }) => {
         <Typography color={colors.textSecondary}>Shipping</Typography>
         <Typography fontWeight={500}>
           <Box component="span" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-            Rs. {totals.shipping.toFixed(2)} <LocalShippingIcon sx={{ fontSize: 16 }} />
+            Rs. {totals.shipping} <LocalShippingIcon sx={{ fontSize: 16 }} />
           </Box>
         </Typography>
       </Box>
@@ -31,7 +31,7 @@ const CostBreakdown = ({ totals }) => {
               <DiscountIcon sx={{ fontSize: 16 }} /> Discount
             </Box>
           </Typography>
-          <Typography fontWeight={600}>Rs. {totals.discount.toFixed(2)}</Typography>
+          <Typography fontWeight={600}>Rs. {totals.discount}</Typography>
         </Box>
       )}
     </Box>

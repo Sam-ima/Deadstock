@@ -10,7 +10,7 @@ import {
 import { useState } from "react";
 import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import ProductCard from "../../../categoryPage/product/productCard/ProductCard";
+
 
 const CARD_HEIGHT = 380;
 const ITEMS_COLLAPSED_HEIGHT = 120;

@@ -52,6 +52,7 @@ const ListingsTabs = ({ user }) => {
           const ordersQuery = query(
             collection(db, "orders"),
             where("userId", "==", user.uid),
+            where("paymentStatus", "==", "PAID"), // ✅ only fetch paid orders
           );
           const snap = await getDocs(ordersQuery);
           setOrders(snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })));

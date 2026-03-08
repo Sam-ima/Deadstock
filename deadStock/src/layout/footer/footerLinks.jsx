@@ -16,9 +16,9 @@ const FooterLinks = () => {
       {/* <Link href="/upcoming" underline="hover" color="inherit">
         Upcoming Auctions
       </Link> */}
-      <Link href="/contact" underline="hover" color="inherit">
+      {/* <Link href="/contact" underline="hover" color="inherit">
         Contact Us
-      </Link>
+      </Link> */}
     </Stack>
   );
 };

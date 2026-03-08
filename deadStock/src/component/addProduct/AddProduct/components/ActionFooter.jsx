@@ -69,6 +69,7 @@ const ActionFooter = ({
           variant="contained"
           onClick={onNext}
           disabled={loading}
+          size="large"
           fullWidth
           startIcon={
             loading ? (
@@ -80,7 +81,8 @@ const ActionFooter = ({
             )
           }
           sx={{
-            fontSize: { xs: "0.85rem", sm: "0.95rem" },
+            p:"0px 25px",
+            fontSize: { xs: "0.85rem", sm: "0.9rem" },
             bgcolor: activeStep === totalSteps - 1 ? "#22c55e" : "#19683d",
             "&:hover": {
               bgcolor: activeStep === totalSteps - 1 ? "#16a34a" : "#14532d"
