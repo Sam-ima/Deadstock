@@ -23,16 +23,28 @@ const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 export const toggleBidding = async (product, auctionConfig) => {
   const productRef = doc(db, "products", product.id);
 
-  // Enable auction (first time)
   if (product.saleType !== "auction") {
-    if (!auctionConfig?.durationHours || !auctionConfig?.minBidIncrement) {
-      throw new Error("Duration and minimum increment required to start auction.");
+    const durationHours = Number(auctionConfig?.durationHours);
+
+    console.log("toggleBidding received duration:", auctionConfig?.durationHours);
+
+    if (Number.isNaN(durationHours) || durationHours <= 0) {
+      throw new Error("Valid duration required.");
+    }
+
+    if (!auctionConfig?.minBidIncrement) {
+      throw new Error("Minimum increment required.");
     }
 
     const now = new Date();
-    const startTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+
+    // ✅ 24h delay
+    const startTime = new Date(
+      now.getTime() + 24 * 60 * 60 * 1000
+    );
+
     const endTime = new Date(
-      startTime.getTime() + auctionConfig.durationHours * 60 * 60 * 1000
+      startTime.getTime() + durationHours * 60 * 60 * 1000
     );
 
     const startingBid = product.currentPrice || product.basePrice;
@@ -41,7 +53,7 @@ export const toggleBidding = async (product, auctionConfig) => {
       status: "scheduled",
       startTime,
       endTime,
-      durationHours: auctionConfig.durationHours,
+      durationHours,
       minBidIncrement: auctionConfig.minBidIncrement,
       startingBid,
       highestBid: startingBid,
@@ -58,10 +70,10 @@ export const toggleBidding = async (product, auctionConfig) => {
       auction,
       updatedAt: serverTimestamp(),
     });
+
     return;
   }
 
-  // Disable auction → back to direct sale
   await updateDoc(productRef, {
     saleType: "direct",
     isDepreciating: true,
@@ -87,7 +99,8 @@ export const addProduct = async (productData, userId, userType) => {
   if (!userId) {
     throw new Error("User ID is required");
   }
-
+  console.log("FULL productData:", productData);
+  console.log("auctionDuration received:", productData.auctionDuration);
   try {
     const slug = productData.name
       .toLowerCase()
@@ -108,33 +121,37 @@ export const addProduct = async (productData, userId, userType) => {
     if (saleType === "auction") {
       const now = new Date();
 
-      // ⏰ Auction goes live after 24 hours
-      const startTime = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      // Auction starts after 24 hours
+      const startTime = new Date(
+        now.getTime() + 24 * 60 * 60 * 1000
+      );
 
-      // ⌛ Seller-defined duration (default 2 hours)
-      const durationHours = Number.isFinite(Number(productData.auctionDuration))
-        ? Number(productData.auctionDuration)
-        : 24;
+      // ✅ SAFE NUMBER CONVERSION
+      const durationHours = Number(productData.auctionDuration);
+
+      // ✅ STRICT VALIDATION
+      if (Number.isNaN(durationHours) || durationHours <= 0) {
+        console.log("Received auctionDuration:", productData.auctionDuration);
+        throw new Error("Invalid auction duration selected.");
+      }
 
       const endTime = new Date(
-        startTime.getTime() + durationHours * 60 * 60 * 1000,
+        startTime.getTime() + durationHours * 60 * 60 * 1000
       );
-      // ✅ Use currentPrice (depreciated price if direct sale was active)
+
       const startingBid = productData.currentPrice || basePrice;
+
       auctionData = {
-        status: "scheduled", // scheduled → live → ended
+        status: "scheduled",
         startTime,
         endTime,
-
+        durationHours,
         startingBid,
         highestBid: startingBid,
         highestBidderId: null,
-
         bidCount: 0,
-        minBidIncrement: productData.minBidIncrement || 10,
-
+        minBidIncrement: Number(productData.minBidIncrement) || 10,
         createdAt: serverTimestamp(),
-
         winnerId: null,
         paymentDeadline: null,
       };

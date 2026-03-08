@@ -1,11 +1,4 @@
-// CartDrawerItem.jsx
-import {
-  Card,
-  Typography,
-  Stack,
-  IconButton,
-  Box,
-} from "@mui/material";
+import { Card, Typography, Stack, IconButton, Box } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
@@ -17,12 +10,7 @@ import {
   getItemTotal,
 } from "./cart_utils";
 
-const CartDrawerItem = ({
-  item,
-  onIncrease,
-  onDecrease,
-  onRemove,
-}) => {
+const CartDrawerItem = ({ item, onIncrease, onDecrease, onRemove }) => {
   const qty = toNumber(item.quantity);
   const unitPrice = getUnitPrice(item);
   const total = getItemTotal(item);
@@ -34,13 +22,12 @@ const CartDrawerItem = ({
       sx={{
         mb: 2,
         p: 2.5,
-        background: "rgba(245, 255, 250, 0.85)", // soft white-green
+        background: "rgba(245, 255, 250, 0.85)",
         color: "#1F2937",
         borderRadius: 3,
         border: "1px solid rgba(34,197,94,0.2)",
         backdropFilter: "blur(6px)",
         transition: "all 0.3s ease",
-
         "&:hover": {
           transform: "translateY(-3px)",
           background: "rgba(220, 252, 231, 0.95)",
@@ -48,7 +35,7 @@ const CartDrawerItem = ({
         },
       }}
     >
-      {/* Product Name and Price */}
+      {/* Name + Total */}
       <Box
         sx={{
           display: "flex",
@@ -62,7 +49,7 @@ const CartDrawerItem = ({
           fontWeight={700}
           sx={{
             flex: 1,
-            fontSize: { xs: "0.95rem", sm: "1rem", md: "1.05rem" },
+            fontSize: { xs: "0.95rem", sm: "1rem" },
             lineHeight: 1.3,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -77,7 +64,7 @@ const CartDrawerItem = ({
         <Typography
           variant="body2"
           sx={{
-            color: "#22C55E", // greenish
+            color: "#22C55E",
             ml: 1,
             fontSize: { xs: "0.9rem", sm: "1rem" },
             fontWeight: 700,
@@ -89,17 +76,16 @@ const CartDrawerItem = ({
         </Typography>
       </Box>
 
-      {/* Bulk Order Indicator */}
+      {/* Bulk Order Badge */}
       {item.isBulkOrder && (
         <Typography
           variant="caption"
           sx={{
-            color: "#10B981", // darker green
+            color: "#10B981",
             fontStyle: "italic",
             display: "block",
             mb: 1,
             fontSize: { xs: "0.7rem", sm: "0.75rem" },
-            letterSpacing: 0.3,
           }}
         >
           ✓ Bulk order discount applied
@@ -111,7 +97,7 @@ const CartDrawerItem = ({
         variant="body2"
         sx={{
           mb: 2,
-          color: "rgba(31,41,55,0.8)", // soft gray-black
+          color: "rgba(31,41,55,0.8)",
           fontSize: { xs: "0.8rem", sm: "0.9rem" },
           display: "flex",
           alignItems: "center",
@@ -128,37 +114,27 @@ const CartDrawerItem = ({
         </Box>
       </Typography>
 
-      {/* Quantity Controls and Remove Button */}
+      {/* Quantity Controls + Delete */}
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
         sx={{ mt: 1 }}
       >
-        {/* Quantity Controls */}
-        <Stack
-          direction="row"
-          spacing={1}
-          alignItems="center"
-          sx={{ flex: 1 }}
-        >
+        <Stack direction="row" spacing={1} alignItems="center">
+          {/* Decrease — triggers releaseProductStock(1) in CartDrawer */}
           <IconButton
             size="small"
+            onClick={() => onDecrease(cartItemId, qty)}
             sx={{
               color: "#047857",
               border: "1px solid rgba(4,120,87,0.2)",
               backgroundColor: "rgba(220,252,231,0.4)",
               width: { xs: 28, sm: 32 },
               height: { xs: 28, sm: 32 },
-              transition: "all 0.2s ease",
-              "&:hover": {
-                backgroundColor: "rgba(16,185,129,0.25)",
-              },
-              "&:active": {
-                transform: "scale(0.95)",
-              },
+              "&:hover": { backgroundColor: "rgba(16,185,129,0.25)" },
+              "&:active": { transform: "scale(0.95)" },
             }}
-            onClick={() => onDecrease(cartItemId, qty)}
           >
             <RemoveIcon fontSize="small" />
           </IconButton>
@@ -175,46 +151,37 @@ const CartDrawerItem = ({
             {qty}
           </Typography>
 
+          {/* Increase — Redux only, no extra reserve needed */}
           <IconButton
             size="small"
+            onClick={() => onIncrease(cartItemId, qty)}
             sx={{
               color: "#047857",
               border: "1px solid rgba(4,120,87,0.2)",
               backgroundColor: "rgba(220,252,231,0.4)",
               width: { xs: 28, sm: 32 },
               height: { xs: 28, sm: 32 },
-              transition: "all 0.2s ease",
-              "&:hover": {
-                backgroundColor: "rgba(16,185,129,0.25)",
-              },
-              "&:active": {
-                transform: "scale(0.95)",
-              },
+              "&:hover": { backgroundColor: "rgba(16,185,129,0.25)" },
+              "&:active": { transform: "scale(0.95)" },
             }}
-            onClick={() => onIncrease(cartItemId, qty)}
           >
             <AddIcon fontSize="small" />
           </IconButton>
         </Stack>
 
-        {/* Remove Button */}
+        {/* Remove — triggers releaseProductStock(fullQty) in CartDrawer */}
         <IconButton
           size="small"
+          onClick={() => onRemove(cartItemId)}
           sx={{
             color: "#DC2626",
             backgroundColor: "rgba(248,113,113,0.1)",
             width: { xs: 28, sm: 32 },
             height: { xs: 28, sm: 32 },
-            transition: "all 0.2s ease",
-            "&:hover": {
-              backgroundColor: "rgba(248,113,113,0.2)",
-            },
-            "&:active": {
-              transform: "scale(0.95)",
-            },
+            "&:hover": { backgroundColor: "rgba(248,113,113,0.2)" },
+            "&:active": { transform: "scale(0.95)" },
             ml: 2,
           }}
-          onClick={() => onRemove(cartItemId)}
         >
           <DeleteIcon fontSize="small" />
         </IconButton>

@@ -6,18 +6,12 @@ import {
   TextField,
   Typography,
   InputAdornment,
-  Switch,
-  FormControlLabel,
   Alert,
   Paper
 } from "@mui/material";
 
 import {
   DollarSign,
-  TrendingDown,
-  Package,
-  Percent,
-  Shield,
   Timer,
   ArrowUp
 } from "lucide-react";
@@ -29,6 +23,7 @@ const PricingStep = ({
   setB2bFields,
   isB2BUser
 }) => {
+
   const handleChange = (field, value) => {
     setFormData(prev => ({
       ...prev,
@@ -48,6 +43,7 @@ const PricingStep = ({
   React.useEffect(() => {
     if (formData.basePrice) {
       const calculatedFloor = Number(formData.basePrice) * 0.5;
+
       setFormData(prev => ({
         ...prev,
         floorPrice: calculatedFloor.toFixed(2)
@@ -62,16 +58,18 @@ const PricingStep = ({
         ...prev,
         saleType: "auction",
         isDepreciating: false,
+
+        // ✅ ensure duration always exists
         auctionDuration:
           Number.isFinite(Number(prev.auctionDuration))
             ? Number(prev.auctionDuration)
             : 2,
 
+        // ✅ ensure increment always exists
         minBidIncrement:
-        Number.isFinite(Number(prev.minBidIncrement))
-          ? Number(prev.minBidIncrement)
-          : 10
-
+          Number.isFinite(Number(prev.minBidIncrement))
+            ? Number(prev.minBidIncrement)
+            : 10
       }));
     } else {
       setFormData(prev => ({
@@ -125,7 +123,7 @@ const PricingStep = ({
           />
         </Grid>
 
-        {/* Floor Price Display */}
+        {/* Floor Price */}
         <Grid item xs={12} md={6}>
           <Paper
             variant="outlined"
@@ -172,10 +170,11 @@ const PricingStep = ({
                 sx={{
                   p: 3,
                   borderRadius: 2,
-                  border: `2px solid ${formData.saleType === "direct"
-                    ? "#22c55e"
-                    : "#e5e7eb"
-                    }`,
+                  border: `2px solid ${
+                    formData.saleType === "direct"
+                      ? "#22c55e"
+                      : "#e5e7eb"
+                  }`,
                   bgcolor:
                     formData.saleType === "direct"
                       ? "#f0fdf4"
@@ -186,6 +185,7 @@ const PricingStep = ({
                 <Typography fontWeight={600}>
                   Direct Purchase
                 </Typography>
+
                 <Typography
                   variant="body2"
                   color="text.secondary"
@@ -202,10 +202,11 @@ const PricingStep = ({
                 sx={{
                   p: 3,
                   borderRadius: 2,
-                  border: `2px solid ${formData.saleType === "auction"
-                    ? "#22c55e"
-                    : "#e5e7eb"
-                    }`,
+                  border: `2px solid ${
+                    formData.saleType === "auction"
+                      ? "#22c55e"
+                      : "#e5e7eb"
+                  }`,
                   bgcolor:
                     formData.saleType === "auction"
                       ? "#f0fdf4"
@@ -216,6 +217,7 @@ const PricingStep = ({
                 <Typography fontWeight={600}>
                   Auction / Bidding
                 </Typography>
+
                 <Typography
                   variant="body2"
                   color="text.secondary"
@@ -227,18 +229,21 @@ const PricingStep = ({
           </Grid>
         </Grid>
 
-        {/* 🆕 Auction Fields */}
+        {/* Auction Fields */}
         {formData.saleType === "auction" && (
           <>
-            {/* <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6}>
               <TextField
                 select
                 fullWidth
                 required
                 label="Auction Duration"
-                value={formData.auctionDuration}
+                value={formData.auctionDuration || 2}
                 onChange={(e) =>
-                  handleChange("auctionDuration", Number(e.target.value))
+                  handleChange(
+                    "auctionDuration",
+                    Number(e.target.value)
+                  )
                 }
                 InputProps={{
                   startAdornment: (
@@ -255,15 +260,15 @@ const PricingStep = ({
                 <option value={8}>8 Hours</option>
                 <option value={24}>24 Hours</option>
               </TextField>
-            </Grid> */}
-            
+            </Grid>
+
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 required
                 label="Minimum Bid Increment (Rs.)"
                 type="number"
-                value={formData.minBidIncrement}
+                value={formData.minBidIncrement || 10}
                 onChange={(e) =>
                   handleChange(
                     "minBidIncrement",
@@ -284,7 +289,7 @@ const PricingStep = ({
           </>
         )}
 
-        {/* B2B Section (UNCHANGED) */}
+        {/* B2B Section */}
         {isB2BUser && (
           <>
             <Grid item xs={12}>
@@ -292,7 +297,6 @@ const PricingStep = ({
                 B2B sellers can set bulk pricing and MOQ
               </Alert>
             </Grid>
-            {/* existing B2B fields remain untouched */}
           </>
         )}
       </Grid>

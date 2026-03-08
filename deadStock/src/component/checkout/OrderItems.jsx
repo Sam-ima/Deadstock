@@ -11,10 +11,10 @@ import {
 } from "../../store/slice/purchaseSlice";
 import { colors } from "./Constants";
 
-const OrderItem = ({ item, index }) => {
+const OrderItem = ({ item}) => {
   const dispatch = useDispatch();
   const location = useLocation();
-  const isDirectPurchase = location.state?.isDirectPurchase;
+  // const isDirectPurchase = location.state?.isDirectPurchase;
   const itemName = item.name || "Product";
   const itemImage = item.product?.images?.[0] || item.image;
   const unitPrice = item.unitPrice || 0;
@@ -68,7 +68,7 @@ const OrderItem = ({ item, index }) => {
       }}
     >
       {/* Image */}
-      <Box
+      {/* <Box
         sx={{
           width: 80,
           height: 80,
@@ -92,7 +92,7 @@ const OrderItem = ({ item, index }) => {
         ) : (
           "📦"
         )}
-      </Box>
+      </Box> */}
 
       {/* Details */}
       <Box sx={{ flex: 1, minWidth: 0 }}>
