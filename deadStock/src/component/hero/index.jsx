@@ -38,7 +38,7 @@ const Hero = () => {
         bgcolor: "#fff",
         color: "#FFD2C2",
         overflow: "hidden",
-        mt: { xs: "65px", sm: "100px", md: "20px", lg: "30px" },
+        mt: { xs: "60px", sm: "100px", md: "70px", lg: "30px" },
       }}
     >
       <Container maxWidth="lg">

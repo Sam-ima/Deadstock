@@ -1,5 +1,5 @@
 import { Box, Paper, Stack, Chip, IconButton } from "@mui/material";
-import { Favorite, FavoriteBorder } from "@mui/icons-material";
+// import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { resolveProductImages } from "../product/productCard/utils/ProductImages";
 
 const ProductImages = ({
@@ -53,14 +53,14 @@ const ProductImages = ({
               position: "absolute",
               top: { xs: 8, sm: 16 },
               left: { xs: 8, sm: 16 },
-              bgcolor: "error.main",
+              bgcolor: "green",
               color: "white",
               fontWeight: "bold",
             }}
           />
         )}
 
-        <IconButton
+        {/* <IconButton
           onClick={setIsFavorite}
           sx={{
             position: "absolute",
@@ -70,7 +70,7 @@ const ProductImages = ({
           }}
         >
           {isFavorite ? <Favorite color="error" /> : <FavoriteBorder />}
-        </IconButton>
+        </IconButton> */}
       </Paper>
 
       {images.length > 1 && (

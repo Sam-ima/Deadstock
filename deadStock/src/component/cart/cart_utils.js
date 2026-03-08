@@ -1,4 +1,8 @@
 import axios from "axios";
+import { applyMoqPricing, SUB_MOQ_SURCHARGE_RATE} from "../categoryPage/productDetail/ProductInfo"
+// adjust the import path to wherever ProductInfo lives
+
+export { SUB_MOQ_SURCHARGE_RATE };
 
 export const toNumber = (v) => {
   if (v === null || v === undefined) return 0;
@@ -18,7 +22,8 @@ export const formatPrice = (v) => {
   });
 };
 
-export const getUnitPrice = (item) =>
+/** Raw base unit price — before any MOQ surcharge. */
+export const getBaseUnitPrice = (item) =>
   toNumber(
     item.unitPrice ||
       item.price ||
@@ -27,67 +32,77 @@ export const getUnitPrice = (item) =>
       0,
   );
 
+/**
+ * Effective unit price after applying the sub-MOQ surcharge when needed.
+ *
+ * Rule:
+ *   qty >= moq  → standard price (no change)
+ *   qty <  moq  → price × (1 + SUB_MOQ_SURCHARGE_RATE)
+ *
+ * Source: Shopify — buyers who cannot meet MOQ "may have to pay a surcharge"
+ * https://www.shopify.com/blog/minimum-order-quantity
+ * Rate (15 %): aligns with the 15–20 % wholesale margin standard
+ * https://www.finaleinventory.com/inventory-management/what-is-moq
+ */
+export const getUnitPrice = (item) => {
+  const base = getBaseUnitPrice(item);
+  const qty = toNumber(item.quantity);
+  const moq = toNumber(item.moq ?? item.product?.moq ?? 0);
+  return applyMoqPricing(base, qty, moq);
+};
+
 export const getDisplayName = (item) =>
   item.product?.name || item.name || "Product";
 
-// New function to calculate item total
+/**
+ * Total price for a cart line:
+ *   - Use pre-computed totalPrice only when the item already meets MOQ;
+ *     otherwise recalculate so the surcharge is always reflected.
+ */
 export const getItemTotal = (item) => {
   const qty = toNumber(item.quantity);
-  const unitPrice = getUnitPrice(item);
-  return toNumber(item.totalPrice) || qty * unitPrice;
+  const unitPrice = getUnitPrice(item); // already MOQ-aware
+  const moq = toNumber(item.moq ?? item.product?.moq ?? 0);
+  const isBelowMoq = moq > 0 && qty < moq;
+
+  // Trust pre-computed totalPrice only when quantity is at or above MOQ
+  if (!isBelowMoq && item.totalPrice) {
+    return toNumber(item.totalPrice);
+  }
+  return qty * unitPrice;
 };
 
-// Reserve stock (called on Add to Cart / Buy Now)
-export const reserveProductStock = async (productId, quantity) => {
-  return axios.post("http://localhost:4000/api/stock/reserve", {
+/** Returns true when the item's quantity is below its MOQ. */
+export const isSubMoq = (item) => {
+  const qty = toNumber(item.quantity);
+  const moq = toNumber(item.moq ?? item.product?.moq ?? 0);
+  return moq > 0 && qty < moq;
+};
+ 
+// ─── Stock helpers ────────────────────────────────────────────────────────────
+
+export const reserveProductStock = async (productId, quantity) =>
+  axios.post("http://localhost:4000/api/stock/reserve", {
     productId,
     quantity,
   });
-};
 
-export async function releaseStock(req, res) {
-  const { productId, quantity } = req.body;
+export const releaseProductStock = async (productId, quantity) =>
+  axios.post("http://localhost:4000/api/stock/release", {
+    productId,
+    quantity,
+  });
 
-  if (!productId || !quantity || quantity < 1)
-    return res.status(400).json({ error: "Invalid input" });
-
-  const productRef = db.collection("products").doc(productId);
-
-  try {
-    await db.runTransaction(async (transaction) => {
-      const productDoc = await transaction.get(productRef);
-      if (!productDoc.exists) throw new Error("Product not found");
-
-      const productData = productDoc.data();
-      const reservedStock = Number(productData.reservedStock || 0);
-      const availableStock = Number(productData.availableStock || 0);
-
-      transaction.update(productRef, {
-        reservedStock: Math.max(0, reservedStock - quantity),
-        availableStock: availableStock + quantity,
-        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-    });
-
-    return res.status(200).json({ success: true, message: "Stock released" });
-  } catch (err) {
-    console.error("ReleaseStock error:", err.message);
-    return res.status(400).json({ error: err.message });
-  }
-}
-
-// Finalize stock after payment
-export const finalizeProductStock = async (productId, quantity, paymentStatus) => {
-  return axios.post("http://localhost:4000/api/stock/finalize", {
+export const finalizeProductStock = async (
+  productId,
+  quantity,
+  paymentStatus,
+) =>
+  axios.post("http://localhost:4000/api/stock/finalize", {
     productId,
     quantity,
     paymentStatus,
   });
-};
 
-export const releaseProductStock = async (productId, quantity) => {
-  return axios.post("http://localhost:4000/api/stock/release", {
-    productId,
-    quantity,
-  });
-};
+// releaseStock is a backend handler — keep it server-side only.
+// It is not exported from this client utility file.
